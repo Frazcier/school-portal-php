@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,10 +19,10 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html">Home</a></li>
+                    <li><a href="index.php">Home</a></li>
                     <li><a href="#" class="active-link">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
-                    <li><a class="button login-btn" href="login.php">Portal Login</a></li>
+                    <li><a href="contact.php">Contact</a></li>
+                    <li><a class="button login-btn" href="pages/auth/login.php">Portal Login</a></li>
                 </ul>
             </nav>
         </div>
@@ -100,9 +102,7 @@
             </div>
         </section>
 
-        <div id="footer-placeholder"></div>
+        <?php require_once 'component/footer.php'; ?>
     </main>
-
-    <script src="assets/js/component-footer.js"></script>
 </body>
 </html>

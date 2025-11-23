@@ -8,8 +8,12 @@
     $last_name = $_SESSION['last_name'] ?? 'User';
     $full_name = htmlspecialchars($first_name . ' ' . $last_name);
 
-    $default_pic = ($role === 'teacher' || $role === 'admin') ? '../../assets/img/profile-pictures/profile-staff.svg' : '../../assets/img/profile-pictures/profile.svg';
-    $profile_pic = $_SESSION['profile_picture'] ?? ($_SESSION['profile_data']['profile_picture'] ??$default_pic);
+    $profile_data = $_SESSION['profile_data'];
+    $default_pic = ($role === 'student')
+        ? '../../assets/img/profile-pictures/profile.svg'
+        : '../../assets/img/profile-pictures/profile-staff.svg';
+
+    $profile_pic = htmlspecialchars($profile_data['profile_picture'] ?? $default_pic);
 
     if ($role === 'student') {
         $label = "Student ID";
@@ -52,7 +56,7 @@
         <div class="vertical-divider"></div>
 
         <div class="user-pill" onclick="location.href='#dropdown-menu'">
-            <img src="../../assets/img/profile-pictures/profile.svg" alt="Profile" class="avatar">
+            <img src="<?= $profile_pic ?>" alt="Profile" class="avatar">
             <div class="user-info">
                 <span class="user-name"><?= $full_name ?></span>
                 <span class="user-role"><?= ucfirst($role) ?></span>

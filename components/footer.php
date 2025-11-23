@@ -1,10 +1,10 @@
-<link rel="stylesheet" href="../../assets/css/footer.css">
+<link rel="stylesheet" href="assets/css/footer.css">
 
 <footer>
     <div class="footer-container">
         <div class="footer-brand">
             <div class="footer-logo">
-                <img src="../../assets/img/logo/logo.png" alt="Logo">
+                <img src="assets/img/logo/logo.png" alt="Logo">
                 <h3>Ikinamada</h3>
             </div>
             <p class="footer-desc">
@@ -16,10 +16,10 @@
         <div class="footer-links">
             <h4>Navigation</h4>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="about.html">About Us</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="pages/auth/login.html">Portal Login</a></li>
+                <li><a href="index.php">Home</a></li>
+                <li><a href="about.php">About Us</a></li>
+                <li><a href="contact.php">Contact</a></li>
+                <li><a href="pages/auth/login.php">Portal Login</a></li>
             </ul>
         </div>
 

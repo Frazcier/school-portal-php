@@ -1,8 +1,4 @@
-<?php
-
-    session_start();
-
-?>
+<?php session_start(); ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,7 +8,6 @@
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="icon" type="image/x-icon" href="assets/img/LOGO/logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="assets/js/component-footer.js" defer></script>
 </head>
 <body>
     <header>
@@ -24,8 +19,8 @@
             <nav>
                 <ul>
                     <li><a href="#" class="active-link">Home</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="about.php">About</a></li>
+                    <li><a href="contact.php">Contact</a></li>
                     <li><a class="button login-btn" href="pages/auth/login.php">Portal Login</a></li>
                 </ul>
             </nav>
@@ -43,7 +38,7 @@
                 <p>Empowering students with cutting-edge technology and a seamless digital campus experience. Manage your academic journey with ease.</p>
                 <div class="hero-buttons">
                     <a href="pages/auth/login.php" class="button primary-btn pulse">Get Started <i class="fas fa-arrow-right"></i></a>
-                    <a href="about.html" class="button secondary-btn">Learn More</a>
+                    <a href="about.php" class="button secondary-btn">Learn More</a>
                 </div>
             </div>
             
@@ -113,11 +108,7 @@
             </div>
         </section>
 
-        <?php
-        
-            require_once 'components/footer.php';
-        
-        ?>
+        <?php require_once 'components/footer.php'; ?>
     </main>
 </body>
 </html>

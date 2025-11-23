@@ -65,7 +65,7 @@
     stroke-dashoffset: 3000;
     
     /* Fast drawing: 1.2s */
-    animation: drawLines 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: drawLines 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 /* --- BLOBS & ORBIT --- */

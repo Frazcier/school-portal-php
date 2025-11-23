@@ -14,6 +14,7 @@
 
     $profile = $_SESSION['profile_data'];
     $email = $_SESSION['email'];
+        
     $full_name = htmlspecialchars($profile['first_name'] . ' ' . $profile['last_name']);
     $student_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
     $pic = htmlspecialchars($profile['profile_picture'] ?? '../../assets/img/profile-pictures/profile.svg');
@@ -54,14 +55,14 @@
 
                 <?php if(isset($_GET['success'])): ?>
                     <div class="alert alert-success">
-                        <img src="../../assets/img/icons/notif-1-icon.svg" alt="Success">
+                        <img src="../../assets/img/icons/success-icon.svg" alt="Success">
                         <span><?= htmlspecialchars($_GET['success']) ?></span>
                     </div>
                 <?php endif; ?>
 
                 <?php if(isset($_GET['error'])): ?>
                     <div class="alert alert-error">
-                        <img src="../../assets/img/icons/notif-3-icon.svg" alt="Error">
+                        <img src="../../assets/img/icons/error-icon.svg" alt="Error">
                         <span><?= htmlspecialchars($_GET['error']) ?></span>
                     </div>
                 <?php endif; ?>
