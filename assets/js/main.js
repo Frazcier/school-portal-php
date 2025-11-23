@@ -58,6 +58,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 alertBox.remove();
             }, 500);
-        }, 5000);
+        }, 3500);
     }
 });
