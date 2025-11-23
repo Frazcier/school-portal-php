@@ -96,14 +96,14 @@
             <strong>Timothy Dionela</strong>
         </div>
         <ul>
-            <a href="../student/account-settings-student.html">
+            <a href="../student/account-settings-student.php">
                 <li><img src="../../assets/img/icons/account-settings-icon.svg"> Account Settings</li>
             </a>
             <a href="#">
                 <li><img src="../../assets/img/icons/dark-mode-icon.svg"> Appearance</li>
             </a>
             <div class="menu-divider"></div>
-            <a href="../auth/login.html" class="logout-link">
+            <a href="../auth/login.php" class="logout-link">
                 <li><img src="../../assets/img/icons/logout-icon.svg"> Logout</li>
             </a>
         </ul>

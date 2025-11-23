@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,10 +12,10 @@
     <title>Account Settings</title>
 </head>
 <body>
-    <div id="header-placeholder"></div>
+    <?php require_once '../../components/header.php'?>
 
     <div class="container">
-        <div id="sidebar-placeholder"></div>
+        <?php require_once '../../components/sidebar.php'?>
 
         <div class="content">
             

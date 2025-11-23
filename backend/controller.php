@@ -121,7 +121,7 @@ class controller {
                 $sql_prof = "INSERT INTO student_profiles (user_id, first_name, middle_name, last_name, course, year_level, section, profile_picture) VALUES (?, ?, ?, ?, ?, ?, 'N/A', ?)";
                 $stmt_prof = $this->connection->prepare($sql_prof);
                 $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $course, $year_level, $default_student_pic);
-            } else {
+            } else if ($role === 'teacher'){
                 $sql_prof = "INSERT INTO staff_profiles (user_id, first_name, middle_name, last_name, department, academic_rank, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 $stmt_prof = $this->connection->prepare($sql_prof);
                 $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $department, $academic_rank, $default_staff_pic);
@@ -158,7 +158,7 @@ class controller {
                         exit();
                     }
 
-                    $user_id = $user['user_id'];
+                    $u_id = $user['user_id'];
                     $role = $user['role'];
 
                     if ($role === 'student') {
@@ -168,7 +168,7 @@ class controller {
                     }
 
                     $stmt_p = $this->connection->prepare($sql_p);
-                    $stmt_p->bind_param("i", $user_id);
+                    $stmt_p->bind_param("i", $u_id);
                     $stmt_p->execute();
                     $res_p = $stmt_p->get_result();
                     $profile = $res_p->fetch_assoc();

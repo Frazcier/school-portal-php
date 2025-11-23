@@ -1,5 +1,13 @@
 <?php 
-session_start();
+    session_start();
+
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+        header("Location: ../auth/login.php");
+        exit();
+    }
+
+    $full_name = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_name']);
+    $date_today = date("F j, Y");
 ?>
 
 <!DOCTYPE html>
@@ -12,25 +20,21 @@ session_start();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     <script src="../../assets/js/calendar.js" defer></script>
-    <script src="../../assets/js/component-student.js" defer></script>
+    <script src="../../assets/js/main.js" defer></script>
     <title>STUDENT DASHBOARD UI</title>
 </head>
 <body>
-    <?php
-        require_once '../../components/header.php';
-    ?>
-
+    <?php include '../../components/splash.php'; ?>
+    <?php require_once '../../components/header.php';?>
+    
     <div class="container">
-
-        <?php 
-            require_once '../../components/sidebar-student.php'
-        ?>
+        <?php require_once '../../components/sidebar.php';?>
 
         <div class="content">
             <div class="section-1">
                 <div class="welcome-section item-1">
                     <h2 class="title">Welcome, <span>Timothy Dionela!</span></h2>
-                    <p class="date">April 28, 2025</p>
+                    <p class="date"><?= $date_today ?></p>
                 </div>
                 <div class="progress-section item-2">
                     <p>Semester <span>2</span> of 8</p>

@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,18 +9,16 @@
     <link rel="stylesheet" href="../../assets/css/staff-dashboard.css"/>
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../assets/js/main.js" defer></script>
     <title>Staff Dashboard</title>
 </head>
 <body>
-    <?php
-        require_once '../../components/header.php';
-    ?>
+    <?php include '../../components/splash.php'; ?>
+    <?php require_once '../../components/header.php';?>
 
     <div class="container">
 
-        <?php 
-            require_once '../../components/sidebar-staff.php'
-        ?>
+        <?php require_once '../../components/sidebar.php'?>
 
         <div class="content">
             
@@ -163,7 +163,5 @@
 
         </div>
     </div>
-
-    <script src="../../assets/js/component-staff.js"></script>
 </body>
 </html>
