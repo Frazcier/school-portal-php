@@ -1,10 +1,10 @@
 <?php
-$role = $_SESSION['role'] ?? 'guest';
-$first_name = $_SESSION['first_name'] ?? 'Guest';
-$last_name = $_SESSION['last_name'] ?? 'User';
+$role = $_SESSION['role'];
+$first_name = $_SESSION['first_name'];
+$last_name = $_SESSION['last_name'];
 $full_name = htmlspecialchars($first_name . ' ' . $last_name);
 
-$profile_data = $_SESSION['profileData'] ?? [];
+$profile_data = $_SESSION['profile_data'] ?? [];
 $default_pic = ($role === 'student') ? '../../assets/img/profile-pictures/profile.svg' : '../../assets/img/profile-pictures/profile-staff.svg';
 
 if ($role === 'student') {

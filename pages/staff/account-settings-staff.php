@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../assets/css/account-settings.css"/>
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="../../assets/js/main.js" defer></script>
     <title>Account Settings</title>
 </head>
 <body>
@@ -124,7 +125,5 @@
 
         </div>
     </div>
-
-    <script src="../../assets/js/component-staff.js"></script>
 </body>
 </html>

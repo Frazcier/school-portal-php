@@ -44,7 +44,9 @@ class controller {
                 $this->login();
             } else if ($action === 'logout') {
                 $this->logout();
-            } else if ($action === 'change_password') {
+            } else if ($action === 'update_profile') {
+                $this->update_profile();
+            }else if ($action === 'change_password') {
                 $this->change_password();
             } else if ($action === 'change_avatar') {
                 $this->change_avatar();
@@ -176,10 +178,11 @@ class controller {
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['unique_id'] = $user['unique_id'];
                     $_SESSION['role'] = $user['role'];
-                    $_SESSION['first_name'] = $user['first_name'];
-                    $_SESSION['last_name'] = $user['middle_name'];
-                    $_SESSION['middle_name'] = $user['middle_name'];
+                    $_SESSION['first_name'] = $profile['first_name'];
+                    $_SESSION['last_name'] = $profile['middle_name'];
+                    $_SESSION['middle_name'] = $profile['middle_name'];
                     $_SESSION['email'] = $user['email'];
+                    $_SESSION['profile_picture'] = $profile['profile_picture'];
                     $_SESSION['profile_data'] = $profile;
 
                     if ($role === 'student') {
@@ -204,6 +207,80 @@ class controller {
         session_destroy();
         header("Location: ../pages/auth/login.php");
         exit();
+    }
+
+    public function update_profile() {
+        if (!isset($_SESSION['user_id'])) {
+            header("Location: ../pages/auth/login.php");
+            exit();
+        }
+
+        $user_id = $_SESSION['user_id'];
+        $role = $_SESSION['role'];
+
+        $first_name = $_POST['first_name'];
+        $middle_name = $_POST['middle_name'];
+        $last_name = $_POST['last_name'];
+        $email = $_POST['email'];
+
+        $current_password = $_POST['current_password'];
+        $new_password = $_POST['new_password'];
+        $password_message = "";
+
+        $sql_email = "UPDATE users SET email = ? WHERE user_id = ?";
+        $stmt_email = $this->connection->prepare($sql_email);
+        $stmt_email->execute();
+        $_SESSION['email'] = $email;
+
+        if (!empty($current_password) && !empty($new_password)) {
+            $sql_check = "SELECT password FROM users WHERE user_id = ?";
+            $stmt_check = $this->connection->prepare($sql_check);
+            $stmt_check->bind_param("i", $user_id);
+            $stmt_check->execute();
+            $result = $stmt_check->get_result();
+            $user = $result->fetch_assoc();
+
+            if (password_verify($current_password, $user['password'])) {
+                $new_hashed = password_hash($new_password, PASSWORD_DEFAULT);
+                $sql_pass = "UPDATE users SET password = ? WHERE user_id = ?";
+                $stmt_pass = $this->connection->prepare($sql_pass);
+                $stmt_pass->bind_param("si", $new_hashed, $user_id);
+                
+                if ($stmt_pass->execute()) {
+                    $password_message = "&msg=Password updated successfully";
+                }
+            } else {
+                $password_message = "&error=Incorrect current password";
+            }
+        }
+
+        if ($role === 'student') {
+            $sql_prof = 'UPDATE student_profiles SET first_name = ?, middle_name = ?, last_name = ? WHERE user_id = ?';
+            $stmt_prof = $this->connection->prepare($sql_prof);
+        } else {
+            $sql_prof = 'UPDATE staff_profiles SET first_name = ?, middle_name = ?, last_name = ? WHERE user_id = ?';
+            $stmt_prof = $this->connection->prepare($sql_prof);
+        }
+
+        $stmt_prof->bind_param("sssi", $first_name, $middle_name, $last_name, $user_id);
+
+        if ($stmt_prof->execute()) {
+            $_SESSION['first_name'] = $first_name;
+            $_SESSION['last_name'] = $last_name;
+
+            $_SESSION['profile_data']['first_name'] = $first_name;
+            $_SESSION['profile_data']['middle_name'] = $middle_name;
+            $_SESSION['profile_data']['last_name'] = $last_name;
+
+            if ($role === 'student') {
+                header("Location: ../pages/student/account-settings-student.php?success=Profile updated$password_message");
+            } else {
+                header("Location: ../pages/student/account-settings-staff.php?success=Profile updated$password_message");
+            }
+            exit();
+        } else {
+            echo "Error updating profile: " . $this->connection->error;
+        }
     }
 
     public function change_password() {
