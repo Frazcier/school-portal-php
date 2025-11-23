@@ -1,0 +1,203 @@
+@import url(global.css);
+
+/* --- Dashboard Layout Grid --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.section-title {
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-dark-text);
+}
+
+/* --- Generic Dashboard Card --- */
+.dashboard-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-dark-text);
+}
+
+.card-header .view-link {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.card-header .view-link:hover {
+    text-decoration: underline;
+}
+
+/* Search Bar inside Card (Smaller version) */
+.search-wrapper.small {
+    min-width: 200px;
+}
+.search-wrapper.small input {
+    padding: 0.5rem 1rem 0.5rem 2.2rem;
+    font-size: 0.85rem;
+}
+.search-wrapper.small .search-icon {
+    font-size: 0.8rem;
+    left: 0.8rem;
+}
+
+/* --- Widget 1: Quick Actions --- */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.action-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1.5rem;
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 0.8rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.action-tile:hover {
+    background-color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(148, 0, 211, 0.15);
+    transform: translateY(-2px);
+}
+
+.action-tile span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-dark-text);
+}
+
+/* Icon Boxes with Colors */
+.icon-box {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.icon-box.purple { background: rgba(148, 0, 211, 0.1); color: var(--primary-color); }
+.icon-box.blue { background: rgba(59, 130, 246, 0.1); color: #3B82F6; }
+.icon-box.orange { background: rgba(249, 115, 22, 0.1); color: #F97316; }
+.icon-box.green { background: rgba(34, 197, 94, 0.1); color: #22C55E; }
+
+
+/* --- Widget 2: Announcement List --- */
+.announcement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.announcement-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 0.8rem;
+    background-color: #F9FAFB;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+}
+
+.announcement-item:hover {
+    background-color: white;
+    border-color: #E5E7EB;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.ann-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ann-icon img {
+    width: 20px;
+    height: 20px;
+}
+
+.ann-content {
+    flex: 1;
+}
+
+.ann-content h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
+    color: var(--color-dark-text);
+}
+
+.ann-content p {
+    font-size: 0.8rem;
+    color: var(--color-grey-text);
+}
+
+.status-text.active {
+    color: #166534;
+    font-weight: 600;
+}
+
+/* --- Badges for Table (Soft Colors) --- */
+.badge-soft {
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-soft.blue { background: #EFF6FF; color: #1D4ED8; }
+.badge-soft.purple { background: #F5F3FF; color: #7C3AED; }
+.badge-soft.orange { background: #FFF7ED; color: #C2410C; }
+.badge-soft.green { background: #F0FDF4; color: #15803D; }
+
+/* Responsive Tweaks */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Stack items on mobile */
+    }
+    .quick-actions-grid {
+        grid-template-columns: 1fr; /* Stack buttons if screen is very narrow */
+    }
+}

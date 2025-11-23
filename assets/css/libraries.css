@@ -1,0 +1,253 @@
+/* assets/css/libraries.css */
+@import url(global.css);
+
+/* --- 1. Shared Header Styles --- */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.header-details h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-dark-text);
+    line-height: 1.1;
+}
+
+.header-details h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-grey-text);
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 0.7rem 1.5rem;
+    border-radius: 0.6rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background-color: #fdf4ff;
+    transform: translateY(-2px);
+}
+
+
+/* --- 2. Toolbar (Scoped) --- */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+    margin-bottom: 2rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-wrapper input, .select-wrapper select {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.8rem;
+    background-color: #eee;
+    border: 1px solid #e0e0e0;
+    border-radius: 0.6rem;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+    font-size: 0.9rem;
+    color: var(--color-dark-text);
+    transition: all 0.2s;
+}
+
+.search-wrapper input:focus, .select-wrapper select:focus {
+    background-color: white;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(148, 0, 211, 0.1);
+    outline: none;
+}
+
+/* FIX: SCOPED CHERVON/SEARCH ICON STYLES */
+.toolbar .search-icon, .toolbar .chevron {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.toolbar .search-icon { left: 1rem; }
+.toolbar .chevron { right: 1rem; }
+/* END FIX */
+
+.filter-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+.select-wrapper { position: relative; }
+.select-wrapper select { padding: 0.8rem 2.5rem 0.8rem 1rem; appearance: none; cursor: pointer; min-width: 150px; }
+
+
+/* --- 3. Tabs & Grid --- */
+.library-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tabs-nav {
+    display: flex;
+    gap: 2rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 1px;
+    overflow-x: auto;
+}
+
+.tab-link {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-grey-text);
+    padding-bottom: 0.8rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.tab-link:hover { color: var(--primary-color); }
+
+/* Active Tab Logic */
+#tab-materials:checked ~ .tabs-nav label[for="tab-materials"],
+#tab-ebooks:checked ~ .tabs-nav label[for="tab-ebooks"],
+#tab-research:checked ~ .tabs-nav label[for="tab-research"] {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Content Visibility */
+.resources-grid { display: none; }
+
+#tab-materials:checked ~ .tab-content #view-materials,
+#tab-ebooks:checked ~ .tab-content #view-ebooks,
+#tab-research:checked ~ .tab-content #view-research {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+
+/* --- 4. Resource Cards --- */
+.resource-card {
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.resource-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    border-color: transparent;
+}
+
+/* Card Icon */
+.card-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.card-icon img { width: 24px; height: 24px; }
+
+.card-icon.pdf { background: #FEE2E2; } /* Red */
+.card-icon.slides { background: #FFF7ED; } /* Orange */
+.card-icon.link { background: #EFF6FF; } /* Blue */
+.card-icon.ebook { background: #F0FDF4; } /* Green */
+.card-icon.research { background: #F3F4F6; } /* Grey */
+
+/* Card Body */
+.card-body { flex: 1; }
+
+.card-body .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #F3F4F6;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    color: #666;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.card-body h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-dark-text);
+    margin-bottom: 0.3rem;
+    line-height: 1.3;
+}
+
+.card-body p {
+    font-size: 0.85rem;
+    color: var(--color-grey-text);
+    line-height: 1.5;
+}
+
+/* Card Footer */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid #f5f5f5;
+}
+
+.file-info {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #9CA3AF;
+}
+
+.icon-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #eee;
+    background: white;
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.icon-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}

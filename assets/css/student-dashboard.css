@@ -1,0 +1,667 @@
+@import url(global.css);
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+:is(.section-1, .section-2, .section-3) {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.item-1 {
+    flex-basis: calc(70% - 1.25rem);
+    flex-grow: 1;
+}
+
+.item-2 {
+    flex-basis: calc(30% - 1.25rem);
+    flex-grow: 1;
+}
+
+/***** SECTION 1 *****/
+.welcome-section {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    &:not(.title) {
+        align-items: center;
+    }
+
+    & .title {
+        margin: auto 0;
+        font-weight: 400;
+        
+        & span {
+            font-weight: 600;
+        }
+    }
+
+    & .date {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+}
+
+.progress-section {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 30%;
+    gap: 1rem;
+
+    & span {
+        color: var(--primary-color);
+        font-weight: 500;
+    }
+
+    & .progress-bar {
+        height: 0.6rem;
+        width: 100%;
+        border-radius: 1rem;
+        background-color: #ECEEF3;
+        position: relative;
+
+        &::before {
+            content: "";
+            width: 20%;
+            height: 0.6rem;
+            position: absolute;
+            border-radius: 1rem;
+            background: var(--primary-color);
+        }
+    }
+}
+
+
+/***** SECTION 2 *****/
+.announcement-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 20rem;
+    padding: 1.6rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    justify-content: space-around;
+    background: linear-gradient(130deg,#4f46e5 0%, #9333ea 100%);
+
+    & .icon {
+        width: 1.6rem;
+    }
+
+    & :is(h2, p, .icon, .announcement-button) {
+        color: var(--color-light-text);
+        z-index: 2;
+    }
+}
+
+.announcement-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+:is(.announcement-header, .announcement-details) {
+    display: flex;
+}
+
+.announcement-header {
+    justify-content: space-between;
+
+    & .date {
+        align-self: flex-end;
+    }
+
+    & .announcement-title {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+}
+
+.announcement-details {
+    align-items: center;
+    gap: 0.6rem;
+
+    & h2 {
+        font-weight: 400;
+    }
+}
+
+.announcement-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10rem;
+    height: 2.6rem;
+    border-radius: 0.4rem;
+    background-color: #FACC15;
+    cursor: pointer;
+
+    & p {
+        color: var(--color-dark-text);
+        text-align: center;
+        font-weight: bold;
+    }
+}
+
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    & .blob {
+        position: absolute;
+        border-radius: 100%;
+        
+        &:first-of-type {     
+            top: -0.6rem;
+            right: 0;
+            width: 6rem;
+            height: 6rem;
+            opacity: 0.3;
+            background-color: #8B5CF6;  
+        }
+        
+        &:nth-of-type(2) {   
+            top: -1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10rem;
+            height: 10rem;
+            opacity: 0.3;
+            background-color: #BA55D3;  
+        }
+        
+        &:last-of-type {       
+            bottom: -0.6rem;
+            left: 2rem;
+            width: 4.6rem;
+            height: 4.6rem;
+            opacity: 0.5;
+            background-color: #A78BFA;  
+        }
+    }
+}
+
+/* --- Functional Calendar Styles --- */
+.calendar-section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.wrapper {
+    width: 100%;
+    height: 100%; /* Match height of announcement card */
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 0.8rem 1.2rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrapper header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin-bottom: 0;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.6rem;
+    flex-shrink: 0;
+    height: 3rem; /* Fixed header height */
+}
+
+.wrapper header .current-date {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #ba55d3;
+    margin: 0;
+}
+
+.wrapper header span {
+    height: 32px;
+    width: 32px;
+    cursor: pointer;
+    color: #333;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem; 
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    transition: background 0.2s ease;
+}
+
+.wrapper header #prev {
+    left: 5px;
+}
+
+.wrapper header #next {
+    right: 5px;
+}
+
+.wrapper header span:hover {
+    background: #f2f2f2;
+}
+
+.calendar {
+    padding: 10px 0 5px 0;
+    flex-grow: 1; /* Fill remaining space */
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar ul {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    text-align: center;
+    padding: 0;
+}
+
+.calendar .days {
+    margin-bottom: 0;
+    flex-grow: 1; /* Allow grid to take full available height */
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-content: space-evenly; /* Distribute rows evenly vertically */
+}
+
+.calendar li {
+    color: #333;
+    width: calc(100% / 7); /* Fallback */
+    font-size: 0.85rem;
+    display: flex;           /* Enable flex for perfect centering */
+    align-items: center;
+    justify-content: center;
+}
+
+.calendar .weeks li {
+    font-weight: 600;
+    cursor: default;
+    color: #ba55d3;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    height: auto; /* Allow weeks to be compact */
+}
+
+.calendar .days li {
+    z-index: 1;
+    cursor: pointer;
+    position: relative;
+    height: 100%; /* Fill the grid cell height */
+}
+
+/* Weekend Text Color */
+.days li.weekend {
+    color: #ba55d3; 
+}
+
+.days li.inactive {
+    color: #d3d3d3;
+}
+
+.days li.active {
+    color: #fff !important;
+}
+
+.days li::before {
+    position: absolute;
+    content: "";
+    left: 50%;
+    top: 50%;
+    height: 28px;
+    width: 28px;
+    z-index: -1;
+    border-radius: 8px;
+    transform: translate(-50%, -50%);
+}
+
+.days li.active::before {
+    background: #9400d3;
+}
+
+.days li:not(.active):hover::before {
+    background: #f2f2f2;
+}
+
+
+/***** SECTION 3 *****/
+.section-3 {
+    & .header {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        
+        & :is(.title, .link) {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+    
+        & :is(h3, p) {
+            width: 100%;
+            white-space: nowrap;
+        }
+    
+        & .link p a{
+            color: #4FA4FF;
+        }
+    }
+
+    & .divider {
+        margin: 1rem 0;
+        width: 100%;
+        height: 0.1rem;
+        opacity: 0.25;
+        background-color: #333333;
+    }
+}
+
+.left-side {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    height: 100%;
+    width: 100%;
+}
+
+:is(.enrolled-subjects-section, .exam-board-section, .homeworks-section) {
+    display: flex;
+    flex-direction: column;
+}
+
+.enrolled-subjects-section {
+    & .contents {
+        display: grid;
+        position: relative;
+        column-gap: 2rem;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    & .subject {
+        width: 100%;
+        height: 100%;
+        padding: 0.4rem;
+        border-radius: 0.4rem;
+        position: relative;
+
+        &::before {
+            position: absolute;
+            content: "";
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            border-radius: 0.6rem;
+            border: 0.1rem solid;
+            transform: translateX(1);
+        }
+        
+        & p {
+            font-size: 0.8rem;
+            color: var(--color-dark-text);
+        }
+        
+        & .subject-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            font-weight: bold;
+
+            & p {
+                font-size: 0.85rem;
+            }
+        }
+        
+        & .subject-content {
+            display: flex;
+            gap: 0.4rem;
+            flex-direction: column;
+        }
+    }
+
+    & .subject:nth-of-type(1) {
+        background-color: #AFEEEE;
+
+        &::before {
+            border-color: #AFEEEE;
+        }
+    }
+
+    & .subject:nth-of-type(2) {
+        background-color: #98FB98;
+
+        &::before {
+            border-color: #98FB98;
+        }
+    }
+
+    & .subject:nth-of-type(3) {
+        background-color: #DDA0DD;
+
+        &::before {
+            border-color: #DDA0DD;
+        }
+    }
+
+    & .subject:nth-of-type(4) {
+        background-color: #FFDEAD;
+
+        &::before {
+            border-color: #FFDEAD;
+        }
+    }
+
+    & .item {
+        display: flex;
+        gap: 0.2rem;
+        white-space: nowrap;
+
+        & p {
+            font-weight: 300;
+        }
+    }
+}
+
+.exam-board-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    & tbody tr:nth-child(odd) {
+        background-color: var(--background-grey);
+    }
+
+    & thead {
+        & th {
+            padding: 0.4rem 1rem;
+            text-align: left;
+            white-space: nowrap;
+            position: relative;
+            
+            & p {
+                font-size: 0.9rem;
+                color: var(--color-dark-text);
+                opacity: 0.6;
+                font-weight: 500;
+            }
+
+            & .icon {
+                position: absolute;
+                right: 0;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+    }
+
+    & tbody {
+        & td {
+            font-size: 0.8rem;
+            white-space: nowrap;
+            padding: 1rem;
+        }
+
+        & span {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+            border-radius: 2rem;
+            color: rgba(51, 51, 51, 0.4);
+
+            &.upcoming {
+                background-color: #AFEEEE;
+            }
+        }
+    }
+}
+
+.homeworks-section {
+    row-gap: 1rem;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+
+    & .item-box {
+        padding: 1rem;
+        border: 0.1rem solid;
+        border-radius: 1rem;
+
+        & .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+
+            & p {
+                white-space: nowrap;
+            }
+        }
+
+        & .item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            
+            & p {
+                font-size: 0.8rem;
+            }
+
+            & span {
+                font-weight: bold;
+            }
+        }
+
+        & .status {
+            padding: 0.2rem 0.4rem;
+            font-size: 0.7rem;
+            border-radius: 1rem;
+            background-color: rgba(186, 85, 211, 0.5);
+
+        }
+    }
+    
+    & .item-box:nth-of-type(1) {
+        border-color: #BA55D3;
+        
+        & .status {
+            background-color: rgba(186, 85, 211, 0.5);
+
+            & span {
+                color: #BA55D3;
+            }
+        }
+    }
+
+    & .item-box:nth-of-type(2) {
+        border-color: #4FA4FF;
+        
+        & .status {
+            background-color: #AFEEEE;
+            
+            & span {
+                color: #4FA4FF;
+            }
+        }
+    }
+
+    & .item-box:nth-of-type(3) {
+        border-color: #FF69B4;
+        
+        & .status {
+            background-color: #FFDEAD;
+            
+            & span {
+                color: #FDB54B;
+            }
+        }
+    }
+
+    & .item-box:nth-of-type(4) {
+        border-color: #FFC268;
+
+        & .status {
+            background-color: rgba(152, 251, 152, 0.5);
+            
+            & span {
+                color: #4aa44a;
+            }
+        }
+    }
+
+    & .item-box:nth-of-type(5) {
+        border-color: #FF69B4;
+
+        & .status {
+            background-color: rgba(255, 20, 147, 0.5);
+            
+            & span {
+                color: #d9127c;
+            }
+        }
+    }
+}
+
+.enrolled-subjects-section .subject-content .item img.icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    object-fit: contain;
+    flex-shrink: 0; /* Prevents icon from shrinking if text is long */
+}
+
+.homeworks-section .item-box .item-header img.icon {
+    width: 1.2rem;
+    height: 1.2rem;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+
+.wrapper header .icons span.material-symbols-rounded {
+    font-size: 1.5rem; /* Standard size for Material/Font Icons */
+    width: auto;
+    height: auto;
+}
+
+.exam-board-table thead th .icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}

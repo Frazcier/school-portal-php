@@ -1,0 +1,141 @@
+/***** FONT *****/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/***** COLORS  *****/
+:root {
+    --primary-color: #9400d3;
+    --accent-color: #ba55d3;
+    --secondary-color: #ba55d333;
+    --color-light-text: #fff;
+
+    --color-dark-text: #333;
+    --color-grey-text: #33333380;
+    --background-page: #f9fafb;
+    --background-component: #ffffff;
+    --background-input: #eee;
+    --background-hover: #f5f5f5;
+    --border-color: #E5E7EB;
+    --background-light: #fff;
+
+    --background-grey: #eee;
+    --background-grey2: #d3d3d3;
+    --background-dark: #000;
+}
+
+/***** RESET *****/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/***** DEFAULT STYLE *****/
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    line-height: 1.5;
+    font-family: "Poppins", sans-serif;
+    font-size: 1rem;
+}
+
+ul {
+    list-style: none;    
+}
+
+a {
+    text-decoration: none;
+}
+
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+:is(button, input, select, textarea) {
+    font: inherit; 
+    border: unset;
+    background: unset;
+    outline: unset;
+}
+
+button {
+    cursor: pointer;
+}
+
+:is(h1, h2, h3, h4, h5, h6, p, a) {
+    color: var(--color-dark-text);
+}
+
+
+/***** UTILITY CLASSES *****/
+.container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.content {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    padding: 2rem;
+    overflow-x: hidden;
+}
+
+.section-header {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+}
+
+.divider {
+    margin: 1rem 0;
+    width: 100%;
+    height: 0.1rem;
+    opacity: 0.25;
+    background-color: #333333;
+}
+
+/***** DARK MODE OVERRIDES *****/
+body.dark-mode {
+    --background-page: #151820;
+    --background-component: #1E212B;
+    --background-input: #292D37;
+    --background-hover: #343841;
+    --border-color: #343841;
+    
+    --color-dark-text: #E5E7EB;
+    --color-grey-text: #9CA3AF;
+    --color-lightgry2-text: #9CA3AF;
+}
+
+body {
+    background-color: var(--background-page);
+    color: var(--color-dark-text);
+}
+
+.modern-sidebar {
+    background-color: var(--background-component);
+    border-right-color: var(--border-color);
+}
+
+.modern-header {
+    background: var(--background-component);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom-color: var(--border-color);
+}
+
+.settings-card,
+.data-card,
+.subject-card,
+.toolbar {
+    background: var(--background-component);
+    border-color: var(--border-color) ;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}

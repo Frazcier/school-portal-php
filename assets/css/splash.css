@@ -1,0 +1,135 @@
+/* assets/css/splash.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Poppins:wght@400;600&display=swap');
+
+/* --- Main Screen --- */
+.splash-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle at center, #2e1065 0%, #0f0518 100%);
+    z-index: 9999;
+    display: flex; justify-content: center; align-items: center; flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.8s cubic-bezier(0.7, 0, 0.3, 1), border-radius 0.8s ease;
+}
+.splash-screen.hide {
+    transform: translateY(-100%);
+    border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+}
+
+/* --- Stage --- */
+.splash-content-area {
+    position: relative; width: 160px; height: 160px;
+    display: flex; justify-content: center; align-items: center;
+    margin-bottom: 3rem;
+}
+
+/* SHOCKWAVE */
+.shockwave {
+    position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+    border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 30px rgba(148, 0, 211, 0.8);
+    transform: translate(-50%, -50%); opacity: 0;
+    /* Explodes at 1.2s */
+    animation: shockwavePulse 0.5s ease-out forwards 1.2s; 
+}
+
+/* --- 1. FINAL PNG LOGO --- */
+.splash-logo-final {
+    width: 100%; height: 100%; object-fit: contain;
+    position: absolute; top: 0; left: 0; z-index: 10;
+    opacity: 0; 
+    filter: drop-shadow(0 0 25px rgba(148, 0, 211, 0.6));
+    /* Appears at 1.2s */
+    animation: 
+        revealLogo 0.4s ease forwards 1.2s,
+        logoFloat 3s ease-in-out infinite 1.6s;
+}
+
+/* --- 2. WIREFRAME SVG --- */
+.splash-logo-svg {
+    width: 100%; height: 100%;
+    position: absolute; top: 0; left: 0; z-index: 11;
+    transform: scale(0.95); 
+    /* Fades out at 1.2s */
+    animation: fadeWireframe 0.4s ease forwards 1.2s;
+}
+
+/* Drawing Animation */
+.logo-wireframe-group path {
+    fill: none !important;
+    stroke: #d8b4fe;
+    stroke-width: 1.5px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 3000; 
+    stroke-dashoffset: 3000;
+    
+    /* Fast drawing: 1.2s */
+    animation: drawLines 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* --- BLOBS & ORBIT --- */
+.blob-system { position: absolute; top: 50%; left: 50%; width: 0; height: 0; animation: systemSpin 8s linear infinite; }
+.trail-wrapper { position: absolute; top: 0; left: 0; width: 0; height: 0; transform: translateX(-150vw); }
+.blob-carrier { position: absolute; top: 0; left: 0; width: 0; height: 0; }
+
+.c1 { transform: rotate(0deg); } .c2 { transform: rotate(45deg); } .c3 { transform: rotate(90deg); }
+.c4 { transform: rotate(135deg); } .c5 { transform: rotate(180deg); } .c6 { transform: rotate(225deg); }
+.c7 { transform: rotate(270deg); } .c8 { transform: rotate(315deg); }
+
+.blob { position: absolute; top: -5px; left: -5px; border-radius: 50%; opacity: 0; box-shadow: 0 0 15px currentColor; }
+
+/* Trail Arrives (Starts at 1.3s) */
+.t1 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.30s; }
+.t2 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.35s; }
+.t3 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.40s; }
+.t4 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.45s; }
+.t5 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.50s; }
+.t6 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.55s; }
+.t7 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.60s; }
+.t8 { animation: trailMove 0.8s cubic-bezier(0.1, 0.7, 0.1, 1) forwards 1.65s; }
+
+/* Orbit & Expand (Starts at ~2.0s) */
+.b1 { width: 14px; height: 14px; background: #ff00ff; color: #ff00ff; animation: blobExpand 0.4s ease forwards 2.0s, soundWave1 3s infinite 2.4s; }
+.b2 { width: 10px; height: 10px; background: #00ffff; color: #00ffff; animation: blobExpand 0.4s ease forwards 2.1s, soundWave2 4s infinite 2.5s; }
+.b3 { width: 16px; height: 16px; background: #9400d3; color: #9400d3; animation: blobExpand 0.4s ease forwards 2.2s, soundWave3 2.5s infinite 2.6s; }
+.b4 { width: 08px; height: 08px; background: #ffffff; color: #ffffff; animation: blobExpand 0.4s ease forwards 2.3s, soundWave1 3.5s infinite 2.7s; }
+.b5 { width: 11px; height: 11px; background: #ff00ff; color: #ff00ff; animation: blobExpand 0.4s ease forwards 2.4s, soundWave2 3.2s infinite 2.8s; }
+.b6 { width: 09px; height: 09px; background: #00ffff; color: #00ffff; animation: blobExpand 0.4s ease forwards 2.5s, soundWave3 2.8s infinite 2.9s; }
+.b7 { width: 13px; height: 13px; background: #9400d3; color: #9400d3; animation: blobExpand 0.4s ease forwards 2.6s, soundWave1 3s infinite 3.0s; }
+.b8 { width: 10px; height: 10px; background: #ffffff; color: #ffffff; animation: blobExpand 0.4s ease forwards 2.7s, soundWave2 4s infinite 3.1s; }
+
+/* --- TEXT --- */
+.splash-text { text-align: center; color: white; position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+.brand-name {
+    font-family: 'Quicksand', sans-serif; font-size: 2.8rem; font-weight: 700; letter-spacing: 4px;
+    display: inline-block; overflow: hidden; white-space: nowrap; border-right: 4px solid transparent; width: 0;
+    /* Typing starts at 2.1s */
+    animation: typing 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 2.1s, blink-caret 0.4s step-end 3 2.1s forwards;
+    background: linear-gradient(to bottom, #fff 30%, #e0aaff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.tagline { font-family: 'Quicksand', sans-serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 2px; color: rgba(255, 255, 255, 0.8); opacity: 0; margin-top: 0.5rem; animation: fadeIn 0.6s ease forwards 2.8s; }
+
+/* Loader (Matches total time) */
+.loader-track { width: 260px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin-top: 3rem; overflow: hidden; box-shadow: inset 0 0 5px rgba(0,0,0,0.5); }
+.loader-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #9400d3, #ff00ff, #00ffff); box-shadow: 0 0 15px #9400d3; animation: loadProgress 3.5s ease-in-out forwards; }
+
+/* Keyframes */
+@keyframes drawLines { to { stroke-dashoffset: 0; } }
+@keyframes revealLogo { to { opacity: 1; } }
+@keyframes fadeWireframe { to { opacity: 0; transform: scale(1.1); } }
+@keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes shockwavePulse { 0% { width: 0; height: 0; opacity: 0.8; border-width: 10px; } 100% { width: 400px; height: 400px; opacity: 0; border-width: 0px; } }
+@keyframes trailMove { 0% { transform: translateX(-120vw); } 100% { transform: translateX(0); } }
+@keyframes blobExpand { 0% { opacity: 0; transform: translateX(0) scale(0); } 100% { opacity: 1; transform: translateX(90px) scale(1); } }
+@keyframes systemSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes soundWave1 { 0%, 100% { transform: translateX(90px) scale(1); } 50% { transform: translateX(120px) scale(1.3); } }
+@keyframes soundWave2 { 0%, 100% { transform: translateX(90px) scale(1); } 50% { transform: translateX(70px) scale(0.7); } }
+@keyframes soundWave3 { 0%, 100% { transform: translateX(90px); } 50% { transform: translateX(110px) translateY(-20px); } }
+@keyframes typing { from { width: 0; } to { width: 100%; } }
+@keyframes blink-caret { 0%, 100% { border-color: transparent; } 50% { border-color: #ba55d3; } }
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(10px); } }
+@keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+
+.simple-fade-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(15px); z-index: 9999; pointer-events: none; animation: simpleFadeOut 0.6s ease-out forwards; }
+@keyframes simpleFadeOut { 0% { opacity: 1; backdrop-filter: blur(15px); } 100% { opacity: 0; backdrop-filter: blur(0px); } }
