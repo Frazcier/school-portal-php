@@ -225,3 +225,35 @@
         width: 100%;
     }
 }
+
+.alert {
+    padding: 0.9rem 1rem;
+    border-radius: 0.6rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.8rem;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.alert img {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.alert-success {
+    background: rgba(212, 237, 218, 0.5);
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background: rgba(248, 215, 218, 0.5);
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}

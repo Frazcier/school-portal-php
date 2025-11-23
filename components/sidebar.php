@@ -1,23 +1,28 @@
 <?php
-$role = $_SESSION['role'];
-$first_name = $_SESSION['first_name'];
-$last_name = $_SESSION['last_name'];
-$full_name = htmlspecialchars($first_name . ' ' . $last_name);
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
-$profile_data = $_SESSION['profile_data'] ?? [];
-$default_pic = ($role === 'student') ? '../../assets/img/profile-pictures/profile.svg' : '../../assets/img/profile-pictures/profile-staff.svg';
+    $role = $_SESSION['role'] ?? 'guest';
+    $first_name = $_SESSION['first_name'] ?? 'Guest';
+    $last_name = $_SESSION['last_name'] ?? 'User';
+    $full_name = htmlspecialchars($first_name . ' ' . $last_name);
 
-if ($role === 'student') {
-    $label = "Student ID";
-    $display_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
-    $profile_pic = $profile_data['profile_picture'] ?? $default_pic;
-    $settings_link = "../student/account-settings-student.php";
-} else {
-    $label = "System Role";
-    $display_id = ucfirst($role);
-    $profile_pic = $profile_data['profile_picture'] ?? $default_pic;
-    $settings_link = "../staff/account-settings-staff.php";
-}
+    $profile_data = $_SESSION['profile_data'] ?? [];
+    
+    if ($role === 'student') {
+        $label = "Student ID";
+        $default_pic = '../../assets/img/profile-pictures/profile.svg';
+        $display_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
+        $profile_pic = $profile_data['profile_picture'] ?? $default_pic;
+        $settings_link = "../student/account-settings-student.php";
+    } else {
+        $label = "System Role";
+        $display_id = ucfirst($role);
+        $profile_pic = $profile_data['profile_picture'] ?? $default_pic;
+        $settings_link = "../staff/account-settings-staff.php";
+        $default_pic = '../../assets/img/profile-pictures/profile-staff.svg';
+    }
 ?>
 
 <link rel="stylesheet" href="../../assets/css/sidebar.css">

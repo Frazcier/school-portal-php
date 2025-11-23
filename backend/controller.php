@@ -160,7 +160,7 @@ class controller {
                         exit();
                     }
 
-                    $u_id = $user['user_id'];
+                    $user_id = $user['user_id'];
                     $role = $user['role'];
 
                     if ($role === 'student') {
@@ -170,7 +170,7 @@ class controller {
                     }
 
                     $stmt_p = $this->connection->prepare($sql_p);
-                    $stmt_p->bind_param("i", $u_id);
+                    $stmt_p->bind_param("i", $user_id);
                     $stmt_p->execute();
                     $res_p = $stmt_p->get_result();
                     $profile = $res_p->fetch_assoc();
@@ -178,10 +178,12 @@ class controller {
                     $_SESSION['user_id'] = $user['user_id'];
                     $_SESSION['unique_id'] = $user['unique_id'];
                     $_SESSION['role'] = $user['role'];
-                    $_SESSION['first_name'] = $profile['first_name'];
-                    $_SESSION['last_name'] = $profile['middle_name'];
-                    $_SESSION['middle_name'] = $profile['middle_name'];
                     $_SESSION['email'] = $user['email'];
+
+                    
+                    $_SESSION['first_name'] = $profile['first_name'];
+                    $_SESSION['last_name'] = $profile['last_name'];
+                    $_SESSION['middle_name'] = $profile['middle_name'];
                     $_SESSION['profile_picture'] = $profile['profile_picture'];
                     $_SESSION['profile_data'] = $profile;
 
@@ -229,6 +231,7 @@ class controller {
 
         $sql_email = "UPDATE users SET email = ? WHERE user_id = ?";
         $stmt_email = $this->connection->prepare($sql_email);
+        $stmt_email->bind_param("si", $email, $user_id);
         $stmt_email->execute();
         $_SESSION['email'] = $email;
 

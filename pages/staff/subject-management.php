@@ -1,14 +1,14 @@
 <?php
     session_start();
 
-    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-        header("Location: ../../auth/login.php");
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher' || $_SESSION['role'] !== 'admin') {
+        header("Location: ../auth/login.php");
         exit();
     }
 
     if (!isset($_SESSION['profile_data'])) {
         session_destroy();
-        header("Location: ../../auth/login.php?error=Session expired. Please login again");
+        header("Location: ../auth/login.php?error=Session expired. Please login again");
         exit();
     }
 ?>

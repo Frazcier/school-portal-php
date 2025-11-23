@@ -1,14 +1,14 @@
 <?php
     session_start();
 
-    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-        header("Location: ../../auth/login.php");
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher' || $_SESSION['role'] !== 'admin') {
+        header("Location: ../auth/login.php");
         exit();
     }
 
     if (!isset($_SESSION['profile_data'])) {
         session_destroy();
-        header("Location: ../../auth/login.php?error=Session expired. Please login again");
+        header("Location: ../auth/login.php?error=Session expired. Please login again");
         exit();
     }
 ?>
@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="../../assets/css/management-common.css"/>
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/js/main.js" defer></script>
     <title>User Management</title>
 </head>
 <body>

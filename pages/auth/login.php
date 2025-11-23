@@ -10,6 +10,7 @@ session_start();
     <link rel="stylesheet" href="../../assets/css/auth.css"/>
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <script src="../../assets/js/password-toggle.js" defer></script>
+    <script src="../../assets/js/main.js" defer></script>
     <title>Student Login - School Portal</title>
 </head>
 <body>
@@ -75,22 +76,5 @@ session_start();
             </form>
         </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const alertBox = document.querySelector('.alert');
-
-            if (alertBox) {
-                setTimeout (() => {
-                    alertBox.style.transition = 'opacity 0.5s ease';
-                    alertBox.style.opacity = '0';
-
-                    setTimeout(() => {
-                        alertBox.remove();
-                    }, 500);
-
-                }, 3500);
-            }
-        });
-    </script>
 </body>
 </html>
