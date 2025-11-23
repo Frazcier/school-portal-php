@@ -53,45 +53,48 @@ class controller {
     }
 
     public function register() {
-        $first_name = $_POST['first_name'];
-        $middle_name = $_POST['middle_name'] ?? '';
-        $last_name = $_POST['last_name'];
         $role = $_POST['role'];
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $middle_name = $_POST['middle_name'] ?? '';
         $email = $_POST['email'];
         $password = $_POST['password'];
+        $confirm_password = $_POST['confirm_password'];
+
+        if ($password !== $confirm_password) {
+            header("Location: ../pages/auth/signup.php?error=Passwords do not match");
+            exit();
+        }
+
+        $course = "N/A";
+        $year_level = "N/A";
+        $department = "N/A";
+        $academic_rank = "N/A";
+        $prefix = "ADM";
+        
+        $default_student_pic = '../../assets/img/profile-pictures/profile.svg';
+        $default_staff_pic = '../../assets/img/profile-pictures/profile-staff.svg';
 
         if ($role === 'student') {
             $course = $_POST['course'];
             $year_level = $_POST['year_level'];
+            $prefix = "STU";
         } else {
             $department = $_POST['department'] ?? 'Administration';
             $academic_rank = $_POST['academic_rank'] ?? 'System Admin';
+            $prefix = "TCH";
         }
-
-        $section = "N/A";
-        $default_student_pic = '../../assets/img/profile-pictures/profile.svg';
-        $default_staff_pic = '../../assets/img/profile-pictures/profile-staff.svg';
 
         $year = date("Y");
-        $prefix = "";
-
-        if ($role === 'student') {
-            $prefix = "STU";
-        } else if ($role === 'teacher') {
-            $prefix = "TCH";
-        } else {
-            $prefix = "ADM";
-        }
-
         $pattern = $prefix . $year . "%";
 
-        $sql_check = "SELECT unique_id FROM users WHERE unique_id LIKE ? ORDER BY user_id DESC LIMIT 1";
-        $stmt_check = $this->connection->prepare($sql_check);
-        $stmt_check->bind_param("s", $pattern);
-        $stmt_check->execute();
-        $result = $stmt_check->get_result();
+        $sql_id = "SELECT unique_id FROM users WHERE unique_id LIKE ? ORDER BY user_id DESC LIMIT 1";
+        $stmt_id = $this->connection->prepare($sql_id);
+        $stmt_id->bind_param("s", $pattern);
+        $stmt_id->execute();
+        $result_id = $stmt_id->get_result();
 
-        if ($last_user = $result->fetch_assoc()) {
+        if ($last_user = $result_id->fetch_assoc()) {
             $last_id = $last_user['unique_id'];
             $last_number = intval(substr($last_id, -4));
             $new_number = $last_number + 1;
@@ -105,23 +108,23 @@ class controller {
         $status = 'pending';
 
         $sql_user = "INSERT INTO users (unique_id, email, password, role, status) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->connection->prepare($sql_user);
+        $stmt_user = $this->connection->prepare($sql_user);
 
-        if ($stmt) {
-            $stmt->bind_param("sssss", $unique_id, $email, $hashed_pass, $role, $status);
+        if ($stmt_user) {
+            $stmt_user->bind_param("sssss", $unique_id, $email, $hashed_pass, $role, $status);
 
-            if ($stmt->execute()) {
-                $new_user_id = $this->connection->insert_id;
+            if ($stmt_user->execute()) {
+                $user_id = $this->connection->insert_id;
             }
 
             if ($role === 'student') {
-                $sql_prof = "INSERT INTO student_profiles (user_id, first_name, middle_name, last_name, course, year_level, section, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $sql_prof = "INSERT INTO student_profiles (user_id, first_name, middle_name, last_name, course, year_level, section, profile_picture) VALUES (?, ?, ?, ?, ?, ?, 'N/A', ?)";
                 $stmt_prof = $this->connection->prepare($sql_prof);
-                $stmt_prof->bind_param("isssssss", $new_user_id, $first_name, $middle_name, $last_name, $course, $year_level, $section, $default_student_pic);
+                $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $course, $year_level, $default_student_pic);
             } else {
                 $sql_prof = "INSERT INTO staff_profiles (user_id, first_name, middle_name, last_name, department, academic_rank, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 $stmt_prof = $this->connection->prepare($sql_prof);
-                $stmt_prof->bind_param("issssss", $new_user_id, $first_name, $middle_name, $last_name, $department, $academic_rank, $default_staff_pic);
+                $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $department, $academic_rank, $default_staff_pic);
             }
 
             if ($stmt_prof->execute()) {
@@ -142,55 +145,58 @@ class controller {
 
         $sql = "SELECT * FROM users WHERE email = ? OR unique_id = ?";
         $stmt = $this->connection->prepare($sql);
-        $stmt->bind_param("ss", $identifier, $identifier);
-        $stmt->execute();
-        $result = $stmt->get_result();
 
-        if ($user = $result->fetch_assoc()) {
-            if (password_verify($password, $user['password'])) {
-                if ($user['status'] === 'pending') {
-                    header("Location: ../pages/auth/login.php?error=Account pending approval");
+        if ($stmt) {
+            $stmt->bind_param("ss", $identifier, $identifier);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($user = $result->fetch_assoc()) {
+                if (password_verify($password, $user['password'])) {
+                    if ($user['status'] !== 'active') {
+                        header("Location: ../pages/auth/login.php?error=Account is " . $user['status']);
+                        exit();
+                    }
+
+                    $user_id = $user['user_id'];
+                    $role = $user['role'];
+
+                    if ($role === 'student') {
+                        $sql_p = "SELECT * FROM student_profiles WHERE user_id = ?";
+                    } else {
+                        $sql_p = "SELECT * FROM staff_profiles WHERE user_id = ?";
+                    }
+
+                    $stmt_p = $this->connection->prepare($sql_p);
+                    $stmt_p->bind_param("i", $user_id);
+                    $stmt_p->execute();
+                    $res_p = $stmt_p->get_result();
+                    $profile = $res_p->fetch_assoc();
+
+                    $_SESSION['user_id'] = $user['user_id'];
+                    $_SESSION['unique_id'] = $user['unique_id'];
+                    $_SESSION['role'] = $user['role'];
+                    $_SESSION['first_name'] = $user['first_name'];
+                    $_SESSION['last_name'] = $user['middle_name'];
+                    $_SESSION['middle_name'] = $user['middle_name'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['profile_data'] = $profile;
+
+                    if ($role === 'student') {
+                        header("Location: ../pages/student/student-dashboard.php");
+                    } else {
+                        header("Location: ../pages/staff/staff-dashboard.php");
+                    }
+                    exit();
+                    
+                } else {
+                    header("Location: ../pages/auth/login.php?error=Incorrect Password");
                     exit();
                 }
-
-                $user_id = $user['user_id'];
-                $role = $user['role'];
-
-                if ($role === 'student') {
-                    $sql_p = "SELECT * FROM student_profiles WHERE user_id = ?";
-                } else {
-                    $sql_p = "SELECT * FROM staff_profiles WHERE user_id = ?";
-                }
-
-                $stmt_p = $this->connection->prepare($sql_p);
-                $stmt_p->bind_param("i", $user_id);
-                $stmt_p->execute();
-                $res_p = $stmt_p->get_result();
-                $profile = $res_p->fetch_assoc();
-
-                $_SESSION['userID'] = $user['user_id'];
-                $_SESSION['role'] = $user['role'];
-                $_SESSION['firstName'] = $user['first_name'];
-                $_SESSION['middleName'] = $user['middle_name'];
-                $_SESSION['lastName'] = $user['last_name'];
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['profile_picutre'] = $profile['profile_picture'];
-
-                if ($role === 'student') {
-                    $location = "../pages/student/student-dashboard.php";
-                } else {
-                    $location = "../pages/staff/staff-dashboard.php";
-                }
-
-                header("Location: $location");
-                exit();
             } else {
-                header("Location: ../pages/auth/login.php?error=Incorrect Password");
+                header("Location: ../pages/auth/login.php?error=User not found");
                 exit();
             }
-        } else {
-            header("Location: ../pages/auth/login.php?error=User not found");
-            exit();
         }
     }
 

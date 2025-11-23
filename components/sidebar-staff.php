@@ -47,7 +47,7 @@
                         <li><img src="../../assets/img/icons/kebab-menu-2-icon.svg"> Change Password</li>
                     </a>
                     <div class="menu-divider"></div>
-                    <a href="../auth/login.html" class="logout-link">
+                    <a href="../auth/login.php" class="logout-link">
                         <li><img src="../../assets/img/icons/kebab-menu-3-icon.svg"> Logout</li>
                     </a>
                 </ul>

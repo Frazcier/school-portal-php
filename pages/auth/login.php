@@ -30,18 +30,18 @@ session_start();
 
             <?php if(isset($_GET['error'])): ?>
                 <div class="alert alert-error">
-                    <img src="../../assets/img/icons/notif-3-icon.svg" alt="Error">
+                    <img src="../../assets/img/icons/error-icon.svg" alt="Error">
                     <span><?= htmlspecialchars($_GET['error']) ?></span>
                 </div>
             <?php endif; ?>
 
             <?php if(isset($_GET['success'])): ?>
-                <img src="../../assets/img/icons/notif-1-icon.svg" alt="Success">
-                    <div>
-                        <strong>Registration Successful!</strong><br>
-                        <?php if(isset($_GET['new_id'])): ?>
-                            Your School ID: <strong><?= htmlspecialchars($_GET['new_id']) ?></strong>
-                        <?php endif; ?>
+                <div class="alert alert-success">
+                    <img src="../../assets/img/icons/success-icon.svg" alt="Success">
+                    <div style="display:flex; flex-direction:column;">
+                        <strong>Registration Successful!</strong>
+                        <span style="font-size: 0.9rem;">Your School ID: <strong><?= htmlspecialchars($_GET['new_id']) ?></strong></span>
+                        <span style="font-size: 0.8rem; opacity: 0.8;">(Please wait for admin approval)</span>
                     </div>
                 </div>
             <?php endif; ?>
@@ -75,5 +75,22 @@ session_start();
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alertBox = document.querySelector('.alert');
+
+            if (alertBox) {
+                setTimeout (() => {
+                    alertBox.style.transition = 'opacity 0.5s ease';
+                    alertBox.style.opacity = '0';
+
+                    setTimeout(() => {
+                        alertBox.remove();
+                    }, 500);
+
+                }, 3500);
+            }
+        });
+    </script>
 </body>
 </html>
