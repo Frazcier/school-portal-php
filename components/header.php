@@ -1,16 +1,25 @@
 <?php 
-
-    if (!isset($_SESSION['firstName'])) {
-        $fullName = "Guest User";
-        $role = "Student";
-        $profilePic = "../assets/img/profile-pictures/profile.svg";
-    } else {
-        $fullName = htmlspecialchars($_SESSION['firstName'] . ' ' . $_SESSION['lastName']);
-        $role = ucfirst(htmlspecialchars($_SESSION['role']));
-        $profilePic = htmlspecialchars($_SESSION['profileData']['profile_picture'] ?? '../assets/img/profile-pictures/profile.svg');
+    if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
+        session_start();
     }
 
-    $accountSettingsLink = ($role === 'Student') ? '../pages/student/account-settings-student.php' : '../pages/staff/account-settings-staff.php'
+    $role = $_SESSION['role'] ?? 'guest';
+    $first_name = $_SESSION['first_name'] ?? 'Guest';
+    $last_name = $_SESSION['last_name'] ?? 'User';
+    $full_name = htmlspecialchars($first_name . ' ' . $last_name);
+
+    $default_pic = ($role === 'teacher' || $role === 'admin') ? '../../assets/img/profile-pictures/profile-staff.svg' : '../../assets/img/profile-pictures/profile.svg';
+    $profile_pic = $_SESSION['profile_picture'] ?? ($_SESSION['profile_data']['profile_picture'] ??$default_pic);
+
+    if ($role === 'student') {
+        $label = "Student ID";
+        $display_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
+        $settings_link = '../student/account-settings-student.php';
+    } else {
+        $label = "System Role";
+        $display_id = ucfirst($role);
+        $settings_link = '../staff/account-settings-staff.php';
+    }
 ?>
 
 <link rel="stylesheet" href="../../assets/css/header.css">
@@ -45,8 +54,8 @@
         <div class="user-pill" onclick="location.href='#dropdown-menu'">
             <img src="../../assets/img/profile-pictures/profile.svg" alt="Profile" class="avatar">
             <div class="user-info">
-                <span class="user-name">Timothy Dionela</span>
-                <span class="user-role">Student</span>
+                <span class="user-name"><?= $full_name ?></span>
+                <span class="user-role"><?= ucfirst($role) ?></span>
             </div>
             <img src="../../assets/img/icons/arrow-down-icon.svg" alt="Dropdown" class="chevron">
         </div>
@@ -93,17 +102,17 @@
     <div class="pop-up-box dropdown-box slide-down">
         <div class="dropdown-header">
             <p>Signed in as</p>
-            <strong>Timothy Dionela</strong>
+            <strong><?= $full_name ?></strong>
         </div>
         <ul>
-            <a href="../student/account-settings-student.php">
+            <a href="<?= $settings_link ?>">
                 <li><img src="../../assets/img/icons/account-settings-icon.svg"> Account Settings</li>
             </a>
             <a href="#">
                 <li><img src="../../assets/img/icons/dark-mode-icon.svg"> Appearance</li>
             </a>
             <div class="menu-divider"></div>
-            <a href="../auth/login.php" class="logout-link">
+            <a href="../../backend/controller.php?method_finder=logout" class="logout-link">
                 <li><img src="../../assets/img/icons/logout-icon.svg"> Logout</li>
             </a>
         </ul>

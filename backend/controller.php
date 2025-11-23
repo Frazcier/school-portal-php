@@ -72,7 +72,7 @@ class controller {
         $year_level = "N/A";
         $department = "N/A";
         $academic_rank = "N/A";
-        $prefix = "ADM";
+        $prefix = "";
         
         $default_student_pic = '../../assets/img/profile-pictures/profile.svg';
         $default_staff_pic = '../../assets/img/profile-pictures/profile-staff.svg';
@@ -81,10 +81,14 @@ class controller {
             $course = $_POST['course'];
             $year_level = $_POST['year_level'];
             $prefix = "STU";
-        } else {
-            $department = $_POST['department'] ?? 'Administration';
-            $academic_rank = $_POST['academic_rank'] ?? 'System Admin';
+        } else if ($role === 'teacher'){
+            $department = $_POST['department'];
+            $academic_rank = $_POST['academic_rank'];
             $prefix = "TCH";
+        } else {
+            $department = "Administration";
+            $academic_rank = 'System Admin';
+            $prefix = "ADM";
         }
 
         $year = date("Y");
@@ -124,6 +128,10 @@ class controller {
                 $stmt_prof = $this->connection->prepare($sql_prof);
                 $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $course, $year_level, $default_student_pic);
             } else if ($role === 'teacher'){
+                $sql_prof = "INSERT INTO staff_profiles (user_id, first_name, middle_name, last_name, department, academic_rank, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt_prof = $this->connection->prepare($sql_prof);
+                $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $department, $academic_rank, $default_staff_pic);
+            } else {
                 $sql_prof = "INSERT INTO staff_profiles (user_id, first_name, middle_name, last_name, department, academic_rank, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
                 $stmt_prof = $this->connection->prepare($sql_prof);
                 $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $department, $academic_rank, $default_staff_pic);
@@ -179,12 +187,13 @@ class controller {
                     $_SESSION['unique_id'] = $user['unique_id'];
                     $_SESSION['role'] = $user['role'];
                     $_SESSION['email'] = $user['email'];
-
+                    
                     
                     $_SESSION['first_name'] = $profile['first_name'];
                     $_SESSION['last_name'] = $profile['last_name'];
                     $_SESSION['middle_name'] = $profile['middle_name'];
                     $_SESSION['profile_picture'] = $profile['profile_picture'];
+                    $_SESSION['academic_rank'] = $profile['academic_rank'];
                     $_SESSION['profile_data'] = $profile;
 
                     if ($role === 'student') {

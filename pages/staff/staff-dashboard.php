@@ -1,8 +1,8 @@
 <?php 
     session_start();
 
-    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher' || $_SESSION['role'] !== 'admin') {
-        header("Location: ../auth/login.php");
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher' && $_SESSION['role'] !== 'admin') {
+        header("Location: ../auth/login.php?error=LOLOLOL");
         exit();
     }
 
@@ -11,6 +11,12 @@
         header("Location: ../auth/login.php?error=Session expired. Please login again");
         exit();
     }
+
+    $first_name = $_SESSION['first_name'];
+    $last_name = $_SESSION['last_name'];
+    $full_name = htmlspecialchars($first_name . ' ' . $last_name);
+    $academic_rank = $_SESSION['academic_rank'];
+    $date_today = date("F j, Y");
 ?>
 
 <!DOCTYPE html>
@@ -37,8 +43,8 @@
             
             <div class="section-header">
                 <div class="header-details">
-                    <h1>Welcome, Giga Chad!</h1>
-                    <h3>System Administrator &bullet; April 28, 2025</h3>
+                    <h1>Welcome, <?= $full_name ?>!</h1>
+                    <h3><?= $academic_rank ?> &bullet; <?= $date_today ?></h3>
                 </div>
                 <div class="header-actions">
                     <button class="btn-primary">

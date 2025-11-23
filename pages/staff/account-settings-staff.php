@@ -1,7 +1,7 @@
 <?php 
     session_start();
 
-    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher' || $_SESSION['role'] !== 'admin') {
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher' && $_SESSION['role'] !== 'admin') {
         header("Location: ../auth/login.php");
         exit();
     }
@@ -12,11 +12,17 @@
         exit();
     }
 
-    $p = $_SESSION['profile_data'];
+    $profile = $_SESSION['profile_data'];
     $email = $_SESSION['email'];
-    $full_name = htmlspecialchars($p['first_name'] . ' ' . $p['last_name']);
-    $student_id = htmlspecialchars($_SESSION['unique_id']);
-    $pic = htmlspecialchars($p['profile_picture'] ?? '../../assets/img/profile-pictures/profile-staff.svg');
+    $full_name = htmlspecialchars($profile['first_name'] . ' ' . $profile['last_name']);
+    $staff_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
+    $pic = htmlspecialchars($profile['profile_picture'] ?? '../../assets/img/profile-pictures/profile-staff.svg');
+
+    if ($_SESSION['role'] === 'teacher') {
+        $id_label = 'Teacher';
+    } else {
+        $id_label = "Administrator";
+    }
 ?>
 
 <!DOCTYPE html>
@@ -51,21 +57,35 @@
                 </div>
             </div>
 
+            <?php if(isset($_GET['success'])): ?>
+                <div class="alert alert-success">
+                    <img src="../../assets/img/icons/notif-1-icon.svg" alt="Success">
+                    <span><?= htmlspecialchars($_GET['success']) ?></span>
+                </div>
+            <?php endif; ?>
+
+            <?php if(isset($_GET['error'])): ?>
+                <div class="alert alert-error">
+                    <img src="../../assets/img/icons/notif-3-icon.svg" alt="Error">
+                    <span><?= htmlspecialchars($_GET['error']) ?></span>
+                </div>
+            <?php endif; ?>
+
             <div class="settings-card profile-section">
                 <div class="profile-header">
                     <div class="profile-img-container">
-                        <img src="../../assets/img/profile-pictures/profile-staff.svg" alt="Profile">
+                        <img src="<?= $pic ?>" alt="Profile">
                         <button class="edit-icon" title="Change Picture">
                             <i class="fas fa-camera"></i>
                         </button>
                     </div>
                     <div class="profile-info-text">
-                        <h2>Giga Chad</h2>
-                        <p>Administrator &bullet; ID: ADM-1842</p>
+                        <h2><?= $full_name ?></h2>
+                        <p><?= $id_label ?> &bullet; ID: <?= $staff_id ?></p>
                     </div>
                 </div>
                 <div class="profile-actions">
-                    <button class="btn-secondary small">Remove Picture</button>
+                    <button class="btn-secondary small">Change Picture</button>
                 </div>
             </div>
 
@@ -80,21 +100,21 @@
                         <label>First Name</label>
                         <div class="input-box">
                             <i class="fas fa-user icon"></i>
-                            <input type="text" value="Giga">
+                            <input type="text" value="<?= htmlspecialchars($profile['first_name']) ?>" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Middle Name</label>
                         <div class="input-box">
                             <i class="fas fa-user icon"></i>
-                            <input type="text" placeholder="Optional">
+                            <input type="text" placeholder="<?= htmlspecialchars($profile['middle_name']) ?>" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Last Name</label>
                         <div class="input-box">
                             <i class="fas fa-user icon"></i>
-                            <input type="text" value="Chad">
+                            <input type="text" value="<?= htmlspecialchars($profile['last_name']) ?>" required>
                         </div>
                     </div>
                 </div>
@@ -104,7 +124,7 @@
                         <label>Contact Email</label>
                         <div class="input-box">
                             <i class="fas fa-envelope icon"></i>
-                            <input type="email" value="giga.chad@gmail.com">
+                            <input type="email" value="<?= htmlspecialchars($email) ?>" required>
                         </div>
                     </div>
                 </div>

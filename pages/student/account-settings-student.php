@@ -12,11 +12,11 @@
         exit();
     }
 
-    $p = $_SESSION['profile_data'];
+    $profile = $_SESSION['profile_data'];
     $email = $_SESSION['email'];
-    $full_name = htmlspecialchars($p['first_name'] . ' ' . $p['last_name']);
+    $full_name = htmlspecialchars($profile['first_name'] . ' ' . $profile['last_name']);
     $student_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
-    $pic = htmlspecialchars($p['profile_picture'] ?? '../../assets/img/profile-pictures/profile.svg');
+    $pic = htmlspecialchars($profile['profile_picture'] ?? '../../assets/img/profile-pictures/profile.svg');
 ?>
 
 <!DOCTYPE html>
@@ -53,13 +53,16 @@
                 </div>
 
                 <?php if(isset($_GET['success'])): ?>
-                    <div style="padding:1rem; background:#d4edda; color:#155724; border-radius:0.5rem; margin-bottom:1.5rem;">
-                        <?= htmlspecialchars($_GET['success']) ?>
+                    <div class="alert alert-success">
+                        <img src="../../assets/img/icons/notif-1-icon.svg" alt="Success">
+                        <span><?= htmlspecialchars($_GET['success']) ?></span>
                     </div>
                 <?php endif; ?>
+
                 <?php if(isset($_GET['error'])): ?>
-                    <div style="padding:1rem; background:#f8d7da; color:#721c24; border-radius:0.5rem; margin-bottom:1.5rem;">
-                        <?= htmlspecialchars($_GET['error']) ?>
+                    <div class="alert alert-error">
+                        <img src="../../assets/img/icons/notif-3-icon.svg" alt="Error">
+                        <span><?= htmlspecialchars($_GET['error']) ?></span>
                     </div>
                 <?php endif; ?>
 
@@ -77,7 +80,7 @@
                         </div>
                     </div>
                     <div class="profile-actions">
-                        <button type="button" class="btn-secondary small">Remove Picture</button>
+                        <button type="button" class="btn-secondary small">Change Picture</button>
                     </div>
                 </div>
 
@@ -92,21 +95,21 @@
                             <label>First Name</label>
                             <div class="input-box">
                                 <i class="fas fa-user icon"></i>
-                                <input type="text" name="first_name" value="<?= htmlspecialchars($p['first_name']) ?>" required>
+                                <input type="text" name="first_name" value="<?= htmlspecialchars($profile['first_name']) ?>" required>
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Middle Name</label>
                             <div class="input-box">
                                 <i class="fas fa-user icon"></i>
-                                <input type="text" name="middle_name" value="<?= htmlspecialchars($p['middle_name']) ?>" placeholder="Optional">
+                                <input type="text" name="middle_name" value="<?= htmlspecialchars($profile['middle_name']) ?>" placeholder="Optional">
                             </div>
                         </div>
                         <div class="form-group">
                             <label>Last Name</label>
                             <div class="input-box">
                                 <i class="fas fa-user icon"></i>
-                                <input type="text" name="last_name" value="<?= htmlspecialchars($p['last_name']) ?>" required>
+                                <input type="text" name="last_name" value="<?= htmlspecialchars($profile['last_name']) ?>" required>
                             </div>
                         </div>
                     </div>
