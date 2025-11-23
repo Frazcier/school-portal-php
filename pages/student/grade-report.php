@@ -5,6 +5,12 @@
         header("Location: ../../auth/login.php");
         exit();
     }
+
+    if (!isset($_SESSION['profile_data'])) {
+        session_destroy();
+        header("Location: ../../auth/login.php?error=Session expired. Please login again");
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>

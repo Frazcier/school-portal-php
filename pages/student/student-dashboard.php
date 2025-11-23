@@ -6,6 +6,12 @@
         exit();
     }
 
+    if (!isset($_SESSION['profile_data'])) {
+        session_destroy();
+        header("Location: ../../auth/login.php?error=Session expired. Please login again");
+        exit();
+    }
+
     $full_name = htmlspecialchars($_SESSION['first_name'] . ' ' . $_SESSION['last_name']);
     $date_today = date("F j, Y");
 ?>

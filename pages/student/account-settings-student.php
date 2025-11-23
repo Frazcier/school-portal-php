@@ -1,16 +1,22 @@
 <?php 
-session_start();
+    session_start();
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-    header("Location: ../../auth/login.php");
-    exit();
-}
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
+        header("Location: ../../auth/login.php");
+        exit();
+    }
 
-$p = $_SESSION['profile_data'];
-$email = $_SESSION['email'];
-$full_name = htmlspecialchars($p['first_name'] . ' ' . $p['last_name']);
-$student_id = htmlspecialchars($_SESSION['unique_id']);
-$pic = htmlspecialchars($p['profile_picture'] ?? '../../assets/img/profile-pictures/profile.svg');
+    if (!isset($_SESSION['profile_data'])) {
+        session_destroy();
+        header("Location: ../../auth/login.php?error=Session expired. Please login again");
+        exit();
+    }
+
+    $p = $_SESSION['profile_data'];
+    $email = $_SESSION['email'];
+    $full_name = htmlspecialchars($p['first_name'] . ' ' . $p['last_name']);
+    $student_id = htmlspecialchars($_SESSION['unique_id']);
+    $pic = htmlspecialchars($p['profile_picture'] ?? '../../assets/img/profile-pictures/profile.svg');
 ?>
 
 <!DOCTYPE html>
