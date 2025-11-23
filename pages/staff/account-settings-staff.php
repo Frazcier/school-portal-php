@@ -11,6 +11,12 @@
         header("Location: ../../auth/login.php?error=Session expired. Please login again");
         exit();
     }
+
+    $p = $_SESSION['profile_data'];
+    $email = $_SESSION['email'];
+    $full_name = htmlspecialchars($p['first_name'] . ' ' . $p['last_name']);
+    $student_id = htmlspecialchars($_SESSION['unique_id']);
+    $pic = htmlspecialchars($p['profile_picture'] ?? '../../assets/img/profile-pictures/profile-staff.svg');
 ?>
 
 <!DOCTYPE html>
