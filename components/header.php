@@ -26,9 +26,11 @@
     }
 ?>
 
+<div id="transition-overlay"></div>
+
 <link rel="stylesheet" href="../../assets/css/header.css">
 
-<header class="modern-header">
+<header class="header">
     <div class="brand-container">
         <div class="menu-toggle" id="mobile-menu-btn">
             <img src="../../assets/img/icons/burger-menu-icon.svg" alt="Menu">

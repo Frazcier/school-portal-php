@@ -101,7 +101,7 @@ session_start();
                         <div class="input-group">
                             <div class="input-wrapper">
                                 <select name="academic_rank">
-                                    <option value="" disabled selected>Academic Rank</option>
+                                    <option value="" disabled selected>Position</option>
                                     <option value="Instructor I">Instructor I</option>
                                     <option value="Instructor II">Instructor II</option>
                                     <option value="Asst. Prof">Assistant Professor</option>

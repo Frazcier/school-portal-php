@@ -1,3 +1,6 @@
+@import url(global.css);
+
+/***** SECTION HEADER *****/
 .section-header {
     flex-direction: row;
     justify-content: space-between;
@@ -29,6 +32,8 @@
     }
 }
 
+
+/***** FILTERS AND ACTIONS (SECTION 1) *****/
 .section-1 {
     display: flex;
     justify-content: space-between;
@@ -91,10 +96,10 @@
             fill: var(--background-dark);
             transition: all 0.3s ease;
         }
-    }
 
-    & .dropdown :is(select:hover, select:focus) + .icon {
-        fill: var(--primary-color);
+        &:is(:hover, :focus-within) .icon {
+            fill: var(--primary-color);
+        }
     }
 
     & button {
@@ -110,6 +115,8 @@
     }
 }
 
+
+/***** DATA TABLE (SECTION 2) *****/
 .section-2 {
     border-radius: 1rem;
     border: 0.1rem solid rgba(0, 0, 0, 0.1);
@@ -144,7 +151,7 @@
             &:nth-of-type(even) {
                 background-color: var(--background-grey);
             }
-            
+
             &:last-of-type {
                 & td:last-child {
                     border-bottom-right-radius: 1rem;
@@ -167,15 +174,15 @@
                 cursor: pointer;
 
                 &.download {
-                    color: #FF9500;
+                     color: #FF9500; 
                 }
 
-                &.edit {
-                    color: #00B1FF;
+                &.edit { 
+                    color: #00B1FF; 
                 }
 
-                &.delete {
-                    color: #EF4444;
+                &.delete { 
+                    color: #EF4444; 
                 }
             }
 
@@ -186,16 +193,16 @@
                 font-weight: 500;
                 border-radius: 1rem;
 
-                &.archived {
-                    background-color: #EF4444;
+                &.archived { 
+                    background-color: #EF4444; 
                 }
 
-                &.draft {
-                    background-color: #FF9500;
+                &.draft { 
+                    background-color: #FF9500; 
                 }
 
-                &.published {
-                    background-color: #32CD32;
+                &.published { 
+                    background-color: #32CD32; 
                 }
             }
         }

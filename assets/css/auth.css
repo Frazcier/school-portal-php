@@ -1,5 +1,6 @@
 @import url('global.css');
 
+/***** GLOBAL LAYOUT *****/
 body {
     background-color: #f0f2f5;
     font-family: 'Poppins', sans-serif;
@@ -10,17 +11,17 @@ body {
     margin: 0;
     padding: 2rem;
     position: relative;
-    overflow-x: hidden; 
+    overflow-x: hidden;
 }
 
 body::before {
     content: "";
-    position: fixed; 
+    position: fixed;
     top: -50%;
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(148,0,211,0.4) 0%, rgba(79,164,255,0) 50%), 
+    background: radial-gradient(circle, rgba(148,0,211,0.4) 0%, rgba(79,164,255,0) 50%),
                 radial-gradient(circle, rgba(79,164,255,0.4) 0%, rgba(148,0,211,0) 50%);
     background-size: 100% 100%;
     background-position: 0% 0%, 100% 100%;
@@ -34,100 +35,106 @@ body::before {
         transform: translate(0, 0) rotate(0deg);
     }
     50% {
-        transform: translate(-50px, 20px) rotate(5deg);
+        transform: translate(-3.125rem, 1.25rem) rotate(5deg);
     }
     100% {
-        transform: translate(50px, -20px) rotate(-5deg);
+        transform: translate(3.125rem, -1.25rem) rotate(-5deg);
     }
 }
 
+
+/***** AUTH CONTAINER *****/
 .auth-container {
-    background-color: #ffffff;
-    width: 1000px;
-    max-width: 100%;
-    min-height: 600px;
-    border-radius: 1.5rem;
-    box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+    z-index: 1;
+    position: relative;
     display: flex;
     overflow: hidden;
-    position: relative;
-    z-index: 1; 
+    width: 62.5rem;
+    max-width: 100%;
+    min-height: 37.5rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 0.93rem 2.18rem rgba(50, 50, 93, 0.1), 0 0.31rem 0.93rem rgba(0, 0, 0, 0.07);
+    background-color: #ffffff;
 }
 
+
+/***** BRAND SIDE STYLES *****/
 .brand-side {
-    flex: 1;
-    background: linear-gradient(135deg, var(--primary-color) 0%, #6a1b9a 100%);
-    color: #fff;
+    z-index: 1;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 3rem;
+    flex: 1;
+    color: #fff;
     text-align: center;
-    position: relative;
-    z-index: 1;
+    padding: 3rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #6a1b9a 100%);
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: -10%;
+        left: -10%;
+        width: 18.75rem;
+        height: 18.75rem;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    & .logo {
+        width: 6.25rem;
+        margin-bottom: 1.5rem;
+        filter: drop-shadow(0 0.25rem 0.375rem rgba(0,0,0,0.2));
+        transition: transform 0.3s ease;
+        z-index: 2;
+    }
+
+    &:hover .logo {
+        transform: scale(1.05);
+    }
+
+    & h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: white;
+        z-index: 2;
+        text-shadow: 0 0.125rem 0.625rem rgba(0,0,0,0.1);
+    }
+
+    & p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+        margin-bottom: 2.5rem;
+        color: white;
+        z-index: 2;
+    }
+
+    & .switch-btn {
+        padding: 0.9rem 2.2rem;
+        border: 0.125rem solid rgba(255,255,255,0.6);
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border-radius: 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        z-index: 2;
+
+        &:hover {
+            background: white;
+            color: var(--primary-color);
+            border-color: white;
+            transform: translateY(-0.125rem);
+            box-shadow: 0 0.31rem 0.93rem rgba(0,0,0,0.2);
+        }
+    }
 }
 
-.brand-side::after {
-    content: '';
-    position: absolute;
-    top: -10%;
-    left: -10%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-    border-radius: 50%;
-}
 
-.brand-side .logo {
-    width: 100px;
-    margin-bottom: 1.5rem;
-    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
-    transition: transform 0.3s ease;
-    z-index: 2;
-}
-
-.brand-side:hover .logo {
-    transform: scale(1.05);
-}
-
-.brand-side h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: white;
-    z-index: 2;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.brand-side p {
-    font-size: 1.1rem;
-    opacity: 0.95;
-    margin-bottom: 2.5rem;
-    color: white;
-    z-index: 2;
-}
-
-.brand-side .switch-btn {
-    padding: 0.9rem 2.2rem;
-    border: 2px solid rgba(255,255,255,0.6);
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border-radius: 2rem;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    z-index: 2;
-}
-
-.brand-side .switch-btn:hover {
-    background: white;
-    color: var(--primary-color);
-    border-color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
+/***** FORM SIDE STYLES *****/
 .form-side {
     flex: 1.2;
     padding: 3rem 4rem;
@@ -140,20 +147,22 @@ body::before {
 .form-header {
     text-align: center;
     margin-bottom: 2rem;
+
+    & h2 {
+        font-size: 2.2rem;
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    & p {
+        color: #666;
+        font-size: 1rem;
+    }
 }
 
-.form-header h2 {
-    font-size: 2.2rem;
-    color: var(--primary-color);
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
 
-.form-header p {
-    color: #666;
-    font-size: 1rem;
-}
-
+/***** INPUTS AND FIELDS *****/
 .input-group {
     margin-bottom: 1.2rem;
     position: relative;
@@ -163,74 +172,72 @@ body::before {
     position: relative;
     display: flex;
     align-items: center;
+
+    & input,
+    & select {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        background-color: #f9fafb;
+        border: 0.125rem solid #EEF2F6;
+        border-radius: 0.8rem;
+        font-size: 1rem;
+        color: #333;
+        font-family: inherit;
+        transition: all 0.2s ease;
+
+        &:focus {
+            background-color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(148, 0, 211, 0.1);
+
+            & + .icon {
+                opacity: 1;
+                filter: none;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    & select {
+        appearance: none;
+        cursor: pointer;
+    }
+
+    & input[type="password"],
+    & input.password-field {
+        padding-right: 3rem;
+    }
+
+    & .icon {
+        position: absolute;
+        left: 1rem;
+        width: 1.3rem;
+        height: 1.3rem;
+        opacity: 0.4;
+        transition: all 0.2s ease;
+        filter: grayscale(100%);
+    }
+
+    & .toggle-password {
+        position: absolute;
+        right: 1rem;
+        left: auto;
+        width: 1.4rem;
+        height: 1.4rem;
+        color: #9ca3af;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 10;
+
+        &:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+    }
 }
 
-.input-wrapper input,
-.input-wrapper select {
-    width: 100%;
-    padding: 1rem 1rem 1rem 3rem;
-    background-color: #f9fafb; 
-    border: 2px solid #EEF2F6;
-    border-radius: 0.8rem;
-    font-size: 1rem;
-    color: #333;
-    font-family: inherit;
-    transition: all 0.2s ease;
-}
 
-.input-wrapper select {
-    appearance: none;
-    cursor: pointer;
-
-}
-
-/* Left Icon Style */
-.input-wrapper .icon {
-    position: absolute;
-    left: 1rem;
-    width: 1.3rem;
-    height: 1.3rem;
-    opacity: 0.4;
-    transition: all 0.2s ease;
-    filter: grayscale(100%);
-}
-
-.input-wrapper .toggle-password {
-    position: absolute;
-    right: 1rem;
-    left: auto;
-    width: 1.4rem;
-    height: 1.4rem;
-    color: #9ca3af;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    z-index: 10;
-}
-
-.input-wrapper .toggle-password:hover {
-    color: var(--primary-color);
-    transform: scale(1.1);
-}
-
-.input-wrapper input[type="password"],
-.input-wrapper input.password-field {
-    padding-right: 3rem; 
-}
-
-.input-wrapper input:focus,
-.input-wrapper select:focus {
-    background-color: #fff;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(148, 0, 211, 0.1);
-}
-
-.input-wrapper input:focus + .icon,
-.input-wrapper select:focus + .icon {
-    opacity: 1;
-    filter: none; 
-    transform: scale(1.1);
-}
-
+/***** BUTTONS AND LINKS *****/
 .btn-submit {
     width: 100%;
     padding: 1rem;
@@ -243,15 +250,15 @@ body::before {
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-}
 
-.btn-submit:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(148, 0, 211, 0.3);
-}
+    &:hover {
+        transform: translateY(-0.125rem);
+        box-shadow: 0 0.5rem 1.25rem rgba(148, 0, 211, 0.3);
+    }
 
-.btn-submit:active {
-    transform: translateY(0);
+    &:active {
+        transform: translateY(0);
+    }
 }
 
 .extra-links {
@@ -259,104 +266,118 @@ body::before {
     text-align: center;
     font-size: 0.9rem;
     color: #888;
+
+    & a {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
 }
 
-.extra-links a {
-    color: var(--primary-color);
-    font-weight: 600;
-}
 
+/***** ALERT BOX STYLES *****/
 .alert {
     padding: 0.9rem 1rem;
     border-radius: 0.6rem;
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
     line-height: 1.4;
-    
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: flex-start;
     gap: 0.8rem;
-    
     opacity: 1;
     transition: opacity 0.5s ease;
+
+    & img {
+        width: 1.75rem;
+        height: 1.75rem;
+        flex-shrink: 0;
+    }
 }
 
-.alert img {
-    width: 28px; 
-    height: 28px;
-    flex-shrink: 0;
-}
-
-.alert-success { 
+.alert-success {
     background: rgba(212, 237, 218, 0.5);
-    color: #155724; 
-    border: 1px solid #c3e6cb; 
+    color: #155724;
+    border: 0.0625rem solid #c3e6cb;
 
     & img {
         filter: brightness(0) saturate(100%) invert(28%) sepia(11%) saturate(2717%) hue-rotate(81deg) brightness(91%) contrast(95%);
     }
 }
 
-.alert-error { 
-    background: rgba(248, 215, 218, 0.5); 
-    color: #721c24; 
-    border: 1px solid #f5c6cb; 
+.alert-error {
+    background: rgba(248, 215, 218, 0.5);
+    color: #721c24;
+    border: 0.0625rem solid #f5c6cb;
 
     & img {
         filter: brightness(0) saturate(100%) invert(11%) sepia(59%) saturate(2607%) hue-rotate(333deg) brightness(108%) contrast(94%);
     }
 }
 
+
+/***** UTILITIES AND ANIMATIONS *****/
 .fadeIn {
     animation: fadeIn 0.6s ease-out forwards;
     opacity: 0;
 }
 
-/* Smooth Transition Styles */
-    .dynamic-section {
-        max-height: 0;
-        opacity: 0;
-        overflow: hidden;
-        transform: translateY(-10px);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+.dynamic-section {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transform: translateY(-0.625rem);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
-    .dynamic-section.open {
-        max-height: 300px; /* Large enough to fit content */
+    &.open {
+        max-height: 18.75rem;
         opacity: 1;
         transform: translateY(0);
-        margin-top: 1rem; /* Add spacing when visible */
+        margin-top: 1rem;
     }
+}
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
+    from { opacity: 0; transform: translateY(0.9375rem); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 768px) {
-    body { padding: 1rem; }
-    
+
+/***** RESPONSIVE STYLES *****/
+@media (max-width: 768) {
+    body {
+        padding: 1rem;
+    }
+
     .auth-container {
         flex-direction: column;
         height: auto;
     }
-    
+
     .brand-side {
         padding: 2.5rem 1.5rem;
-        min-height: 220px;
+        min-height: 13.75rem;
+
+        & h1 {
+            font-size: 2rem;
+        }
     }
 
-    .brand-side h1 { font-size: 2rem; }
-    .switch-btn { display: none; } 
+    .switch-btn {
+        display: none;
+    }
 
     .form-side {
         padding: 2.5rem 1.5rem;
     }
-    
-    .mobile-only { display: block; }
+
+    .mobile-only {
+        display: block;
+    }
 }
 
 @media (min-width: 769px) {
-    .mobile-only { display: none; }
+    .mobile-only {
+        display: none;
+    }
 }

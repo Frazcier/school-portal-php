@@ -101,41 +101,46 @@ button {
     background-color: #333333;
 }
 
-/***** DARK MODE OVERRIDES *****/
-body.dark-mode {
-    --background-page: #151820;
-    --background-component: #1E212B;
-    --background-input: #292D37;
-    --background-hover: #343841;
-    --border-color: #343841;
+/***** SCROLLBAR DESIGN *****/
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #c0a0e0;
+    border-radius: 4px;
+    transition: background 0.3s;
+
+    &:hover {
+        background: #9400d3;
+    }
+}
+
+body.no-scroll {
+    overflow: hidden !important;
+}
+
+body.page-loaded #transition-overlay {
+    opacity: 0;
+    pointer-events: none; 
+}
+
+/***** CONTENT SLIDE ANIMATION *****/
+.container {
+    opacity: 0;
+    transform: translateY(20px); 
     
-    --color-dark-text: #E5E7EB;
-    --color-grey-text: #9CA3AF;
-    --color-lightgry2-text: #9CA3AF;
+    transition: opacity 0.3s ease-out, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-body {
-    background-color: var(--background-page);
-    color: var(--color-dark-text);
-}
-
-.modern-sidebar {
-    background-color: var(--background-component);
-    border-right-color: var(--border-color);
-}
-
-.modern-header {
-    background: var(--background-component);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom-color: var(--border-color);
-}
-
-.settings-card,
-.data-card,
-.subject-card,
-.toolbar {
-    background: var(--background-component);
-    border-color: var(--border-color) ;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+body.page-loaded .container {
+    opacity: 1;
+    transform: translateY(0);
 }

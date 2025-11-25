@@ -46,10 +46,6 @@ class controller {
                 $this->logout();
             } else if ($action === 'update_profile') {
                 $this->update_profile();
-            }else if ($action === 'change_password') {
-                $this->change_password();
-            } else if ($action === 'change_avatar') {
-                $this->change_avatar();
             }
         }
     }
@@ -230,6 +226,9 @@ class controller {
         $last_name = $_POST['last_name'];
         $email = $_POST['email'];
 
+        $current_pic = $_SESSION['profile_data']['profile_picture'];
+        $new_pic = !empty($_POST['profile_picture']) ? $_POST['profile_picture'] : $current_pic;
+
         $current_password = $_POST['current_password'];
         $new_password = $_POST['new_password'];
         $password_message = "";
@@ -263,18 +262,21 @@ class controller {
         }
 
         if ($role === 'student') {
-            $sql_prof = 'UPDATE student_profiles SET first_name = ?, middle_name = ?, last_name = ? WHERE user_id = ?';
+            $sql_prof = 'UPDATE student_profiles SET first_name = ?, middle_name = ?, last_name = ?, profile_picture = ? WHERE user_id = ?';
             $stmt_prof = $this->connection->prepare($sql_prof);
         } else {
-            $sql_prof = 'UPDATE staff_profiles SET first_name = ?, middle_name = ?, last_name = ? WHERE user_id = ?';
+            $sql_prof = 'UPDATE staff_profiles SET first_name = ?, middle_name = ?, last_name = ?, profile_picture = ?  WHERE user_id = ?';
             $stmt_prof = $this->connection->prepare($sql_prof);
         }
 
-        $stmt_prof->bind_param("sssi", $first_name, $middle_name, $last_name, $user_id);
+        $stmt_prof->bind_param("ssssi", $first_name, $middle_name, $last_name, $new_pic, $user_id);
 
         if ($stmt_prof->execute()) {
             $_SESSION['first_name'] = $first_name;
             $_SESSION['last_name'] = $last_name;
+            
+            $_SESSION['profile_picture'] = $new_pic;
+            $_SESSION['profile_data']['profile_picture'] = $new_pic;
 
             $_SESSION['profile_data']['first_name'] = $first_name;
             $_SESSION['profile_data']['middle_name'] = $middle_name;
@@ -289,57 +291,6 @@ class controller {
         } else {
             echo "Error updating profile: " . $this->connection->error;
         }
-    }
-
-    public function change_password() {
-        if (!isset($_SESSION['userID'])) {
-            header("Location: ../pages/auth/login.php");
-            exit();
-        }
-
-        $user_id = $_SESSION['userID'];
-        $current_password = $_POST['current_password'];
-        $new_password = $_POST['new_password'];
-
-        $sql = "SELECT password FROM users WHERE user_id = ?";
-        $stmt = $this->connection->prepare($sql);
-
-        if ($stmt) {
-            $stmt->bind_param("i", $user_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($row = $result->fetch_assoc()) {
-
-                if (password_verify($current_password, $row['password'])) {
-                    $new_hashed_pass = password_hash($new_password, PASSWORD_DEFAULT);
-
-                    $update_sql = "UPDATE users SET password = ? WHERE user_id = ?";
-                    $update_stmt = $this->connection->prepare($update_sql);
-                    $update_stmt->bind_param("si", $new_hashed_pass, $user_id);
-
-                    if ($update_stmt->execute()) {
-                        if ($_SESSION['role'] === 'student') {
-                            $location = '../../pages/student/account-settings-student.php';
-                        } else {
-                            $location = '../../pages/staff/account-settings-staff.php';
-                        }
-
-                        header("Location: $location?page=settings&success=Password Updated Successfully");
-                    } else {
-                        header("Location: ../../pages/staff/staff-dashboard.php?page=settings&error=Database Error");
-                    }
-                } else {
-                    header("Location: ../../pages/staff/staff-dashboard.php?page=settings&error=Incorrect Current Password");
-                }
-            }
-        } else {
-            header("Location: ../../pages/staff/staff-dashboard.php?page=settings&error=Connection Error");
-        }
-    }
-
-    public function change_avatar() {
-        echo "Hello World";
     }
 }
 

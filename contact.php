@@ -97,7 +97,7 @@
             </div>
         </section>
 
-        <?php require_once 'component/footer.php'; ?>
+        <?php require_once 'components/footer.php'; ?>
     </main>
 
 </body>

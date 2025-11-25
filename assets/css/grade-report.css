@@ -1,6 +1,6 @@
 @import url(global.css);
 
-/* --- 1. Shared Header Styles --- */
+/***** SECTION HEADER *****/
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -8,28 +8,30 @@
     flex-wrap: wrap;
     gap: 1.5rem;
     margin-bottom: 2rem;
+
+    & .header-details {
+        & h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--color-dark-text);
+            line-height: 1.1;
+        }
+
+        & h3 {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-grey-text);
+        }
+    }
+
+    & .header-actions {
+        display: flex;
+        gap: 1rem;
+    }
 }
 
-.header-details h1 {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--color-dark-text);
-    line-height: 1.1;
-}
-
-.header-details h3 {
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--color-grey-text);
-}
-
-.header-actions {
-    display: flex;
-    gap: 1rem;
-}
-
-/* Buttons */
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
     padding: 0.7rem 1.5rem;
     border-radius: 0.6rem;
     font-size: 0.95rem;
@@ -45,30 +47,30 @@
     background-color: var(--primary-color);
     color: white;
     border: none;
-    box-shadow: 0 4px 12px rgba(148, 0, 211, 0.2);
-}
+    box-shadow: 0 0.25rem 0.75rem rgba(148, 0, 211, 0.2);
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(148, 0, 211, 0.3);
+    &:hover {
+        transform: translateY(-0.125rem);
+        box-shadow: 0 0.375rem 0.93rem rgba(148, 0, 211, 0.3);
+    }
 }
 
 .btn-secondary {
     background-color: white;
     color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    border: 0.125rem solid var(--primary-color);
+
+    &:hover {
+        background-color: #fdf4ff;
+        transform: translateY(-0.125rem);
+    }
 }
 
-.btn-secondary:hover {
-    background-color: #fdf4ff;
-    transform: translateY(-2px);
-}
 
-
-/* --- 2. Summary Cards Grid --- */
+/***** SUMMARY CARDS GRID *****/
 .summary-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
@@ -77,74 +79,109 @@
     background: white;
     padding: 1.5rem;
     border-radius: 1rem;
-    border: 1px solid #f0f0f0;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    border: 0.0625rem solid #f0f0f0;
+    box-shadow: 0 0.25rem 1.25rem rgba(0,0,0,0.03);
     display: flex;
     align-items: flex-start;
     gap: 1rem;
     position: relative;
     overflow: hidden;
     transition: transform 0.2s;
+
+    &:hover {
+        transform: translateY(-0.18rem);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0; left: 0; right: 0;
+        height: 0.25rem;
+    }
+
+    & .stat-details {
+        & .label {
+            font-size: 0.85rem;
+            color: var(--color-grey-text);
+            margin-bottom: 0.2rem;
+        }
+
+        & .value {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--color-dark-text);
+            margin-bottom: 0.2rem;
+        }
+
+        & .sub {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #9CA3AF;
+        }
+    }
+
+    & .icon-box {
+        width: 2.81rem;
+        height: 2.81rem;
+        border-radius: 0.625rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    &.purple {
+        &::after { 
+            background: var(--primary-color); 
+        }
+
+        & .icon-box { 
+            background: rgba(148, 0, 211, 0.1); 
+            color: var(--primary-color); 
+        }
+    }
+
+    &.blue {
+        &::after { 
+            background: #3B82F6; 
+        }
+
+        & .icon-box { 
+            background: #EFF6FF; 
+            color: #3B82F6; 
+        }
+    }
+
+    &.orange {
+        &::after { 
+            background: #F97316; 
+        }
+
+        & .icon-box { 
+            background: #FFF7ED; 
+            color: #F97316; 
+        }
+    }
+
+    &.green {
+        &::after { 
+            background: #22C55E; 
+        }
+
+        & .icon-box { 
+            background: #F0FDF4; 
+            color: #166534; 
+        }
+    }
 }
 
-.stat-card:hover {
-    transform: translateY(-3px);
-}
 
-/* Colored Accent Bar at Bottom */
-.stat-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 4px;
-}
-.stat-card.purple::after { background: var(--primary-color); }
-.stat-card.blue::after { background: #3B82F6; }
-.stat-card.orange::after { background: #F97316; }
-.stat-card.green::after { background: #22C55E; }
-
-.icon-box {
-    width: 45px;
-    height: 45px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-}
-
-/* Icon Box Colors */
-.stat-card.purple .icon-box { background: rgba(148, 0, 211, 0.1); color: var(--primary-color); }
-.stat-card.blue .icon-box { background: #EFF6FF; color: #3B82F6; }
-.stat-card.orange .icon-box { background: #FFF7ED; color: #F97316; }
-.stat-card.green .icon-box { background: #F0FDF4; color: #166534; }
-
-.stat-details .label {
-    font-size: 0.85rem;
-    color: var(--color-grey-text);
-    margin-bottom: 0.2rem;
-}
-
-.stat-details .value {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--color-dark-text);
-    margin-bottom: 0.2rem;
-}
-
-.stat-details .sub {
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #9CA3AF;
-}
-
-
-/* --- 3. Data Card & Table --- */
+/***** DATA CARD & TABLE *****/
 .data-card {
     background: white;
     border-radius: 1rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 0.25rem 1.25rem rgba(0,0,0,0.05);
     overflow: hidden;
 }
 
@@ -153,59 +190,61 @@
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 0.0625rem solid #f0f0f0;
     flex-wrap: wrap;
     gap: 1rem;
+
+    & .card-title {
+        & h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-dark-text);
+        }
+
+        & p {
+            font-size: 0.9rem;
+            color: var(--color-grey-text);
+        }
+    }
 }
 
-.card-title h3 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--color-dark-text);
-}
-
-.card-title p {
-    font-size: 0.9rem;
-    color: var(--color-grey-text);
-}
-
-/* Dropdown Styling with Inset Depth */
 .select-wrapper {
     position: relative;
+
+    & select {
+        appearance: none;
+        padding: 0.7rem 2.5rem 0.7rem 1rem;
+        background: #f9fafb;
+        border: 0.0625rem solid #e0e0e0;
+        border-radius: 0.6rem;
+        box-shadow: inset 0 0.0625rem 0.18rem rgba(0,0,0,0.06);
+        font-size: 0.9rem;
+        color: var(--color-dark-text);
+        cursor: pointer;
+        font-weight: 500;
+        min-width: 12.5rem;
+
+        &:focus {
+            background: white;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.18rem rgba(148, 0, 211, 0.1);
+            outline: none;
+        }
+    }
+
+    & .chevron {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        color: #888;
+        pointer-events: none;
+    }
 }
 
-.select-wrapper select {
-    appearance: none;
-    padding: 0.7rem 2.5rem 0.7rem 1rem;
-    background: #f9fafb;
-    border: 1px solid #e0e0e0;
-    border-radius: 0.6rem;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
-    font-size: 0.9rem;
-    color: var(--color-dark-text);
-    cursor: pointer;
-    font-weight: 500;
-    min-width: 200px;
-}
 
-.select-wrapper select:focus {
-    background: white;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(148, 0, 211, 0.1);
-    outline: none;
-}
-
-.select-wrapper .chevron {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.8rem;
-    color: #888;
-    pointer-events: none;
-}
-
-/* Table Styles */
+/***** TABLE STYLES *****/
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -214,7 +253,7 @@
 table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 700px;
+    min-width: 43.75rem;
 }
 
 thead tr {
@@ -228,12 +267,12 @@ th {
     font-weight: 600;
     color: var(--color-grey-text);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.03rem;
 }
 
 td {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid #F3F4F6;
+    border-bottom: 0.0625rem solid #F3F4F6;
     vertical-align: middle;
     color: var(--color-dark-text);
     font-size: 0.95rem;
@@ -245,17 +284,18 @@ tbody tr:hover {
 
 tfoot {
     background-color: #fdfdfd;
-    border-top: 2px solid #eee;
+    border-top: 0.125rem solid #eee;
+
+    & td {
+        padding: 1.2rem 1.5rem;
+        font-size: 1rem;
+    }
 }
 
-tfoot td {
-    padding: 1.2rem 1.5rem;
-    font-size: 1rem;
+.text-right {
+    text-align: right;
 }
 
-.text-right { text-align: right; }
-
-/* Cell Styling */
 .code {
     font-weight: 600;
     color: var(--color-grey-text);
@@ -270,49 +310,64 @@ tfoot td {
     display: flex;
     align-items: center;
     gap: 0.8rem;
+
+    & img {
+        width: 1.875rem;
+        height: 1.875rem;
+        border-radius: 50%;
+        border: 0.0625rem solid #eee;
+    }
+
+    & span {
+        font-size: 0.9rem;
+        color: #555;
+    }
 }
 
-.instructor-cell img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1px solid #eee;
+.grade {
+    font-weight: 700;
+
+    &.highest { 
+        color: #16A34A; 
+    }
+
+    &.high    { 
+        color: #10B981; 
+    }
+
+    &.avg     { 
+        color: #3B82F6;
+    }
+
+    &.low     { 
+        color: #F59E0B; 
+    }
+
+    &.fail    { 
+        color: #EF4444; 
+    }
 }
 
-.instructor-cell span {
-    font-size: 0.9rem;
-    color: #555;
-}
-
-/* Grade Colors */
-.grade { font-weight: 700; }
-.grade.highest { color: #16A34A; } /* 1.00 */
-.grade.high { color: #10B981; }    /* 1.25 - 1.75 */
-.grade.avg { color: #3B82F6; }     /* 2.00 - 2.50 */
-.grade.low { color: #F59E0B; }     /* 2.75 - 3.00 */
-.grade.fail { color: #EF4444; }    /* 5.00 */
-
-/* Status Pills */
 .status-pill {
     padding: 0.3rem 0.8rem;
-    border-radius: 20px;
+    border-radius: 1.25rem;
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+    letter-spacing: 0.03rem;
 
-.status-pill.passed {
-    background-color: #DCFCE7;
-    color: #166534;
-}
+    &.passed {
+        background-color: #DCFCE7;
+        color: #166534;
+    }
 
-.status-pill.failed {
-    background-color: #FEE2E2;
-    color: #991B1B;
-}
+    &.failed {
+        background-color: #FEE2E2;
+        color: #991B1B;
+    }
 
-.status-pill.inc {
-    background-color: #FEF3C7;
-    color: #B45309;
+    &.inc {
+        background-color: #FEF3C7;
+        color: #B45309;
+    }
 }

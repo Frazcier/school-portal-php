@@ -32,6 +32,7 @@
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../../assets/js/main.js" defer></script>
+    <script src="../../assets/js/modal.js" defer></script>
     <title>Account Settings</title>
 </head>
 <body>
@@ -43,6 +44,9 @@
         <div class="content">
             
             <form action="../../backend/controller.php?method_finder=update_profile" method="POST">
+
+                <input type="hidden" name="profile_picture" id="selected-avatar-input" value="<?= $pic ?>">
+
                 <div class="section-header">
                     <div class="header-details">
                         <h1>Account Settings</h1>
@@ -71,11 +75,8 @@
 
                 <div class="settings-card profile-section">
                     <div class="profile-header">
-                        <div class="profile-img-container">
-                            <img src="<?= $pic ?>" alt="Profile">
-                            <button type="button" class="edit-icon" title="Change Picture">
-                                <i class="fas fa-camera"></i>
-                            </button>
+                        <div class="profile-img-container" onclick="openViewModal()">
+                            <img src="<?= $pic ?>" alt="Profile" id="current-avatar-display" style="cursor: zoom-in;">
                         </div>
                         <div class="profile-info-text">
                             <h2><?= $full_name ?></h2>
@@ -83,7 +84,7 @@
                         </div>
                     </div>
                     <div class="profile-actions">
-                        <button type="button" class="btn-secondary small">Change Picture</button>
+                        <button type="button" class="btn-secondary small" onclick="openSelectorModal()">Change Picture</button>
                     </div>
                 </div>
 
@@ -161,6 +162,51 @@
                 </div>
             </form>
 
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="view-modal" onclick="closeModals(event)">
+        <div class="modal-box view-image-box">
+            <img src="<?= $pic ?>" id="enlarged-image" alt="Full Size Profile">
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="selector-modal" onclick="closeModals(event)">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeModals(event)">&times;</button>
+            <h3 style="margin-bottom: 0.5rem;">Choose an Avatar</h3>
+            <p style="color: #666; font-size: 0.9rem;">Select one of our preset avatars to personalize your profile.</p>
+            
+            <div class="avatar-grid">
+                <?php 
+                
+                for ($i = 1; $i <= 21; $i++) {
+                    $imgPath = "../../assets/img/profile-pictures/profile-picture-$i.jpg";
+                    echo "<img src='$imgPath' class='avatar-option' onclick=\"selectAvatar('$imgPath')\">";
+                }
+
+                $extras = ['profile-picture.jpg', 'profile-picture-staff.jpg'];
+                foreach($extras as $extra) {
+                    $imgPath = "../../assets/img/profile-pictures/$extra";
+                    echo "<img src='$imgPath' class='avatar-option' onclick=\"selectAvatar('$imgPath')\">";
+                }
+
+                $my_rank = $p['academic_rank'] ?? '';
+
+                if ($my_rank === 'Head Administrator' || $my_rank === 'System Admin') {
+                    
+                    $exclusiveImg = "../../assets/img/profile-pictures/admin-special.jpg";
+                    
+                    echo "
+                    <img src='$exclusiveImg' 
+                         class='avatar-option' 
+                         onclick=\"selectAvatar('$exclusiveImg')\" 
+                         title='Exclusive Head Admin Avatar'
+                         style='border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); transform: scale(1.05);'>
+                    ";
+                }
+                ?>
+            </div>
         </div>
     </div>
 </body>

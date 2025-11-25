@@ -4,17 +4,12 @@ function manageSplash() {
     if (!splash) return;
 
     if (sessionStorage.getItem('splashShown')) {
+        splash.style.display = 'none';
         splash.remove();
-        
-        const simpleOverlay = document.createElement('div');
-        simpleOverlay.className = 'simple-fade-overlay';
-        document.body.appendChild(simpleOverlay);
-
-        setTimeout(() => {
-            simpleOverlay.remove();
-        }, 600);
 
     } else {
+        document.body.classList.add('no-scroll');
+
         sessionStorage.setItem('splashShown', 'true');
 
         setTimeout(() => {
@@ -22,6 +17,7 @@ function manageSplash() {
 
             setTimeout(() => {
                 splash.remove();
+                document.body.classList.remove('no-scroll');
             }, 800)
         }, 3500)
     }
@@ -59,5 +55,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 alertBox.remove();
             }, 500);
         }, 3500);
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    
+    const overlay = document.getElementById('transition-overlay');
+    if (overlay) {
+        // Small delay to ensure the browser is ready to animate
+        setTimeout(() => {
+            document.body.classList.add('page-loaded');
+        }, 100);
     }
 });

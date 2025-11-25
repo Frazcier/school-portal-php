@@ -99,7 +99,7 @@
             <div class="section-3">
                 <div class="left-side item-1">
                     <div class="enrolled-subjects-section">
-                        <div class="header">
+                        <div class="dashboard-header">
                             <div class="title">
                                 <img src="../../assets/img/icons/enrolled-subjects-icon.svg" alt="Icon">
                                 <h3>Enrolled Subjects</h3>
@@ -195,7 +195,7 @@
                         </div>
                     </div>
                     <div class="exam-board-section">
-                        <div class="header">
+                        <div class="dashboard-header">
                             <div class="title fadeIn">
                                 <img class="icon" src="../../assets/img/icons/exam-board-icon.svg" alt="Icon">
                                 <h3>Exam Board</h3>

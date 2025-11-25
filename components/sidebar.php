@@ -27,7 +27,7 @@
 
 <link rel="stylesheet" href="../../assets/css/sidebar.css">
 
-<aside class="modern-sidebar">
+<aside class="sidebar">
     <div class="sidebar-profile">
         <div class="profile-card">
             <div class="profile-img-wrapper">
