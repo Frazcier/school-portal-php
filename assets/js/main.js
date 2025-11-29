@@ -62,32 +62,25 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const overlay = document.getElementById('transition-overlay');
     if (overlay) {
-        // Small delay to ensure the browser is ready to animate
+        
         setTimeout(() => {
             document.body.classList.add('page-loaded');
         }, 100);
     }
 });
 
-/* ========================
-   DARK MODE TOGGLE LOGIC
-   ======================== */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Check for saved theme
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
     }
 
-    // 2. Find the toggle button
-    // We are looking for the "Appearance" link in the header dropdown
     const appearanceBtn = document.getElementById('dark-mode-toggle');
 
     if (appearanceBtn) {
         appearanceBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Prevent jump behavior
-            
-            // Toggle attribute
+            e.preventDefault();
+
             if (document.documentElement.getAttribute('data-theme') === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
                 localStorage.setItem('theme', 'light');
