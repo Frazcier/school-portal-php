@@ -302,3 +302,158 @@
         }
     }
 }
+
+
+/***** DARK MODE *****/ 
+[data-theme="dark"] {
+    & .section-header h1 { 
+        color: var(--color-dark-text); 
+    }
+    
+    & .section-header h3 { 
+        color: var(--color-grey-text); 
+    }
+
+    & .toolbar {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: none;
+    }
+
+    & .search-wrapper input,
+    & .select-wrapper select {
+        background-color: var(--background-input);
+        border-color: var(--border-color);
+        color: var(--color-dark-text);
+        box-shadow: none;
+    }
+
+    & .search-icon, 
+    & .chevron { 
+        color: var(--color-grey-text); 
+    }
+
+    & .tabs-nav { 
+        border-bottom-color: var(--border-color); 
+    }
+    
+    & .tab-link {
+        color: var(--color-grey-text);
+
+        &:hover { 
+            color: var(--primary-color); 
+        }
+    }
+
+    & .resource-card {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: none;
+        
+        &:hover {
+            border-color: var(--primary-color);
+            background-color: var(--background-hover);
+        }
+    }
+
+    & .card-icon {
+        & img { 
+            filter: invert(1); opacity: 0.8; 
+        }
+        
+        &.pdf { 
+            background: rgba(254, 226, 226, 0.1); 
+        }
+
+        &.slides { 
+            background: rgba(255, 247, 237, 0.1); 
+        }
+
+        &.link { 
+            background: rgba(239, 246, 255, 0.1); 
+        }
+
+        &.ebook { 
+            background: rgba(240, 253, 244, 0.1); 
+        }
+            
+        &.research { 
+            background: rgba(243, 244, 246, 0.1); 
+        }
+    }
+
+    & .card-body h4 { 
+        color: var(--color-dark-text); 
+    }
+    & .card-body .tag {
+        background-color: var(--background-input);
+        color: var(--color-grey-text);
+    }
+
+    & .card-footer { 
+        border-top-color: var(--border-color); 
+    }
+
+    & .icon-btn {
+        background-color: transparent;
+        border-color: var(--border-color);
+        
+        &:hover {
+            background-color: var(--background-input);
+            border-color: var(--primary-color);
+        }
+    }
+}
+
+
+/***** RESPONSIVE STYLES *****/
+@media (max-width: 768px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .search-wrapper, .select-wrapper {
+        min-width: 100%;
+    }
+
+    .tabs-nav {
+        gap: 1.5rem;
+        padding-bottom: 0.5rem;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .tabs-nav::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+
+        & .header-actions {
+            width: 100%;
+        
+            & button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    }
+
+    
+
+    #tab-materials:checked ~ .tab-content #view-materials,
+    #tab-ebooks:checked ~ .tab-content #view-ebooks,
+    #tab-research:checked ~ .tab-content #view-research {
+        grid-template-columns: 1fr;
+    }
+}

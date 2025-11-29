@@ -312,3 +312,134 @@
         }
     }
 }
+
+
+/***** DARK MODE *****/
+[data-theme="dark"] {
+    & .section-header h1 { color: var(--color-dark-text); }
+    & .section-header h3 { color: var(--color-grey-text); }
+
+    & .toolbar {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: none;
+    }
+
+    & .search-wrapper input,
+    & .select-wrapper select {
+        background-color: var(--background-input);
+        border-color: var(--border-color);
+        color: var(--color-dark-text);
+        box-shadow: none;
+    }
+
+    & .search-icon, & .chevron {
+        color: var(--color-grey-text);
+    }
+
+    & .btn-secondary {
+        background-color: transparent;
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+
+        &:hover { background-color: rgba(148,0,211,0.1); }
+    }
+
+    & .subject-card {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: none;
+        
+        &.accent-purple { border-color: var(--primary-color); }
+        &.accent-blue { border-color: #3B82F6; }
+        &.accent-orange { border-color: #F97316; }
+        &.accent-green { border-color: #22C55E; }
+    }
+
+    & .subject-card .card-top {
+        background-color: rgba(255,255,255,0.03);
+        border-bottom-color: var(--border-color);
+    }
+
+    & .subject-card .card-top .badge {
+        background-color: var(--background-input);
+        border-color: var(--border-color);
+        color: var(--color-dark-text);
+    }
+
+    & .subject-card .card-body .subject-name {
+        color: var(--color-dark-text);
+    }
+
+    & .subject-card .card-body .instructor-row {
+        border-bottom-color: var(--border-color);
+    }
+
+    & .subject-card .card-body .name {
+        color: var(--color-dark-text);
+    }
+
+    & .subject-card .card-body .schedule-item {
+        color: var(--color-grey-text);
+    }
+
+    & .subject-card .card-footer {
+        background-color: rgba(255,255,255,0.03);
+        border-top-color: var(--border-color);
+    }
+
+    & .subject-card .btn-outline {
+        background-color: transparent;
+        border-color: var(--border-color);
+        color: var(--color-dark-text);
+
+        &:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+    }
+}
+
+
+/***** RESPONSIVE STYLES *****/
+@media (max-width: 900px) {
+    .subjects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+
+    .filter-group {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .search-wrapper, .select-wrapper {
+        min-width: 100%;
+    }
+
+    .subjects-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        
+        & .header-actions {
+            width: 100%;
+            
+            & button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    }
+}

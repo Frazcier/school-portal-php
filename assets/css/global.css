@@ -93,7 +93,7 @@ input, select, table, th, td, div, span, i {
 body.page-loaded {
     & .container {
         opacity: 1;
-        transform: translateY(0);
+        transform: none;
     }
 
     & #transition-overlay {
@@ -127,8 +127,8 @@ body.page-loaded {
 
 /***** SCROLLBAR CUSTOMIZATION *****/
 ::-webkit-scrollbar {
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.4rem;
+    height: 0.4rem;
 }
 
 ::-webkit-scrollbar-track {
@@ -317,7 +317,7 @@ body.no-scroll {
 }
 
 
-/***** DARK MODE THEME *****/
+/***** DARK MODE *****/
 [data-theme="dark"] {
     --color-dark-text: #F3F4F6;
     --color-grey-text: #9CA3AF;

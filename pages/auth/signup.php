@@ -12,7 +12,7 @@ session_start();
     <script src="../../assets/js/password-toggle.js" defer></script>
     <script src="../../assets/js/field-toggle.js" defer></script>
     <script src="../../assets/js/main.js" defer></script>
-    <title>Create Account - School Portal</title>
+    <title>Sign Up</title>
 </head>
 <body>
 

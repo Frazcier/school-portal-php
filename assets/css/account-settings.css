@@ -228,6 +228,7 @@
     border: 1px solid #f5c6cb;
 }
 
+
 /***** CHANGE PROFILE MODAL *****/
 .modal-overlay {
     position: fixed;
@@ -297,6 +298,7 @@
     color: #666;
 }
 
+
 /***** MODAL SCROLLBAR *****/
 .modal-box::-webkit-scrollbar {
     width: 6px;
@@ -342,6 +344,93 @@
     &.selected {
         border-color: var(--primary-color);
         box-shadow: 0 0 0 4px rgba(148, 0, 211, 0.2);
+    }
+}
+
+/***** DARK MODE *****/
+[data-theme="dark"] {
+    & .settings-card {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: none;
+    }
+
+    & .card-title-row {
+        border-bottom-color: var(--border-color);
+    }
+
+    & .card-title-row h3,
+    & .profile-info-text h2 {
+        color: var(--color-dark-text);
+    }
+
+    & .card-title-row p,
+    & .profile-info-text p {
+        color: var(--color-grey-text);
+    }
+
+    & .profile-img-container img {
+        border-color: var(--background-component);
+    }
+
+    & .input-box input {
+        background-color: var(--background-input);
+        border-color: var(--border-color);
+        color: var(--color-dark-text);
+        box-shadow: none;
+
+        &:focus {
+            border-color: var(--primary-color);
+            background-color: var(--background-hover);
+        }
+    }
+
+    & .input-box .icon {
+        color: var(--color-grey-text);
+    }
+
+    & .danger-zone {
+        background-color: rgba(127, 29, 29, 0.2);
+        border-color: rgba(220, 38, 38, 0.3);
+    }
+
+    & .danger-zone h4 {
+        color: #F87171;
+    }
+
+    & .danger-zone p {
+        color: #FCA5A5;
+    }
+
+    & .btn-danger {
+        background-color: transparent;
+        color: #EF4444;
+        border-color: #EF4444;
+
+        &:hover {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #FCA5A5;
+        }
+    }
+
+    & .modal-box {
+        background-color: var(--background-component);
+    }
+
+    & .close-btn {
+        color: var(--color-dark-text);
+    }
+
+    & .avatar-option {
+        border-color: transparent;
+        
+        &:hover {
+            border-color: var(--border-color);
+        }
+
+        &.selected {
+            border-color: var(--primary-color);
+        }
     }
 }
 

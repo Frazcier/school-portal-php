@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="icon" type="image/x-icon" href="assets/img/logo/logo.ico">    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>About Us | College of Information Sciences</title>
+    <title>About Us</title>
     <script src="assets/js/landing.js" defer></script>
 </head>
 <body>
@@ -240,7 +240,7 @@
             <div class="cta-content">
                 <h2>Ready to start your journey?</h2>
                 <p>Join the CIS community today and build your future with us.</p>
-                <a href="contact.php" class="button primary-btn">Contact Admissions</a>
+                <a href="contact.php" class="button primary-btn pulse">Contact Admissions</a>
             </div>
         </section>
 

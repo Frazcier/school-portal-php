@@ -11,7 +11,7 @@ session_start();
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <script src="../../assets/js/password-toggle.js" defer></script>
     <script src="../../assets/js/main.js" defer></script>
-    <title>Student Login - School Portal</title>
+    <title>Login</title>
 </head>
 <body>
 
