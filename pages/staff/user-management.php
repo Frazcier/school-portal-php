@@ -2,13 +2,8 @@
     session_start();
     require_once '../../backend/controller.php';
 
-    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-        if (isset($_SESSION['role']) && $_SESSION['role'] === 'teacher') {
-            header("Location: staff-dashboard.php");
-        } else {
-            header("Location: ../auth/login.php");
-        }
-
+    if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'teacher' && $_SESSION['role'] !== 'admin') {
+        header("Location: ../auth/login.php?error=You don't have permission to access this page");
         exit();
     }
 

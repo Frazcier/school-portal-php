@@ -2,7 +2,7 @@
     session_start();
 
     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-        header("Location: ../auth/login.php");
+        header("Location: ../auth/login.php?error=You don't have permission to access this page");
         exit();
     }
 
