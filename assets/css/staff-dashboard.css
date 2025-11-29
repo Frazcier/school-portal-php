@@ -61,11 +61,17 @@
     & input {
         padding: 0.5rem 1rem 0.5rem 2.2rem;
         font-size: 0.85rem;
+        /* Ensure it uses variables for background */
+        background-color: var(--background-input); 
+        color: var(--color-dark-text);
+        border: 1px solid var(--border-color);
     }
 
     & .search-icon {
         font-size: 0.8rem;
         left: 0.8rem;
+        /* Ensure icon color adapts */
+        color: var(--color-grey-text);
     }
 }
 
@@ -240,3 +246,84 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================
+   DARK MODE: STAFF DASHBOARD
+   ========================================= */
+
+/* 1. Main Card Containers */
+[data-theme="dark"] .dashboard-card {
+    background-color: var(--background-component);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .section-title {
+    color: var(--color-dark-text);
+}
+
+[data-theme="dark"] .card-header h3 {
+    color: var(--color-dark-text);
+}
+
+/* 2. Quick Action Tiles (Buttons) */
+[data-theme="dark"] .action-tile {
+    background-color: var(--background-input); /* Slightly lighter than card */
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .action-tile span {
+    color: var(--color-dark-text);
+}
+
+/* Hover Effect: Subtle Purple Glow */
+[data-theme="dark"] .action-tile:hover {
+    background-color: var(--background-hover);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(192, 132, 252, 0.15); 
+}
+
+/* 3. Announcement List */
+[data-theme="dark"] .announcement-item {
+    background-color: var(--background-input);
+    border: 1px solid transparent; /* Prepare for border hover */
+}
+
+[data-theme="dark"] .announcement-item:hover {
+    background-color: var(--background-hover);
+    border-color: var(--border-color);
+    box-shadow: none; /* Remove default white shadow */
+}
+
+[data-theme="dark"] .announcement-item .ann-content h4 {
+    color: var(--color-dark-text);
+}
+
+[data-theme="dark"] .announcement-item .ann-content p {
+    color: var(--color-grey-text);
+}
+
+/* Fix Icon Container in Announcements */
+[data-theme="dark"] .announcement-item .ann-icon {
+    background-color: var(--background-component);
+    border-color: var(--border-color);
+}
+
+/* Invert the black icon to white */
+[data-theme="dark"] .announcement-item .ann-icon img {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+/* 4. Optimized Colored Icons (Glow Effect) */
+/* Adjusts the background opacity so colors pop on dark mode */
+[data-theme="dark"] .icon-box.purple { background: rgba(192, 132, 252, 0.15); color: #E879F9; }
+[data-theme="dark"] .icon-box.blue   { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
+[data-theme="dark"] .icon-box.orange { background: rgba(249, 115, 22, 0.15); color: #FB923C; }
+[data-theme="dark"] .icon-box.green  { background: rgba(34, 197, 94, 0.15); color: #4ADE80; }
+
+/* 5. Colored Text Badges */
+[data-theme="dark"] .badge-soft.blue   { background: rgba(59, 130, 246, 0.15); color: #93C5FD; }
+[data-theme="dark"] .badge-soft.purple { background: rgba(192, 132, 252, 0.15); color: #E879F9; }
+[data-theme="dark"] .badge-soft.orange { background: rgba(249, 115, 22, 0.15); color: #FDBA74; }
+[data-theme="dark"] .badge-soft.green  { background: rgba(34, 197, 94, 0.15); color: #86EFAC; }

@@ -19,7 +19,7 @@
     $staff_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
     $pic = htmlspecialchars($profile['profile_picture'] ?? '../../assets/img/profile-pictures/profile-staff.svg');
 
-    $role_display = ucfirst($_SESSION['role']);
+    $rank_display = ucfirst($_SESSION['academic_rank']);
 ?>
 
 <!DOCTYPE html>
@@ -76,11 +76,23 @@
                 <div class="settings-card profile-section">
                     <div class="profile-header">
                         <div class="profile-img-container" onclick="openViewModal()">
-                            <img src="<?= $pic ?>" alt="Profile" id="current-avatar-display" style="cursor: zoom-in;">
+                            <?php 
+                            $my_rank = $profile['academic_rank'] ?? '';
+                            $is_vip = ($my_rank === 'Head Administrator');
+
+                            if ($is_vip): ?>
+                                <div class="avatar-wrapper exclusive-admin">
+                                    <img src="<?= $pic ?>" alt="Profile" id="current-avatar-display" style="cursor: zoom-in;">
+                                    <i class="fas fa-crown crown-badge"></i>
+                                </div>
+                            <?php else: ?>
+                                <img src="<?= $pic ?>" alt="Profile" id="current-avatar-display" style="cursor: zoom-in;">
+                            <?php endif; ?>
                         </div>
+                        
                         <div class="profile-info-text">
                             <h2><?= $full_name ?></h2>
-                            <p><?= $role_display ?> &bullet; ID: <?= $staff_id ?></p>
+                            <p><?= $rank_display ?> &bullet; ID: <?= $staff_id ?></p>
                         </div>
                     </div>
                     <div class="profile-actions">
@@ -191,18 +203,16 @@
                     echo "<img src='$imgPath' class='avatar-option' onclick=\"selectAvatar('$imgPath')\">";
                 }
 
-                $my_rank = $p['academic_rank'] ?? '';
+                $my_rank = $profile['academic_rank'] ?? '';
 
-                if ($my_rank === 'Head Administrator' || $my_rank === 'System Admin') {
+                if ($my_rank === 'Head Administrator') {
                     
                     $exclusiveImg = "../../assets/img/profile-pictures/admin-special.jpg";
                     
                     echo "
-                    <img src='$exclusiveImg' 
-                         class='avatar-option' 
-                         onclick=\"selectAvatar('$exclusiveImg')\" 
-                         title='Exclusive Head Admin Avatar'
-                         style='border: 2px solid #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); transform: scale(1.05);'>
+                    <div class='avatar-wrapper exclusive-admin' onclick=\"selectAvatar('$exclusiveImg')\">
+                        <img src='$exclusiveImg' class='avatar-option'>
+                        </div>
                     ";
                 }
                 ?>

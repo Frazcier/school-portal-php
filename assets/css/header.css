@@ -416,3 +416,70 @@
         gap: 0.8rem;
     }
 }
+
+/* --- DARK MODE: HEADER --- */
+[data-theme="dark"] .header {
+    background: rgba(31, 41, 55, 0.9); /* Dark semi-transparent */
+    border-bottom-color: var(--border-color);
+}
+
+/* Search Bar */
+[data-theme="dark"] .search-container input {
+    background-color: var(--background-input);
+    color: var(--color-dark-text);
+}
+
+[data-theme="dark"] .search-container .search-icon {
+    opacity: 0.7;
+    filter: invert(1); /* Makes the black icon white */
+}
+
+/* User Pill (Profile) */
+[data-theme="dark"] .user-pill:hover {
+    background-color: var(--background-hover);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .user-pill .chevron {
+    filter: invert(1);
+}
+
+/* Notification Button */
+[data-theme="dark"] .notif-btn:hover {
+    background-color: var(--background-hover);
+}
+
+[data-theme="dark"] .notif-btn img {
+    filter: invert(1);
+}
+
+/* Dropdowns & Pop-ups */
+[data-theme="dark"] .pop-up-box {
+    background-color: var(--background-component);
+    border-color: var(--border-color);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+[data-theme="dark"] .pop-up-header,
+[data-theme="dark"] .pop-up-footer,
+[data-theme="dark"] .dropdown-box .dropdown-header,
+[data-theme="dark"] .notif-item {
+    border-color: var(--border-color);
+    background-color: var(--background-component);
+}
+
+[data-theme="dark"] .notif-item:hover,
+[data-theme="dark"] .dropdown-box li:hover {
+    background-color: var(--background-hover);
+}
+
+/* Make dropdown icons white */
+[data-theme="dark"] .dropdown-box li img,
+[data-theme="dark"] .notif-icon-box img {
+    filter: invert(1);
+    opacity: 0.8;
+}
+
+[data-theme="dark"] .notif-icon-box {
+    background-color: var(--background-input);
+}

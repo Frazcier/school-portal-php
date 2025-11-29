@@ -57,14 +57,28 @@
 
         <div class="vertical-divider"></div>
 
-        <div class="user-pill" onclick="location.href='#dropdown-menu'">
-            <img src="<?= $profile_pic ?>" alt="Profile" class="avatar">
-            <div class="user-info">
-                <span class="user-name"><?= $full_name ?></span>
-                <span class="user-role"><?= ucfirst($role) ?></span>
+            <div class="user-pill" onclick="location.href='#dropdown-menu'">
+                
+                <?php 
+                // Check for VIP Rank
+                $my_rank = $_SESSION['profile_data']['academic_rank'] ?? '';
+                $is_vip = ($my_rank === 'Head Administrator');
+
+                if ($is_vip): ?>
+                    <div class="avatar-wrapper exclusive-admin header-size">
+                        <img src="<?= $profile_pic ?>" alt="Profile" class="avatar">
+                        <i class="fas fa-crown crown-badge"></i>
+                    </div>
+                <?php else: ?>
+                    <img src="<?= $profile_pic ?>" alt="Profile" class="avatar">
+                <?php endif; ?>
+
+                <div class="user-info">
+                    <span class="user-name"><?= $full_name ?></span>
+                    <span class="user-role"><?= ucfirst($role) ?></span>
+                </div>
+                <img src="../../assets/img/icons/arrow-down-icon.svg" alt="Dropdown" class="chevron">
             </div>
-            <img src="../../assets/img/icons/arrow-down-icon.svg" alt="Dropdown" class="chevron">
-        </div>
     </div>
 </header>
 
@@ -114,7 +128,7 @@
             <a href="<?= $settings_link ?>">
                 <li><img src="../../assets/img/icons/account-settings-icon.svg"> Account Settings</li>
             </a>
-            <a href="#">
+            <a href="#" id="dark-mode-toggle">
                 <li><img src="../../assets/img/icons/dark-mode-icon.svg"> Appearance</li>
             </a>
             <div class="menu-divider"></div>

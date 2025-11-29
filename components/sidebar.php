@@ -31,7 +31,19 @@
     <div class="sidebar-profile">
         <div class="profile-card">
             <div class="profile-img-wrapper">
-                <img src="<?= htmlspecialchars($profile_pic) ?>" alt="Profile" class="avatar">
+                <?php 
+                $my_rank = $_SESSION['profile_data']['academic_rank'] ?? '';
+                $is_vip = ($my_rank === 'Head Administrator');
+                
+                if ($is_vip): ?>
+                    <div class="avatar-wrapper exclusive-admin">
+                        <img src="<?= htmlspecialchars($profile_pic) ?>" alt="Profile" class="avatar">
+                        <i class="fas fa-crown crown-badge"></i>
+                    </div>
+                <?php else: ?>
+                    <img src="<?= htmlspecialchars($profile_pic) ?>" alt="Profile" class="avatar">
+                <?php endif; ?>
+                
                 <span class="status-indicator"></span>
             </div>
             
@@ -115,13 +127,22 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
-                
+
                 <li class="nav-item">
-                    <a href="../staff/user-management.php" class="nav-link">
-                        <div class="icon-box"><img src="../../assets/img/icons/username-icon.svg" alt="Users"></div>
-                        <span>User Management</span>
+                    <a href="../staff/grading.php" class="nav-link">
+                        <div class="icon-box"><img src="../../assets/img/icons/grade-report-icon.svg" alt="Grading"></div>
+                        <span>Student Grading</span>
                     </a>
                 </li>
+                
+                <?php if ($role === 'admin'): ?>
+                    <li class="nav-item">
+                        <a href="../staff/user-management.php" class="nav-link">
+                            <div class="icon-box"><img src="../../assets/img/icons/username-icon.svg" alt="Users"></div>
+                            <span>User Management</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <li class="nav-item">
                     <a href="../staff/subject-management.php" class="nav-link">

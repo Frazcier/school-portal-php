@@ -52,3 +52,7 @@ function selectAvatar(path) {
         console.error("Error: Could not find input or display image elements.");
     }
 }
+
+function openImportModal() {
+    document.getElementById('import-modal').classList.add('active');
+}

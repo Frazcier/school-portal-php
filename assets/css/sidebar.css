@@ -279,3 +279,49 @@
         z-index: 1000;
     }
 }
+
+/* --- DARK MODE: SIDEBAR --- */
+[data-theme="dark"] .sidebar {
+    background-color: var(--background-component);
+    border-right-color: var(--border-color);
+}
+
+/* Profile Card */
+[data-theme="dark"] .profile-card {
+    background-color: var(--background-input);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .profile-menu-btn {
+    background-color: var(--background-component);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .profile-menu-btn img {
+    filter: invert(1);
+}
+
+/* Navigation Links */
+[data-theme="dark"] .nav-link:hover {
+    background-color: var(--background-hover);
+}
+
+[data-theme="dark"] .nav-link img {
+    filter: invert(1); /* Turns grey icons white */
+}
+
+/* Keep active link text white, but icons need to be white too */
+[data-theme="dark"] .nav-link.active img {
+    filter: brightness(0) invert(1); 
+}
+
+/* Sidebar Divider */
+[data-theme="dark"] .sidebar-divider {
+    background-color: var(--border-color);
+}
+
+/* Sidebar Dropdown (User Menu) */
+[data-theme="dark"] .sidebar-menu-wrapper .sidebar-dropdown {
+    background-color: var(--background-component);
+    border: 1px solid var(--border-color);
+}

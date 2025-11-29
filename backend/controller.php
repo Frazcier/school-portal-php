@@ -1,6 +1,7 @@
 <?php
-session_start();
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 class controller {
     private $connection;
 
@@ -46,6 +47,8 @@ class controller {
                 $this->logout();
             } else if ($action === 'update_profile') {
                 $this->update_profile();
+            } else if ($action === 'manage_users') {
+                $this->manage_users();
             }
         }
     }
@@ -291,6 +294,55 @@ class controller {
         } else {
             echo "Error updating profile: " . $this->connection->error;
         }
+    }
+
+    public function get_users_by_role($role, $status) {
+        if ($role === 'student') {
+            $table = 'student_profiles';
+        } else {
+            $table = 'staff_profiles';
+        };
+
+        $sql = "SELECT user.user_id, user.unique_id, user.email, user.status, user.role, profile.*
+                FROM users user
+                JOIN $table profile ON user.user_id = profile.user_id
+                WHERE user.role = ? and user.status = ?
+                ORDER BY user.created_at DESC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("ss", $role, $status);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function manage_users() {
+
+        $sub_action = $_POST['sub_action'];
+        $target_id = $_POST['target_id'];
+
+        if ($sub_action === 'approve') {
+            $sql = "UPDATE users SET status = 'active' WHERE user_id = ?";
+            $msg = "User account approved successfully";
+        } else if ($sub_action === 'deactivate') {
+            $sql = "UPDATE users SET status = 'inactive'WHERE user_id = ?";
+            $msg = "User account deactivated";
+        } else if ($sub_action === 'reactivate') {
+            $sql = "UPDATE users SET status = 'active' WHERE user_id = ?";
+            $msg = "User account reactivated";
+        } else if ($sub_action === 'delete') {
+            $sql = "DELETE FROM users WHERE user_id = ?";
+            $msg = "User account permanently deleted";
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param('i', $target_id);
+
+        if ($stmt->execute()) {
+            header ("Location: ../pages/staff/user-management.php?success=$msg");
+        } else {
+            header ("Location: ../pages/staff/user-management.php?error=Database error");
+        }
+
+        exit();
     }
 }
 

@@ -496,3 +496,169 @@ tbody tr:hover {
     }
 
 }
+
+/* --- ALERT BOX STYLES (Login Match) --- */
+.alert {
+    padding: 0.9rem 1rem;
+    border-radius: 0.6rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    display: flex;
+    align-items: center; 
+    justify-content: flex-start;
+    gap: 0.8rem;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+/* Ensure Icons are sized correctly */
+.alert img {
+    width: 20px; 
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.alert-success { background: rgba(212, 237, 218, 0.5); color: #155724; border: 1px solid #c3e6cb; }
+.alert-error { background: rgba(248, 215, 218, 0.5); color: #721c24; border: 1px solid #f5c6cb; }
+
+/* --- TAB LOGIC FOR INACTIVE SECTION --- */
+/* This connects the radio button to the view */
+#tab-inactive:checked ~ .tab-content-wrapper #view-inactive {
+    display: block;
+}
+
+#tab-inactive:checked ~ .tabs-header label[for="tab-inactive"] {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+
+/* =========================================
+   DARK MODE: MANAGEMENT COMMON
+   ========================================= */
+
+/* 1. Section Header & Text */
+[data-theme="dark"] .section-header .header-details h1 {
+    color: var(--color-dark-text);
+}
+
+[data-theme="dark"] .section-header .header-details h3 {
+    color: var(--color-grey-text);
+}
+
+/* 2. Buttons */
+[data-theme="dark"] .btn-secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+    background-color: rgba(192, 132, 252, 0.1); /* Subtle purple tint */
+}
+
+[data-theme="dark"] .icon-btn {
+    background-color: var(--background-input);
+    border-color: var(--border-color);
+    color: var(--color-grey-text);
+}
+
+[data-theme="dark"] .icon-btn:hover {
+    background-color: var(--background-hover);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* 3. Toolbar & Inputs */
+[data-theme="dark"] .toolbar {
+    background-color: var(--background-component);
+    border-color: var(--border-color);
+    box-shadow: none; /* Cleaner look in dark mode */
+}
+
+[data-theme="dark"] .search-wrapper input,
+[data-theme="dark"] .select-wrapper select {
+    background-color: var(--background-input);
+    border-color: var(--border-color);
+    color: var(--color-dark-text);
+    box-shadow: none;
+}
+
+/* Fix Icons inside inputs */
+[data-theme="dark"] .search-wrapper .search-icon,
+[data-theme="dark"] .select-wrapper .chevron {
+    color: var(--color-grey-text);
+}
+
+/* 4. Data Cards & Tabs */
+[data-theme="dark"] .data-card {
+    background-color: var(--background-component);
+    box-shadow: none;
+    border: 1px solid var(--border-color);
+}
+
+[data-theme="dark"] .tabs-header {
+    background-color: var(--background-component);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] .tab-item {
+    color: var(--color-grey-text);
+}
+
+[data-theme="dark"] .tab-item:hover {
+    color: var(--primary-color);
+}
+
+/* Active Tab State */
+[data-theme="dark"] input[type="radio"]:checked + label.tab-item {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+[data-theme="dark"] .tab-item .badge {
+    background-color: var(--background-input);
+    color: var(--color-grey-text);
+}
+
+/* 5. Tables */
+[data-theme="dark"] table thead tr {
+    background-color: var(--background-input) !important;
+}
+
+[data-theme="dark"] th {
+    color: var(--color-grey-text);
+}
+
+[data-theme="dark"] td {
+    color: var(--color-dark-text);
+    border-bottom-color: var(--border-color);
+}
+
+[data-theme="dark"] tbody tr:hover {
+    background-color: var(--background-hover) !important;
+}
+
+/* Specific text fixes inside tables */
+[data-theme="dark"] .subject-title, 
+[data-theme="dark"] .user-cell .name {
+    color: var(--color-dark-text);
+}
+
+[data-theme="dark"] .code-badge {
+    background-color: var(--background-input);
+    color: var(--primary-color);
+    border-color: var(--border-color);
+}
+
+/* 6. File Icons (Content Library Support) */
+/* Makes the colored square icons translucent instead of solid pastel */
+[data-theme="dark"] .file-icon.red    { background: rgba(239, 68, 68, 0.15); color: #F87171; }
+[data-theme="dark"] .file-icon.blue   { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
+[data-theme="dark"] .file-icon.green  { background: rgba(34, 197, 94, 0.15); color: #4ADE80; }
+[data-theme="dark"] .file-icon.orange { background: rgba(249, 115, 22, 0.15); color: #FB923C; }
+[data-theme="dark"] .file-icon.gray   { background: rgba(107, 114, 128, 0.15); color: #9CA3AF; }
+
+[data-theme="dark"] .file-cell .name {
+    color: var(--color-dark-text);
+}

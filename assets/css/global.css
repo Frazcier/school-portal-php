@@ -40,6 +40,9 @@ body {
     line-height: 1.5;
     font-family: "Poppins", sans-serif;
     font-size: 1rem;
+    background-color: var(--background-page);
+    color: var(--color-dark-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 ul {
@@ -143,4 +146,286 @@ body.page-loaded #transition-overlay {
 body.page-loaded .container {
     opacity: 1;
     transform: translateY(0);
+}
+
+
+/* =========================================
+   VIP / EXCLUSIVE AVATAR STYLING (Pure Gold Edition)
+   ========================================= */
+
+/* --- 1. ANIMATIONS --- */
+@keyframes borderSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes avatarFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* --- 2. BASE WRAPPER --- */
+.avatar-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+/* --- 3. THE ROTATING GOLD RING (::before) --- */
+.avatar-wrapper.exclusive-admin::before {
+    content: "";
+    position: absolute;
+    /* Negative inset pushes the border OUTWARDS */
+    inset: -3px; 
+    border-radius: 50%;
+    /* High-quality metallic gold gradient */
+    background: conic-gradient(
+        #BF953F, 
+        #FCF6BA, 
+        #B38728, 
+        #FBF5B7, 
+        #AA771C, 
+        #BF953F
+    );
+    z-index: -1; 
+    animation: borderSpin 4s linear infinite;
+}
+
+/* --- 4. THE SOFT GLOWING AURA (::after) --- */
+/* Creates a soft light behind the ring using blur */
+.avatar-wrapper.exclusive-admin::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C, #BF953F
+    );
+    z-index: -2; 
+    filter: blur(10px); /* Soft glow effect */
+    opacity: 0.7;
+    animation: borderSpin 4s linear infinite;
+}
+
+/* --- 5. THE IMAGE --- */
+.avatar-wrapper.exclusive-admin img.avatar,
+.avatar-wrapper.exclusive-admin img.avatar-option {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    /* Crisp white border to separate image from gold */
+    border: 2px solid white; 
+    box-sizing: border-box;
+    background: white;
+    position: relative;
+    z-index: 2; 
+}
+
+/* --- 6. THE CROWN BADGE --- */
+.crown-badge {
+    position: absolute;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* =========================================
+   CONTEXT-SPECIFIC ADJUSTMENTS
+   ========================================= */
+
+/* A. HEADER CONTEXT (Smallest) */
+.user-pill .avatar-wrapper.header-size {
+    width: 35px; height: 35px; flex-shrink: 0;
+}
+/* Reduce glow intensity in header */
+.user-pill .avatar-wrapper.header-size::after {
+    filter: blur(5px);
+    opacity: 0.5;
+}
+.user-pill .crown-badge {
+    top: -4px; right: -4px;
+    width: 14px; height: 14px; font-size: 7px;
+    border: 1px solid white;
+    transform: rotate(15deg);
+}
+
+/* B. SIDEBAR CONTEXT (Medium) */
+.sidebar-profile .avatar-wrapper {
+    width: 100%; height: 100%;
+    animation: avatarFloat 4s ease-in-out infinite; 
+}
+/* Sync status dot with avatar float */
+.sidebar-profile .avatar-wrapper ~ .status-indicator {
+    animation: avatarFloat 4s ease-in-out infinite;
+    border-width: 1.5px !important; 
+    z-index: 10;
+}
+.sidebar-profile .crown-badge {
+    top: -4px; right: -4px;
+    width: 16px; height: 16px; font-size: 8px;
+    border: 1.5px solid white;
+    transform: rotate(15deg);
+}
+
+/* C. USER MANAGEMENT TABLE (Table Size) */
+.user-cell .avatar-wrapper.table-size {
+    width: 2.5rem; height: 2.5rem; flex-shrink: 0;
+}
+.user-cell .table-size .crown-badge {
+    top: -3px; right: -3px;
+    width: 15px; height: 15px; font-size: 7px;
+    border: 1.5px solid white;
+    transform: rotate(15deg);
+}
+
+/* D. MAIN SETTINGS PROFILE (Large) */
+.profile-header .avatar-wrapper.exclusive-admin {
+    animation: avatarFloat 3s ease-in-out infinite;
+}
+/* Thicker ring and stronger glow for the big profile */
+.profile-header .avatar-wrapper.exclusive-admin::before {
+    inset: -5px;
+}
+.profile-header .avatar-wrapper.exclusive-admin::after {
+    inset: -5px;
+    filter: blur(15px);
+}
+.profile-header .crown-badge {
+    width: 32px; height: 32px; font-size: 14px;
+    top: 0; right: 0;
+    border: 2px solid white;
+    transform: rotate(15deg);
+}
+
+/* =========================================
+   UTILITY ANIMATIONS (Global)
+   ========================================= */
+
+.fadeIn {
+    animation: globalFadeIn 0.5s ease-out forwards;
+    opacity: 0; /* Ensures it starts invisible before animating in */
+}
+
+@keyframes globalFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+/* =========================================
+   DARK MODE VARIABLES (Elegant & Optimized)
+   ========================================= */
+[data-theme="dark"] {
+    /* 1. TEXT COLORS - High Contrast */
+    --color-dark-text: #F3F4F6;        /* Almost White (Main Text) */
+    --color-grey-text: #9CA3AF;        /* Cool Grey (Subtitles) */
+    
+    /* 2. PRIMARY COLORS - Adjusted for Visibility */
+    /* Lightened from #9400d3 to Pastel Purple for dark backgrounds */
+    --primary-color: #C084FC;          
+    --accent-color: #E879F9;           
+    --secondary-color: rgba(192, 132, 252, 0.15); 
+
+    /* 3. BACKGROUNDS - Rich & Deep Palette */
+    --background-page: #0F172A;        /* Deep Slate (Main Page) */
+    --background-component: #1E293B;   /* Lighter Slate (Cards/Sidebar) */
+    --background-light: #1E293B;       /* Override white backgrounds */
+    
+    --background-input: #334155;       /* Distinct Input Background */
+    --background-hover: #334155;       
+    
+    /* 4. BORDERS & SHADOWS */
+    --border-color: #374151;           /* Subtle Borders */
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================
+   GLOBAL COMPONENT FIXES FOR DARK MODE
+   ========================================= */
+
+/* 1. Fix Input & Select Visibility (Prevents black text on dark bg) */
+[data-theme="dark"] input, 
+[data-theme="dark"] select, 
+[data-theme="dark"] textarea {
+    color: var(--color-dark-text) !important;
+    background-color: var(--background-input) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] input::placeholder {
+    color: #64748B;
+}
+
+/* 2. Fix Tables (Header & Stripes) */
+[data-theme="dark"] thead tr {
+    background-color: #1a2234 !important; /* Slightly darker header */
+}
+
+[data-theme="dark"] th {
+    color: #E2E8F0;
+}
+
+[data-theme="dark"] tbody tr:hover {
+    background-color: rgba(192, 132, 252, 0.05) !important; /* Elegant subtle glow on hover */
+}
+
+[data-theme="dark"] td {
+    border-bottom-color: var(--border-color);
+}
+
+/* 3. Fix Badges & Pills (Prevents bright backgrounds) */
+[data-theme="dark"] .badge-soft,
+[data-theme="dark"] .status-pill {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #E2E8F0 !important;
+    border: 1px solid var(--border-color);
+}
+
+/* 4. Specific Status Colors (Glowing effect for dark mode) */
+[data-theme="dark"] .status-pill.active,
+[data-theme="dark"] .status-pill.passed {
+    background-color: rgba(34, 197, 94, 0.15) !important;
+    color: #4ADE80 !important;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+[data-theme="dark"] .status-pill.pending,
+[data-theme="dark"] .status-pill.inc {
+    background-color: rgba(251, 191, 36, 0.15) !important;
+    color: #FCD34D !important;
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+[data-theme="dark"] .status-pill.failed,
+[data-theme="dark"] .status-pill.inactive {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    color: #F87171 !important;
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* 5. Fix Icons (Invert black icons to white) */
+[data-theme="dark"] .icon-btn i,
+[data-theme="dark"] .filter-group i,
+[data-theme="dark"] .card-header i {
+    color: var(--color-grey-text);
+}
+
+/* 6. Smooth Transition Engine */
+body, header, aside, .sidebar, .card, .dashboard-card, 
+input, select, table, th, td, div, span, i {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }

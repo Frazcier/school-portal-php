@@ -5,34 +5,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="assets/css/index.css">
     <link rel="icon" type="image/x-icon" href="assets/img/LOGO/logo.ico">
+    <link rel="stylesheet" href="assets/css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="assets/js/landing.js" defer></script>
 </head>
 <body>
-    <header>
-        <div class="nav-container">
-            <div class="logo-section">
-                <img src="assets/img/LOGO/logo.png" alt="CIS Logo" class="nav-logo">
-                <div class="logo-text">Ikinamada Designs</div>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#" class="active-link">Home</a></li>
-                    <li><a href="about.php">About</a></li>
-                    <li><a href="contact.php">Contact</a></li>
-                    <li><a class="button login-btn" href="pages/auth/login.php">Portal Login</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <div id="backToTop" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <?php require_once 'components/public-header.php'; ?>
 
     <main>
         <section class="hero">
             <div class="hero-bg-shape shape-1"></div>
             <div class="hero-bg-shape shape-2"></div>
             
-            <div class="hero-content">
+            <div class="hero-content reveal">
                 <span class="badge">2025 Academic Year</span>
                 <h1>Innovating the Future of <br> <span class="gradient-text">Information Sciences</span></h1>
                 <p>Empowering students with cutting-edge technology and a seamless digital campus experience. Manage your academic journey with ease.</p>
@@ -64,7 +54,7 @@
             </div>
         </section>
 
-        <section class="stats-bar">
+        <section class="stats-bar reveal">
             <div class="stat-item">
                 <h3>1,200+</h3>
                 <p>Students Enrolled</p>
@@ -85,22 +75,22 @@
                 <p>Our digital ecosystem provides students and staff with powerful tools.</p>
             </div>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card reveal">
                     <div class="icon-box"><i class="fas fa-book"></i></div>
                     <h3>Subject Management</h3>
                     <p>View enrolled subjects, schedules, and instructor details effortlessly.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card reveal">
                     <div class="icon-box"><i class="fas fa-chart-pie"></i></div>
                     <h3>Grade Reports</h3>
                     <p>Track your academic performance with real-time grade updates and analytics.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card reveal">
                     <div class="icon-box"><i class="fas fa-layer-group"></i></div>
                     <h3>Digital Library</h3>
                     <p>Access thousands of e-books, research papers, and course materials.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card reveal">
                     <div class="icon-box"><i class="fas fa-wallet"></i></div>
                     <h3>Easy Payments</h3>
                     <p>Manage tuition and fees securely through our integrated payment gateway.</p>

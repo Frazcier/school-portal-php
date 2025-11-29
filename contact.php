@@ -8,37 +8,27 @@
     <link rel="stylesheet" href="assets/css/index.css">
     <link rel="icon" type="image/x-icon" href="assets/img/logo/logo.ico">    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="assets/js/landing.js" defer></script>
     <title>Contact Us | College of Information Sciences</title>
 </head>
 <body>
-    <header>
-        <div class="nav-container">
-            <div class="logo-section">
-                <img src="assets/img/logo/for-guthib.png" alt="CIS Logo" class="nav-logo">
-                <div class="logo-text">Ikinamada Designs</div>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="about.php">About</a></li>
-                    <li><a href="#" class="active-link">Contact</a></li>
-                    <li><a class="button login-btn" href="pages/auth/login.php">Portal Login</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <div id="backToTop" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <?php require_once 'components/public-header.php'; ?>
 
     <main>
         <section class="page-hero contact-hero">
             <div class="hero-bg-shape shape-1"></div>
-            <div class="hero-content center-text">
+            <div class="hero-content center-text reveal">
                 <span class="badge">Get in Touch</span>
                 <h1>We'd Love to <span class="gradient-text">Hear From You</span></h1>
                 <p>Have questions about enrollment, programs, or student services? Reach out to us.</p>
             </div>
         </section>
 
-        <section class="contact-section">
+        <section class="contact-section reveal">
             <div class="contact-wrapper">
                 
                 <div class="contact-form-card glass-card">
@@ -58,15 +48,36 @@
                         </div>
                         <button class="button primary-btn full-width" type="submit">Send Message <i class="fas fa-paper-plane"></i></button>
                     </form>
+
+                    <div class="faq-section">
+                        <h3>Frequently Asked Questions</h3>
+
+                        <div class="faq-item">
+                            <button class="faq-question">How do I reset my portal password?</button>
+                            <div class="faq-answer">
+                                <p>Go to the login page and click "Forgot Password". A reset link will be sent to your registered BSU email address.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">When is the enrollment period?</button>
+                            <div class="faq-answer">
+                                <p>Bruhhh HAHAHAHHA</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">Where is the Dean's Office located?</button>
+                            <div class="faq-answer">
+                                <p>The CIS Dean's Office is located on the 2nd Floor of the College of Information Sciences building, Rm. 201.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="contact-info">
-                    <div class="info-card">
-                        <div class="icon-box small"><i class="fas fa-map-marker-alt"></i></div>
-                        <div>
-                            <h4>Visit Us</h4>
-                            <p>College of Information Sciences<br>Benguet State University<br>Km. 5, La Trinidad, Benguet</p>
-                        </div>
+                <div class="contact-info reveal-delay-2">
+                    <div class="map-container ">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3826.664669672465!2d120.58987131486333!3d16.44182998865171!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3391a3c056770679%3A0x6b3060a227233261!2sBenguet%20State%20University!5e0!3m2!1sen!2sph!4v1625551234567!5m2!1sen!2sph" allowfullscreen="" loading="lazy"></iframe>
                     </div>
                     
                     <div class="info-card">
