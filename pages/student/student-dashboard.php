@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
     <script src="../../assets/js/calendar.js" defer></script>
     <script src="../../assets/js/main.js" defer></script>
-    <title>STUDENT DASHBOARD UI</title>
+    <title>Student Dashboard</title>
 </head>
 <body>
     <?php include '../../components/splash.php'; ?>

@@ -451,3 +451,31 @@
         }
     }
 }
+
+@media (max-width: 480px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-card {
+        padding: 1.2rem;
+    }
+
+    .profile-header {
+        flex-direction: column !important; 
+        text-align: center;
+    }
+
+    .profile-actions {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .profile-actions button {
+        width: 100%;
+    }
+
+    .input-box input {
+        font-size: 16px;
+    }
+}

@@ -532,18 +532,22 @@ tbody tr:hover {
     display: block;
 }
 
-
-/***** DARK MODE *****/
 #tab-inactive:checked ~ .tabs-header label[for="tab-inactive"] {
     color: var(--primary-color);
     border-bottom: 2px solid var(--primary-color);
 }
 
-/***** DARK MODE: MANAGEMENT COMMON *****/
+
+/***** DARK MODE *****/
 [data-theme="dark"] {
     & .section-header .header-details {
-        & h1 { color: var(--color-dark-text); }
-        & h3 { color: var(--color-grey-text); }
+        & h1 { 
+            color: var(--color-dark-text); 
+        }
+
+        & h3 { 
+            color: var(--color-grey-text); 
+        }
     }
 
     & .btn-secondary {
@@ -654,5 +658,51 @@ tbody tr:hover {
 
     & .file-cell .name {
         color: var(--color-dark-text);
+    }
+}
+
+
+/***** RESPONSIVE STYLES *****/
+@media (max-width: 480px) {
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+
+        & .header-details h1 {
+            font-size: 1.5rem;
+        }
+
+        & .header-actions {
+            width: 100%;
+            flex-direction: column;
+
+            & button {
+                width: 100%;
+            }
+        }
+    }
+
+    th, td {
+        padding: 0.7rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    .search-wrapper {
+        min-width: 100%;
+    }
+    
+    .toolbar {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .select-wrapper {
+        flex: 1;
     }
 }

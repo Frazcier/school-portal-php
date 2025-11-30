@@ -357,15 +357,19 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 1rem;
+
+        & .header-actions {
+            width: 100%;
+            
+            & button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     }
 
-    .header-actions {
-        width: 100%;
-        
-        & button {
-            width: 100%;
-            justify-content: center;
-        }
+    .action-tile {
+        padding: 1rem;
     }
 
     .quick-actions-grid {
@@ -384,6 +388,12 @@
     }
     
     .table-responsive table {
+        border: 1px solid #eee;
+        border-radius: 0.5rem;
         min-width: 500px;
+    }
+
+    .data-card {
+        padding: 0;
     }
 }

@@ -805,6 +805,7 @@
 @media (max-width: 480px) {
     .content {
         padding: 1rem;
+        gap: 1rem;
     }
 
     .section-1, .section-2, .section-3 {
@@ -815,7 +816,15 @@
         flex-direction: column;
         align-items: flex-start;
         
-        & .title { font-size: 1.2rem; }
+        & .title { 
+            font-size: 1.3rem; 
+        }
+
+        & .date {
+            font-size: 0.85rem;
+            margin-top: 0.2rem;
+            color: var(--color-grey-text);
+        }
     }
 
     .announcement-section {
@@ -839,7 +848,26 @@
         flex-wrap: wrap;
         gap: 0.5rem;
         
-        & .title h3 { font-size: 1.1rem; }
-        & .link p { font-size: 0.9rem; }
+        & .title h3 { 
+            font-size: 1.1rem; 
+        }
+
+        & .link p { 
+            font-size: 0.9rem; 
+        }
+    }
+
+    .wrapper header {
+        padding: 0.5rem 0;
+    }
+
+    .calendar .days li {
+        font-size: 0.8rem;
+        margin-top: 0;
+
+        &::before {
+            height: 1.5rem;
+            width: 1.5rem;
+        }
     }
 }

@@ -344,6 +344,14 @@ class controller {
 
         exit();
     }
+
+    public function check_or_404($data) {
+        if (empty($data)) {
+            http_response_code(404);
+            include (__DIR__ . '/../404.php');
+            exit();
+        }
+    }
 }
 
 $controller = new controller();

@@ -38,6 +38,8 @@ header {
     }
 
     & nav ul {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         display: flex;
         align-items: center;
         gap: 2rem;
@@ -974,12 +976,12 @@ header {
         & ul {
             pointer-events: auto;
             position: fixed;
-            top: 5rem;
+            top: 4rem;
             left: 0;
             width: 100%;
             background: white;
             flex-direction: column;
-            gap: 0;
+            gap: 0 !important;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-in-out, padding 0.4s;
