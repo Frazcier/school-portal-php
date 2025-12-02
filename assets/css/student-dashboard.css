@@ -404,10 +404,12 @@
         display: grid;
         position: relative;
         column-gap: 2rem;
-        grid-template-columns: 1fr 1fr 1fr;
+        row-gap: 1.5rem;
+        grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
     }
 
     & .subject {
+        min-height: 160px;
         width: 100%;
         height: 100%;
         padding: 0.4rem;
@@ -465,7 +467,7 @@
         }
     }
 
-    & .subject:nth-of-type(1) { 
+    & .subject:nth-of-type(4n+1) { 
         background-color: #AFEEEE; 
 
         &::before { 
@@ -473,7 +475,7 @@
         } 
     }
 
-    & .subject:nth-of-type(2) { 
+    & .subject:nth-of-type(4n+2) { 
         background-color: #98FB98; 
 
         &::before { 
@@ -481,7 +483,7 @@
         } 
     }
 
-    & .subject:nth-of-type(3) { 
+    & .subject:nth-of-type(4n+3) { 
         background-color: #DDA0DD; 
 
         &::before { 
@@ -489,7 +491,7 @@
         } 
     }
 
-    & .subject:nth-of-type(4) { 
+    & .subject:nth-of-type(4n+4) { 
         background-color: #FFDEAD; 
         &::before { 
             border-color: #FFDEAD; 

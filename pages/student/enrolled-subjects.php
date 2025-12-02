@@ -1,5 +1,6 @@
 <?php 
     session_start();
+    require_once '../../backend/controller.php';
 
     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
         header("Location: ../auth/login.php?error=You don't have permission to access this page");
@@ -11,6 +12,9 @@
         header("Location: ../auth/login.php?error=Session expired. Please login again");
         exit();
     }
+
+    $controller = new controller();
+    $my_subjects = $controller->get_student_subjects($_SESSION['user_id']);
 ?>
 
 <!DOCTYPE html>
@@ -63,128 +67,72 @@
             </div>
 
             <div class="subjects-grid">
-                
-                <div class="subject-card accent-purple">
-                    <div class="card-top">
-                        <div class="subject-badges">
-                            <span class="badge">IT 114</span>
-                            <span class="units">3.0 Units</span>
-                        </div>
-                        <button class="more-btn"><i class="fas fa-ellipsis-h"></i></button>
+                <?php if (empty($my_subjects)): ?>
+                    <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: #888;">
+                        <img src="../../assets/img/icons/search-icon.svg" style="width: 50px; opacity: 0.3; margin-bottom: 1rem">
+                        <h3>No enrolled subject found.</h3>
+                        <p>You might not be assigned to a section yet, or no subjects are added for your section.</p>
                     </div>
-                    <div class="card-body">
-                        <h3 class="subject-name">Computer Programming 2</h3>
-                        <p class="section-name">Section: BSIT 1A</p>
-                        
-                        <div class="instructor-row">
-                            <img src="../../assets/img/profile-pictures/profile-picture-2.jpg" alt="Instructor">
-                            <div>
-                                <p class="label">Instructor</p>
-                                <p class="name">Henson Sagorsor</p>
+                <?php else: ?>
+                    <?php
+                        $colors = ['accent-purple', 'accent-blue', 'accent-orange', 'accent-green'];
+                        $i = 0;
+
+                        foreach ($my_subjects as $sub):
+                            $color_class = $colors[$i % count($colors)];
+                            $i++;
+
+                            $instructor_name = $sub['first_name'] ? htmlspecialchars($sub['first_name'] . ' ' . $sub['last_name']) : "TBA";
+                            $instructor_img = $sub['profile_picture'] ?? '../../assets/img/profile-pictures/profile-staff.svg'; 
+                    ?>
+                    <div class="subject-card <?= $color_class ?>">
+                        <div class="card-top">
+                            <div class="subject-badges">
+                                <span class="badge"><?= htmlspecialchars($sub['subject_code']) ?></span>
+                                <span class="units"><?= htmlspecialchars($sub['units']) ?> Units</span>
+                            </div>
+                            <button class="more-btn">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                            
+                        <div class="card-body">
+                            <h3 class="subject-name"><?= htmlspecialchars($sub['subject_description']) ?></h3>
+                            <p class="section-name">Section: <?= htmlspecialchars($sub['section_assigned']) ?></p>
+
+                            <div class="instructor-row">
+                                <img src="<?= htmlspecialchars($instructor_img) ?>" alt="Instructor">
+                                <div>
+                                    <p class="label">Instructor</p>
+                                    <p class="name"><?= $instructor_name ?></p>
+                                </div>
+                            </div>
+
+                            <div class="schedule-info">
+                                <div class="schedule-item">
+                                    <i class="far fa-clock"></i>
+                                    <span><?= htmlspecialchars($sub['schedule_time']) ?? 'TBA'?></span>
+                                </div>
+                                <div class="schedule-item">
+                                    <i class="far fa-calendar"></i>
+                                    <span><?= htmlspecialchars($sub['schedule_day']) ?? 'TBA'?></span>
+                                </div>
+                                <div class="schedule-item">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span><?= htmlspecialchars($sub['room']) ?? 'TBA'?></span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="schedule-info">
-                            <div class="schedule-item">
-                                <i class="far fa-clock"></i>
-                                <span>9:00 AM - 10:00 AM</span>
-                            </div>
-                            <div class="schedule-item">
-                                <i class="far fa-calendar"></i>
-                                <span>Mon, Wed</span>
-                            </div>
-                            <div class="schedule-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Room CIS 305</span>
-                            </div>
+                        <div class="card-footer">
+                            <a href="libraries.php?subject=<?= $sub['subject_id'] ?>" class="btn-outline" stlye="display: block; text-align: center;">
+                                View Materials
+                            </a>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button class="btn-outline full-width">View Materials</button>
-                    </div>
-                </div>
-
-                <div class="subject-card accent-blue">
-                    <div class="card-top">
-                        <div class="subject-badges">
-                            <span class="badge">IT 116</span>
-                            <span class="units">3.0 Units</span>
-                        </div>
-                        <button class="more-btn"><i class="fas fa-ellipsis-h"></i></button>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="subject-name">Web Systems & Tech</h3>
-                        <p class="section-name">Section: BSIT 1A</p>
-                        
-                        <div class="instructor-row">
-                            <img src="../../assets/img/profile-pictures/profile-picture-5.jpg" alt="Instructor">
-                            <div>
-                                <p class="label">Instructor</p>
-                                <p class="name">Chris Paza</p>
-                            </div>
-                        </div>
-
-                        <div class="schedule-info">
-                            <div class="schedule-item">
-                                <i class="far fa-clock"></i>
-                                <span>3:00 PM - 4:30 PM</span>
-                            </div>
-                            <div class="schedule-item">
-                                <i class="far fa-calendar"></i>
-                                <span>Mon, Wed</span>
-                            </div>
-                            <div class="schedule-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Room CIS 302</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn-outline full-width">View Materials</button>
-                    </div>
-                </div>
-
-                <div class="subject-card accent-orange">
-                    <div class="card-top">
-                        <div class="subject-badges">
-                            <span class="badge">IT 115</span>
-                            <span class="units">2.0 Units</span>
-                        </div>
-                        <button class="more-btn"><i class="fas fa-ellipsis-h"></i></button>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="subject-name">Intro to HCI</h3>
-                        <p class="section-name">Section: BSIT 1A</p>
-                        
-                        <div class="instructor-row">
-                            <img src="../../assets/img/profile-pictures/profile-picture-8.jpg" alt="Instructor">
-                            <div>
-                                <p class="label">Instructor</p>
-                                <p class="name">Delia Leon</p>
-                            </div>
-                        </div>
-
-                        <div class="schedule-info">
-                            <div class="schedule-item">
-                                <i class="far fa-clock"></i>
-                                <span>8:00 AM - 9:00 AM</span>
-                            </div>
-                            <div class="schedule-item">
-                                <i class="far fa-calendar"></i>
-                                <span>Tue, Thu</span>
-                            </div>
-                            <div class="schedule-item">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>Room CIS 302</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn-outline full-width">View Materials</button>
-                    </div>
-                </div>
-
-                </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 </body>
