@@ -2,7 +2,7 @@
     session_start();
 
     require_once '../../backend/controller.php';
-    require_once '../../backend/algorithms/MergeSort.php'; // Reuse Algorithm
+    require_once '../../backend/algorithms/MergeSort.php';
 
     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
         header("Location: ../auth/login.php");
@@ -173,33 +173,5 @@
 
         </div>
     </div>
-
-    <script>
-        function searchCards() {
-            const input = document.getElementById("realTimeSearch");
-            const grid = document.getElementById("resourceGrid");
-            const cards = grid.getElementsByClassName("resource-card");
-            const noResultDiv = document.getElementById("noResultsMsg");
-            let hasMatch = false;
-
-            const filter = input.value.toLowerCase();
-
-            for (let i = 0; i < cards.length; i++) {
-                const card = cards[i];
-                const textContent = card.innerText || card.textContent;
-
-                if (textContent.toLowerCase().indexOf(filter) > -1) {
-                    card.style.display = ""; 
-                    hasMatch = true;
-                } else {
-                    card.style.display = "none"; 
-                }
-            }
-
-            if (noResultDiv) {
-                noResultDiv.style.display = hasMatch ? "none" : "block";
-            }
-        }
-    </script>
 </body>
 </html>

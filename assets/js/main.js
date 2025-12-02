@@ -361,3 +361,32 @@ document.addEventListener("DOMContentLoaded", function() {
         if (tabInput) tabInput.checked = true;
     }
 });
+
+function searchCards() {
+    const input = document.getElementById("realTimeSearch");
+    const grid = document.getElementById("resourceGrid");
+    const noResultDiv = document.getElementById("noResultsMsg");
+    
+    if (!input || !grid) return;
+
+    const cards = grid.getElementsByClassName("subject-card");
+    let hasMatch = false;
+
+    const filter = input.value.toLowerCase();
+
+    for (let i = 0; i < cards.length; i++) {
+        const card = cards[i];
+        const textContent = card.innerText || card.textContent;
+
+        if (textContent.toLowerCase().indexOf(filter) > -1) {
+            card.style.display = "flex";
+            hasMatch = true;
+        } else {
+            card.style.display = "none"; 
+        }
+    }
+
+    if (noResultDiv) {
+        noResultDiv.style.display = hasMatch ? "none" : "block";
+    }
+}
