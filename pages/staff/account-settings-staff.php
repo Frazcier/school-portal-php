@@ -19,7 +19,7 @@
     $staff_id = htmlspecialchars($_SESSION['unique_id'] ?? 'N/A');
     $pic = htmlspecialchars($profile['profile_picture'] ?? '../../assets/img/profile-pictures/profile-staff.svg');
 
-    $rank_display = ucfirst($_SESSION['academic_rank']);
+    $rank_display = ucfirst($_SESSION['profile_data']['academic_rank']);
 ?>
 
 <!DOCTYPE html>
@@ -44,6 +44,7 @@
         <div class="content">
             
             <form action="../../backend/controller.php?method_finder=update_profile" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                 <input type="hidden" name="profile_picture" id="selected-avatar-input" value="<?= $pic ?>">
 

@@ -181,6 +181,8 @@
                                                     <i class="fas fa-pen"></i>
                                                 </button>
                                                 <form action="../../backend/controller.php?method_finder=manage_users" method="POST" style="display: inline;">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                                     <input type="hidden" name="sub_action" value="deactivate">
                                                     <input type="hidden" name="target_id" value="<?= $stu['user_id'] ?>">
                                                     <button type="submit" class="icon-btn delete" title="Deactivate" onclick="return confirm('Deactivate this student?');">
@@ -214,8 +216,12 @@
                                         <td><?= htmlspecialchars($tch['academic_rank']) ?></td>
                                         <td>
                                             <form action="../../backend/controller.php?method_finder=manage_users" method="POST" style="display:inline;">
+                                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                                 <input type="hidden" name="sub_action" value="deactivate"><input type="hidden" name="target_id" value="<?= $tch['user_id'] ?>">
-                                                <button class="icon-btn delete" onclick="return confirm('Deactivate?')"><i class="fas fa-ban"></i></button>
+                                                <button class="icon-btn delete" onclick="return confirm('Deactivate?')">
+                                                    <i class="fas fa-ban"></i>
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
@@ -234,15 +240,31 @@
                                     <tbody>
                                         <?php foreach($admins as $adm): ?>
                                         <tr>
-                                            <td><div class="user-cell"><img src="<?= htmlspecialchars($adm['profile_picture']) ?>" alt=""><p class="name"><?= htmlspecialchars($adm['first_name'].' '.$adm['last_name']) ?></p></div></td>
+                                            <td>
+                                                <div class="user-cell">
+                                                    <?php if ($adm['academic_rank'] === 'Head Administrator'): ?>
+                                                        <div class="avatar-wrapper exclusive-admin table-size">
+                                                            <img src="<?= htmlspecialchars($adm['profile_picture']) ?>" alt="" class="avatar">
+                                                            <i class="fas fa-crown crown-badge"></i>
+                                                        </div>
+                                                    <?php else: ?>
+                                                        <img src="<?= htmlspecialchars($adm['profile_picture']) ?>" alt="">
+                                                    <?php endif; ?>
+                                                    <p class="name"><?= htmlspecialchars($adm['first_name'].' '.$adm['last_name']) ?></p>
+                                                </div>
+                                            </td>
                                             <td><?= htmlspecialchars($adm['unique_id']) ?></td>
                                             <td><?= htmlspecialchars($adm['department']) ?></td>
                                             <td><?= htmlspecialchars($adm['academic_rank']) ?></td>
                                             <td>
                                                 <?php if ($adm['user_id'] == $_SESSION['user_id']): ?><span style="font-size:0.8rem;color:#aaa">[You]</span><?php else: ?>
                                                 <form action="../../backend/controller.php?method_finder=manage_users" method="POST" style="display:inline;">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                                     <input type="hidden" name="sub_action" value="deactivate"><input type="hidden" name="target_id" value="<?= $adm['user_id'] ?>">
-                                                    <button class="icon-btn delete" onclick="return confirm('Deactivate?')"><i class="fas fa-ban"></i></button>
+                                                    <button class="icon-btn delete" onclick="return confirm('Deactivate?')">
+                                                        <i class="fas fa-ban"></i>
+                                                    </button>
                                                 </form>
                                                 <?php endif; ?>
                                             </td>
@@ -267,8 +289,23 @@
                                             <td><?= ($pen['role']=='student') ? $pen['course'] : $pen['department'] ?></td>
                                             <td>
                                                 <div class="action-buttons">
-                                                    <form action="../../backend/controller.php?method_finder=manage_users" method="POST"><input type="hidden" name="sub_action" value="approve"><input type="hidden" name="target_id" value="<?= $pen['user_id'] ?>"><button class="btn-primary small">Approve</button></form>
-                                                    <form action="../../backend/controller.php?method_finder=manage_users" method="POST"><input type="hidden" name="sub_action" value="delete"><input type="hidden" name="target_id" value="<?= $pen['user_id'] ?>"><button class="icon-btn delete"><i class="fas fa-times"></i></button></form>
+                                                    <form action="../../backend/controller.php?method_finder=manage_users" method="POST">
+                                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
+                                                        <input type="hidden" name="sub_action" value="approve">
+                                                        <input type="hidden" name="target_id" value="<?= $pen['user_id'] ?>">
+                                                        <button class="btn-primary small">Approve</button>
+                                                    </form>
+
+                                                    <form action="../../backend/controller.php?method_finder=manage_users" method="POST">
+                                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
+                                                        <input type="hidden" name="sub_action" value="delete">
+                                                        <input type="hidden" name="target_id" value="<?= $pen['user_id'] ?>">
+                                                        <button class="icon-btn delete">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </td>
                                         </tr>
@@ -291,7 +328,15 @@
                                             <td><?= ucfirst($ina['role']) ?></td>
                                             <td><span class="status-pill inactive">Inactive</span></td>
                                             <td>
-                                                <form action="../../backend/controller.php?method_finder=manage_users" method="POST"><input type="hidden" name="sub_action" value="reactivate"><input type="hidden" name="target_id" value="<?= $ina['user_id'] ?>"><button class="icon-btn edit"><i class="fas fa-undo"></i></button></form>
+                                                <form action="../../backend/controller.php?method_finder=manage_users" method="POST">
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                                    
+                                                    <input type="hidden" name="sub_action" value="reactivate">
+                                                    <input type="hidden" name="target_id" value="<?= $ina['user_id'] ?>">
+                                                    <button class="icon-btn edit">
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                         <?php endforeach; ?>
@@ -312,6 +357,8 @@
             <div class="modal-header"><h3>Register New User</h3></div>
             
             <form action="../../backend/controller.php?method_finder=create_user" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                 <div class="form-grid single-col" style="margin-bottom: 1rem;">
                     <div class="input-group">
                         <label>Role</label>

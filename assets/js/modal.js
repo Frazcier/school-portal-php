@@ -1,28 +1,114 @@
-function openViewModal() {
-    const modal = document.getElementById('view-modal');
-    const displayImg = document.getElementById('current-avatar-display');
-    const enlargedImg = document.getElementById('enlarged-image');
-    
-    if(modal && displayImg && enlargedImg) {
-        enlargedImg.src = displayImg.src;
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
         modal.classList.add('active');
-        document.body.classList.add('no-scroll')
-    }
-}
-
-function openSelectorModal() {
-    const modal = document.getElementById('selector-modal');
-    if(modal) {
-        modal.classList.add('active');
-        document.body.classList.add('no-scroll')
+        document.body.classList.add('no-scroll');
+    } else {
+        console.warn(`Modal with ID '${modalId}' not found.`);
     }
 }
 
 function closeModals(e) {
     if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-btn')) {
         document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('active'));
-        document.body.classList.add('no-scroll')
+        document.body.classList.remove('no-scroll');
     }
+}
+
+const openSelectorModal = () => showModal('selector-modal');
+const openImportModal   = () => showModal('import-modal');
+const openSubjectModal  = () => showModal('subject-modal');
+const openAnnouncementModal = () => showModal('announcement-modal');
+const openUserModal     = () => showModal('user-modal');
+
+
+function openViewModal() {
+    const displayImg = document.getElementById('current-avatar-display');
+    const enlargedImg = document.getElementById('enlarged-image');
+    
+    if (displayImg && enlargedImg) {
+        enlargedImg.src = displayImg.src;
+        showModal('view-modal');
+    }
+}
+
+function openSubjectViewModal(data) {
+    const subject = JSON.parse(data);
+    
+    const fields = {
+        'view-code': subject.subject_code,
+        'view-desc': subject.subject_description,
+        'view-units': subject.units + ' Units',
+        'view-section': subject.section_assigned,
+        'view-room': subject.room || 'TBA',
+        'view-day': subject.schedule_day || 'TBA',
+        'view-time': subject.schedule_time || 'TBA'
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    }
+
+    showModal('view-subject-modal');
+}
+
+function openSubjectEditModal(data) {
+    const subject = JSON.parse(data);
+
+    const fields = {
+        'edit-id': subject.subject_id,
+        'edit-code': subject.subject_code,
+        'edit-desc': subject.subject_description,
+        'edit-units': subject.units,
+        'edit-instructor': subject.instructor_id,
+        'edit-time': subject.schedule_time,
+        'edit-section': subject.section_assigned,
+        'edit-day': subject.schedule_day,
+        'edit-room': subject.room
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    }
+
+    showModal('edit-modal');
+}
+
+function openAnnouncementEditModal(data) {
+    const ann = JSON.parse(data);
+
+    const fields = {
+        'edit-ann-id': ann.announcement_id,
+        'edit-ann-title': ann.title,
+        'edit-ann-content': ann.content,
+        'edit-ann-status': ann.status
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    }
+
+    showModal('edit-announcement-modal');
+}
+
+function openEditStudentModal(data) {
+    const student = JSON.parse(data);
+    
+    const fields = {
+        'edit-user-id': student.id,
+        'edit-student-name': student.name,
+        'edit-student-section': student.section || "N/A"
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    }
+
+    showModal('edit-student-modal');
 }
 
 function selectAvatar(path) {
@@ -30,119 +116,24 @@ function selectAvatar(path) {
     const displayImg = document.getElementById('current-avatar-display');
     const modal = document.getElementById('selector-modal');
 
-    if(hiddenInput && displayImg) {
+    if (hiddenInput && displayImg) {
         hiddenInput.value = path;
         displayImg.src = path;
         
         document.querySelectorAll('.avatar-option').forEach(img => {
             img.classList.remove('selected');
-
-            if(img.getAttribute('src') === path) {
+            if (img.getAttribute('src') === path) {
                 img.classList.add('selected');
             }
         });
 
-        if(modal) {
+        if (modal) {
             modal.classList.remove('active');
-        } else {
-            document.body.classList.add('no-scroll')
+            document.body.classList.remove('no-scroll');
         }
-        
     } else {
-        console.error("Error: Could not find input or display image elements.");
+        console.error("Error: Input or Display Image not found.");
     }
-}
-
-function openImportModal() {
-    document.getElementById('import-modal').classList.add('active');
-}
-
-function openSubjectModal() {
-    const modal = document.getElementById('subject-modal');
-    if(modal) {
-        modal.classList.add('active');
-        document.body.classList.add('no-scroll');
-    }
-}
-
-function openSubjectViewModal(data) {
-    const modal = document.getElementById('view-subject-modal'); // Renamed ID to avoid conflict
-    if(!modal) return;
-
-    const subject = JSON.parse(data);
-    
-    if(document.getElementById('view-code')) document.getElementById('view-code').textContent = subject.subject_code;
-    if(document.getElementById('view-desc')) document.getElementById('view-desc').textContent = subject.subject_description;
-    if(document.getElementById('view-units')) document.getElementById('view-units').textContent = subject.units + ' Units';
-    if(document.getElementById('view-section')) document.getElementById('view-section').textContent = subject.section_assigned;
-    if(document.getElementById('view-room')) document.getElementById('view-room').textContent = subject.room || 'TBA';
-    if(document.getElementById('view-day')) document.getElementById('view-day').textContent = subject.schedule_day || 'TBA';
-    if(document.getElementById('view-time')) document.getElementById('view-time').textContent = subject.schedule_time || 'TBA';
-
-    modal.classList.add('active');
-    document.body.classList.add('no-scroll');
-}
-
-function openSubjectEditModal(data) {
-    const modal = document.getElementById('edit-modal');
-    if(!modal) return;
-
-    const subject = JSON.parse(data);
-
-    if(document.getElementById('edit-id')) document.getElementById('edit-id').value = subject.subject_id;
-    if(document.getElementById('edit-code')) document.getElementById('edit-code').value = subject.subject_code;
-    if(document.getElementById('edit-desc')) document.getElementById('edit-desc').value = subject.subject_description;
-    if(document.getElementById('edit-units')) document.getElementById('edit-units').value = subject.units;
-    if(document.getElementById('edit-instructor')) document.getElementById('edit-instructor').value = subject.instructor_id;
-    if(document.getElementById('edit-time')) document.getElementById('edit-time').value = subject.schedule_time;
-    if(document.getElementById('edit-section')) document.getElementById('edit-section').value = subject.section_assigned;
-    if(document.getElementById('edit-day')) document.getElementById('edit-day').value = subject.schedule_day;
-    if(document.getElementById('edit-room')) document.getElementById('edit-room').value = subject.room;
-
-    modal.classList.add('active');
-    document.body.classList.add('no-scroll');
-}
-
-function openAnnouncementEditModal(data) {
-    const modal = document.getElementById('edit-announcement-modal');
-    if(!modal) return;
-
-    const ann = JSON.parse(data);
-
-    document.getElementById('edit-ann-id').value = ann.announcement_id;
-    document.getElementById('edit-ann-title').value = ann.title;
-    document.getElementById('edit-ann-content').value = ann.content;
-    document.getElementById('edit-ann-status').value = ann.status;
-
-    modal.classList.add('active');
-    document.body.classList.add('no-scroll');
-}
-
-function openAnnouncementModal() {
-    document.getElementById('announcement-modal').classList.add('active');
-    document.body.classList.add('no-scroll');
-}
-
-function openUserModal() {
-    const modal = document.getElementById('user-modal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.classList.add('no-scroll');
-    }
-}
-
-function openEditStudentModal(data) {
-    const modal = document.getElementById('edit-student-modal');
-    if (!modal) return;
-
-    const student = JSON.parse(data);
-    
-    if(document.getElementById('edit-user-id')) document.getElementById('edit-user-id').value = student.id;
-    if(document.getElementById('edit-student-name')) document.getElementById('edit-student-name').value = student.name;
-    if(document.getElementById('edit-student-section')) document.getElementById('edit-student-section').value = student.section || "N/A";
-
-    modal.classList.add('active');
-    document.body.classList.add('no-scroll');
 }
 
 function toggleUserFields() {
@@ -151,13 +142,8 @@ function toggleUserFields() {
     const staffFields = document.getElementById('staff-fields');
 
     if (roleSelect && stuFields && staffFields) {
-        const role = roleSelect.value;
-        if (role === 'student') {
-            stuFields.style.display = 'block';
-            staffFields.style.display = 'none';
-        } else {
-            stuFields.style.display = 'none';
-            staffFields.style.display = 'block';
-        }
+        const isStudent = roleSelect.value === 'student';
+        stuFields.style.display = isStudent ? 'block' : 'none';
+        staffFields.style.display = isStudent ? 'none' : 'block';
     }
 }

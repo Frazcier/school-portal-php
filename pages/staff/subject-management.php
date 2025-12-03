@@ -145,6 +145,8 @@
                                             <button class="icon-btn edit" title="Edit" onclick="openSubjectEditModal('<?= $sub_json ?>')"><i class="fas fa-pen"></i></button>
                                             
                                             <form action="../../backend/controller.php?method_finder=delete_subject" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this subject?');">
+                                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                                 <input type="hidden" name="subject_id" value="<?= $sub['subject_id'] ?>">
                                                 <button class="icon-btn delete" title="Delete"><i class="fas fa-trash"></i></button>
                                             </form>
@@ -166,6 +168,8 @@
             <button class="close-btn" onclick="closeModals(event)">&times;</button>
             <div class="modal-header"><h3>Add New Subject</h3></div>
             <form action="../../backend/controller.php?method_finder=add_subject" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+
                 <div class="form-grid">
                     <div class="input-group"><label>Subject Code</label><input type="text" name="subject_code" placeholder="e.g. IT 111" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 0.5rem;"></div>
                     <div class="input-group"><label>Description</label><input type="text" name="subject_description" placeholder="e.g. Intro to Computing" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 0.5rem;"></div>
@@ -206,6 +210,8 @@
             <button class="close-btn" onclick="closeModals(event)">&times;</button>
             <div class="modal-header"><h3>Edit Subject</h3></div>
             <form action="../../backend/controller.php?method_finder=update_subject" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                 <input type="hidden" name="subject_id" id="edit-id">
                 <div class="form-grid">
                     <div class="input-group"><label>Subject Code</label><input type="text" name="subject_code" id="edit-code" required style="width: 100%; padding: 0.8rem; border: 1px solid #ddd; border-radius: 0.5rem;"></div>

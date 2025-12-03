@@ -48,6 +48,8 @@ session_start();
             <?php endif; ?>
 
             <form action="../../backend/controller.php?method_finder=login" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+
                 <div class="input-group">
                     <div class="input-wrapper">
                         <input type="text" name="identifier" placeholder="Email or School ID" required>

@@ -39,7 +39,8 @@ session_start();
             <?php endif; ?> 
 
             <form action="../../backend/controller.php?method_finder=register" method="POST" onsubmit="return validatePassword()">
-                
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">    
+
                 <div class="input-group">
                     <div class="input-wrapper">
                         <select name="role" required>

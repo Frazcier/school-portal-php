@@ -125,6 +125,8 @@
                                 <div class="action-buttons">
                                     <?php if($ex['status'] === 'Upcoming'): ?>
                                         <form action="../../backend/controller.php?method_finder=complete_exam" method="POST" style="display:inline;">
+                                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                             <input type="hidden" name="exam_id" value="<?= $ex['exam_id'] ?>">
                                             <button type="submit" class="icon-btn" title="Mark as Completed">
                                                 <i class="fas fa-check"></i>
@@ -133,6 +135,8 @@
                                     <?php endif; ?>
                                     
                                     <form action="../../backend/controller.php?method_finder=delete_exam" method="POST" style="display:inline;" onsubmit="return confirm('Cancel this exam?');">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                         <input type="hidden" name="exam_id" value="<?= $ex['exam_id'] ?>">
                                         <button type="submit" class="icon-btn delete" title="Delete Schedule">
                                             <i class="fas fa-trash"></i>
@@ -154,6 +158,8 @@
             <div class="modal-header"><h3>Schedule New Exam</h3></div>
             
             <form action="../../backend/controller.php?method_finder=add_exam" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                 <div class="form-grid single-col" style="margin-bottom: 1rem;">
                     <div class="input-group">
                         <label>Subject</label>

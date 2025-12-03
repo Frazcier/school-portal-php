@@ -105,8 +105,24 @@
                                 <td>
                                     <div class="action-buttons">
                                         <a href="<?= $res['file_path'] ?>" download class="icon-btn"><i class="fas fa-download"></i></a>
-                                        <form action="../../backend/controller.php?method_finder=toggle_resource_status" method="POST" style="display:inline;"><input type="hidden" name="resource_id" value="<?= $res['resource_id'] ?>"><input type="hidden" name="current_status" value="<?= $res['status'] ?>"><button class="icon-btn"><i class="fas <?= ($res['status']=='Published'?'fa-eye-slash':'fa-eye') ?>"></i></button></form>
-                                        <form action="../../backend/controller.php?method_finder=delete_resource" method="POST" style="display:inline;" onsubmit="return confirm('Delete?')"><input type="hidden" name="resource_id" value="<?= $res['resource_id'] ?>"><button class="icon-btn delete"><i class="fas fa-trash"></i></button></form>
+                                        <form action="../../backend/controller.php?method_finder=toggle_resource_status" method="POST" style="display:inline;">
+                                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
+                                            <input type="hidden" name="resource_id" value="<?= $res['resource_id'] ?>">
+                                            <input type="hidden" name="current_status" value="<?= $res['status'] ?>">
+                                            <button class="icon-btn">
+                                                <i class="fas <?= ($res['status']=='Published'?'fa-eye-slash':'fa-eye') ?>"></i>
+                                            </button>
+                                        </form>
+
+                                        <form action="../../backend/controller.php?method_finder=delete_resource" method="POST" style="display:inline;" onsubmit="return confirm('Delete?')">
+                                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
+                                            <input type="hidden" name="resource_id" value="<?= $res['resource_id'] ?>">
+                                            <button class="icon-btn delete">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -124,6 +140,8 @@
             <div class="modal-header"><h3>Upload New Resource</h3></div>
             
             <form action="../../backend/controller.php?method_finder=upload_resource" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                 <div class="form-grid single-col" style="margin-bottom: 1rem;">
                     <div class="input-group">
                         <label>Resource Title</label>

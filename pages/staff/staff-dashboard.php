@@ -14,7 +14,7 @@
     $first_name = $_SESSION['first_name'];
     $last_name = $_SESSION['last_name'];
     $full_name = htmlspecialchars($first_name . ' ' . $last_name);
-    $academic_rank = $_SESSION['academic_rank'];
+    $academic_rank = $_SESSION['profile_data']['academic_rank'];
     $date_today = date("F j, Y");
 ?>
 
@@ -106,6 +106,8 @@
                                         <i class="fas fa-pen"></i>
                                     </button>
                                     <form action="../../backend/controller.php?method_finder=delete_announcement" method="POST" onsubmit="return confirm('Delete this announcement?');">
+                                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                                         <input type="hidden" name="announcement_id" value="<?= $ann['announcement_id'] ?>">
                                         <button type="submit" class="icon-btn delete" title="Delete">
                                             <i class="fas fa-trash"></i>
@@ -152,12 +154,20 @@
                                     
                                     $pic = $log['profile_picture'] ?? '../../assets/img/profile-pictures/profile-staff.svg';
                                     $name = $log['first_name'] ? htmlspecialchars($log['first_name'] . ' ' . $log['last_name']) : 'System User';
+                                    $rank = $log['academic_rank'];
                                 ?>
                                 <tr>
                                     <td><span class="<?= $badge ?>"><?= htmlspecialchars($type) ?></span></td>
                                     <td>
                                         <div class="user-cell">
-                                            <img src="<?= htmlspecialchars($pic) ?>" alt="User">
+                                            <?php if ($rank === 'Head Administrator'): ?>
+                                                <div class="avatar-wrapper exclusive-admin table-size">
+                                                    <img src="<?= htmlspecialchars($pic) ?>" alt="User" class="avatar">
+                                                    <i class="fas fa-crown crown-badge"></i>
+                                                </div>
+                                            <?php else: ?>
+                                                <img src="<?= htmlspecialchars($pic) ?>" alt="User">
+                                            <?php endif; ?>
                                             <span class="name"><?= $name ?></span>
                                         </div>
                                     </td>
@@ -186,6 +196,8 @@
             <button class="close-btn" onclick="closeModals(event)">&times;</button>
             <div class="modal-header"><h3>Create Announcement</h3></div>
             <form action="../../backend/controller.php?method_finder=create_announcement" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                 <div class="form-grid single-col">
                     <div class="input-group">
                         <label>Title</label>
@@ -208,6 +220,8 @@
             <button class="close-btn" onclick="closeModals(event)">&times;</button>
             <div class="modal-header"><h3>Edit Announcement</h3></div>
             <form action="../../backend/controller.php?method_finder=update_announcement" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+
                 <input type="hidden" name="announcement_id" id="edit-ann-id">
                 <div class="form-grid single-col">
                     <div class="input-group">
