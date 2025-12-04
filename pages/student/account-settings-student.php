@@ -2,7 +2,7 @@
     session_start();
 
     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
-        header("Location: ../auth/login.php");
+        header("Location: ../auth/login.php?error=You don't have permission to access this page");
         exit();
     }
 
@@ -42,6 +42,7 @@
         <div class="content">
             
             <form action="../../backend/controller.php?method_finder=update_profile" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                 <input type="hidden" name="profile_picture" id="selected-avatar-input" value="<?= $pic ?>">
 

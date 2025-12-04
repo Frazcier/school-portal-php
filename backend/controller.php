@@ -2,6 +2,8 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+require_once __DIR__ . '/db_config.php';
 class controller {
     private $connection;
 
@@ -10,21 +12,6 @@ class controller {
     }
 
     public function create_connection() {
-        if (!defined('DB_HOST')) {
-            define ('DB_HOST', 'localhost');
-        };
-
-        if (!defined('DB_USER')) {
-            define ('DB_USER', 'root');
-        };
-
-        if (!defined('DB_PASS')) {
-            define ('DB_PASS', '');
-        };
-
-        if (!defined('DB_NAME')) {
-            define ('DB_NAME', 'school_portal_db');
-        };
 
         $connection = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
@@ -35,95 +22,55 @@ class controller {
         return $connection;
     }
 
+    public function generate_csrf_token() {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        return $_SESSION['csrf_token'];
+    }
+
     public function actionreader() {
         if (isset($_GET['method_finder'])) {
             $action = $_GET['method_finder'];
 
-            if ($action === 'register') {
-                $this->register();
-            } else if ($action === 'login') {
-                $this->login();
-            } else if ($action === 'logout') {
-                $this->logout();
-            } else if ($action === 'update_profile') {
-                $this->update_profile();
-            } else if ($action === 'manage_users') {
-                $this->manage_users();
-            } else if ($action === 'update_subject') { 
-                $this->update_subject();
-            } else if ($action === 'update_grade_record') {
-                $this->update_grade_record();
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+                    if ($action !== 'login' && $action !== 'register') {
+                        die("Security Error: Invalid Request Token.");
+                    }
+                }
             }
-        }
-    }
-    
-    // --- FIXED METHOD: FETCH GRADES (Now includes u.unique_id from users table) ---
-    public function get_grades_for_subject($subject_id) {
-        $sql = "SELECT 
-                    gp.*, 
-                    u.unique_id,                     /* <-- FIXED: FETCHING UNIQUE_ID */
-                    sp.first_name, 
-                    sp.last_name,
-                    sp.course,
-                    sp.year_level 
-                FROM grading_periods gp
-                JOIN users u ON gp.student_id = u.user_id
-                JOIN student_profiles sp ON u.user_id = sp.user_id
-                WHERE gp.subject_id = ?
-                ORDER BY sp.last_name ASC";
-        
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bind_param("i", $subject_id);
-        $stmt->execute();
-        
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
-    }
-    
-    public function update_grade_record() {
-        if (!isset($_POST['period_id'])) {
-            header("Location: ../pages/staff/grading.php?error=Invalid record ID");
-            exit();
-        }
-        
-        $period_id = $_POST['period_id'];
-        $activity_1 = $_POST['activity_1'];
-        $activity_2 = $_POST['activity_2'];
-        $exam_score = $_POST['exam_score'];
 
-        $max_class_score = 100;
-        $max_exam_score = 50;
-        $class_standing_ratio = 0.60;
-        $exam_standing_ratio = 0.40;
+            switch ($action) {
+                case 'register': $this->register(); break;
+                case 'login': $this->login(); break;
+                case 'logout': $this->logout(); break;
+                case 'update_profile': $this->update_profile(); break;
+                case 'manage_users': $this->manage_users(); break;
+                case 'create_user': $this->create_user(); break;
+                
+                case 'add_subject': $this->add_subject(); break;
+                case 'update_subject': $this->update_subject(); break;
+                case 'delete_subject': $this->delete_subject(); break;
+                
+                case 'upload_resource': $this->upload_resource(); break;
+                case 'delete_resource': $this->delete_resource(); break;
+                case 'toggle_resource_status': $this->toggle_resource_status(); break;
+                
+                case 'create_announcement': $this->create_announcement(); break;
+                case 'update_announcement': $this->update_announcement(); break;
+                case 'delete_announcement': $this->delete_announcement(); break;
+                
+                case 'add_exam': $this->add_exam(); break;
+                case 'delete_exam': $this->delete_exam(); break;
+                case 'complete_exam': $this->complete_exam(); break;
 
-        $total_score = $activity_1 + $activity_2;
-        
-        $raw_class_standing = ($total_score / $max_class_score) * 4.0;
-        $raw_exam_standing = ($exam_score / $max_exam_score) * 4.0;
-        
-        $final_grade = ($raw_class_standing * $class_standing_ratio) + ($raw_exam_standing * $exam_standing_ratio);
-        
-        $rounded_grade = round($final_grade * 4) / 4; 
-        
-        $sql = "UPDATE grading_periods 
-                SET activity_1 = ?, activity_2 = ?, exam_score = ?, final_grade = ?, rounded_grade = ?
-                WHERE period_id = ?";
-        
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bind_param("iiiddi", 
-            $activity_1, 
-            $activity_2, 
-            $exam_score, 
-            $final_grade, 
-            $rounded_grade, 
-            $period_id
-        );
-
-        if ($stmt->execute()) {
-            header("Location: ../pages/staff/grading.php?success=Grade updated successfully for period ID: $period_id");
-            exit();
-        } else {
-            header("Location: ../pages/staff/grading.php?error=Failed to update grade: " . $this->connection->error);
-            exit();
+                case 'get_more_logs': $this->get_more_logs(); break;
+                case 'export_logs': $this->export_logs(); break;
+                case 'export_users': $this->export_users(); break;
+                case 'get_more_subjects': $this->get_more_subjects(); break;
+            }
         }
     }
     
@@ -207,6 +154,7 @@ class controller {
             }
 
             if ($stmt_prof->execute()) {
+                $this->log_activity($user_id, "Registration", "New user registered: $unique_id ($role)");
                 header("Location: ../pages/auth/login.php?success=Account created successfully&new_id=$unique_id");
                 exit();
             } else {
@@ -224,62 +172,52 @@ class controller {
 
         $sql = "SELECT * FROM users WHERE email = ? OR unique_id = ?";
         $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("ss", $identifier, $identifier);
+        $stmt->execute();
+        $user = $stmt->get_result()->fetch_assoc();
 
-        if ($stmt) {
-            $stmt->bind_param("ss", $identifier, $identifier);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($user = $result->fetch_assoc()) {
-                if (password_verify($password, $user['password'])) {
-                    if ($user['status'] !== 'active') {
-                        header("Location: ../pages/auth/login.php?error=Account is " . $user['status']);
-                        exit();
-                    }
-
-                    $user_id = $user['user_id'];
-                    $role = $user['role'];
-
-                    if ($role === 'student') {
-                        $sql_p = "SELECT * FROM student_profiles WHERE user_id = ?";
-                    } else {
-                        $sql_p = "SELECT * FROM staff_profiles WHERE user_id = ?";
-                    }
-
-                    $stmt_p = $this->connection->prepare($sql_p);
-                    $stmt_p->bind_param("i", $user_id);
-                    $stmt_p->execute();
-                    $res_p = $stmt_p->get_result();
-                    $profile = $res_p->fetch_assoc();
-
-                    $_SESSION['user_id'] = $user['user_id'];
-                    $_SESSION['unique_id'] = $user['unique_id'];
-                    $_SESSION['role'] = $user['role'];
-                    $_SESSION['email'] = $user['email'];
-                    
-                    
-                    $_SESSION['first_name'] = $profile['first_name'];
-                    $_SESSION['last_name'] = $profile['last_name'];
-                    $_SESSION['middle_name'] = $profile['middle_name'];
-                    $_SESSION['profile_picture'] = $profile['profile_picture'];
-                    $_SESSION['academic_rank'] = $profile['academic_rank'];
-                    $_SESSION['profile_data'] = $profile;
-
-                    if ($role === 'student') {
-                        header("Location: ../pages/student/student-dashboard.php");
-                    } else {
-                        header("Location: ../pages/staff/staff-dashboard.php");
-                    }
-                    exit();
-                    
-                } else {
-                    header("Location: ../pages/auth/login.php?error=Incorrect Password");
-                    exit();
-                }
-            } else {
-                header("Location: ../pages/auth/login.php?error=User not found");
+        if ($user && password_verify($password, $user['password'])) {
+            if ($user['status'] !== 'active') {
+                header("Location: ../pages/auth/login.php?error=Account is " . $user['status']);
                 exit();
             }
+
+            session_regenerate_id(true);
+
+            if ($user['role'] === 'student') {
+                $table = 'student_profiles';
+            } else {
+                $table = 'staff_profiles';
+            }
+
+            $sql_prof = "SELECT * FROM $table WHERE user_id = ?";
+            $stmt_prof = $this->connection->prepare($sql_prof);
+            $stmt_prof->bind_param("i", $user['user_id']);
+            $stmt_prof->execute();
+            $profile = $stmt_prof->get_result()->fetch_assoc();
+
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['unique_id'] = $user['unique_id'];
+            $_SESSION['role'] = $user['role'];
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['first_name'] = $profile['first_name'];
+            $_SESSION['last_name'] = $profile['last_name'];
+            $_SESSION['profile_data'] = $profile;
+
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+            $this->log_activity($user['user_id'], "Login", "User logged in successfully");
+
+            if ($user['role'] === 'student') {
+                header("Location: ../pages/student/student-dashboard.php");
+            } else {
+                header("Location: ../pages/staff/staff-dashboard.php");
+            }
+
+            exit();
+        } else {
+            header("Location: ../pages/auth/login.php?error=Invalid Credentials");
+            exit();
         }
     }
 
@@ -377,7 +315,7 @@ class controller {
             $table = 'staff_profiles';
         };
 
-        $sql = "SELECT user.user_id, user.unique_id, user.email, user.status, user.role, profile.*
+        $sql = "SELECT user.user_id, user.unique_id, user.email, user.status, user.role, user.created_at, profile.*
                 FROM users user
                 JOIN $table profile ON user.user_id = profile.user_id
                 WHERE user.role = ? and user.status = ?
@@ -389,67 +327,778 @@ class controller {
     }
 
     public function manage_users() {
-
         $sub_action = $_POST['sub_action'];
         $target_id = $_POST['target_id'];
+        $current_user_id = $_SESSION['user_id'];
+
+        $sql_info = "SELECT u.unique_id, u.role, s.academic_rank, st.course, st.year_level 
+                     FROM users u 
+                     LEFT JOIN staff_profiles s ON u.user_id = s.user_id 
+                     LEFT JOIN student_profiles st ON u.user_id = st.user_id
+                     WHERE u.user_id = ?";
+        $stmt_info = $this->connection->prepare($sql_info);
+        $stmt_info->bind_param('i', $target_id);
+        $stmt_info->execute();
+        $target_data = $stmt_info->get_result()->fetch_assoc();
+        
+        $target_unique_id = $target_data['unique_id'] ?? 'Unknown';
+        $target_role = $target_data['role'] ?? 'student';
+        $target_rank_title = $target_data['academic_rank'] ?? '';
+
+        $my_role = $_SESSION['role'];
+        $my_rank_title = $_SESSION['academic_rank'] ?? ''; 
+        $my_score = $this->get_rank_value($my_role, $my_rank_title);
+        $target_score = $this->get_rank_value($target_role, $target_rank_title);
+
+        if (($sub_action === 'deactivate' || $sub_action === 'delete') && $target_id != $current_user_id) {
+            if ($my_score <= $target_score) {
+                $this->log_activity($current_user_id, "Security Alert", "Unauthorized attempt on: $target_unique_id");
+                header("Location: ../pages/staff/user-management.php?error=Action Denied: Insufficient privileges.");
+                exit();
+            }
+        }
+
+        $sql = "";
+        $msg = "";
+        $log_desc = "";
 
         if ($sub_action === 'approve') {
+            if ($target_role === 'student') {
+                $course = $target_data['course'];
+                $year = $target_data['year_level'];
+                
+                $sectionA = "$course {$year}A"; 
+                $sectionB = "$course {$year}B"; 
+                $limit = 50;
+
+                $stmtA = $this->connection->prepare("SELECT COUNT(*) as total FROM student_profiles WHERE section = ?");
+                $stmtA->bind_param("s", $sectionA);
+                $stmtA->execute();
+                $countA = $stmtA->get_result()->fetch_assoc()['total'];
+
+                $stmtB = $this->connection->prepare("SELECT COUNT(*) as total FROM student_profiles WHERE section = ?");
+                $stmtB->bind_param("s", $sectionB);
+                $stmtB->execute();
+                $countB = $stmtB->get_result()->fetch_assoc()['total'];
+
+                if ($countA >= $limit && $countB >= $limit) {
+                    header("Location: ../pages/staff/user-management.php?error=Approval Failed: All sections ($sectionA, $sectionB) are full.");
+                    exit();
+                }
+
+                $assigned_section = ($countA <= $countB) ? $sectionA : $sectionB;
+
+                $sql_assign = "UPDATE student_profiles SET section = ? WHERE user_id = ?";
+                $stmt_assign = $this->connection->prepare($sql_assign);
+                $stmt_assign->bind_param("si", $assigned_section, $target_id);
+                $stmt_assign->execute();
+                
+                $log_desc_extra = " Assigned to $assigned_section.";
+            }
+
             $sql = "UPDATE users SET status = 'active' WHERE user_id = ?";
-            $msg = "User account approved successfully";
+            $msg = "User approved" . (isset($assigned_section) ? " and assigned to $assigned_section" : "");
+            $log_desc = "Approved registration: $target_unique_id." . ($log_desc_extra ?? "");
+
         } else if ($sub_action === 'deactivate') {
-            $sql = "UPDATE users SET status = 'inactive'WHERE user_id = ?";
+            $sql = "UPDATE users SET status = 'inactive' WHERE user_id = ?";
             $msg = "User account deactivated";
+            $log_desc = "Deactivated user: $target_unique_id";
         } else if ($sub_action === 'reactivate') {
             $sql = "UPDATE users SET status = 'active' WHERE user_id = ?";
             $msg = "User account reactivated";
+            $log_desc = "Reactivated user: $target_unique_id";
         } else if ($sub_action === 'delete') {
             $sql = "DELETE FROM users WHERE user_id = ?";
-            $msg = "User account permanently deleted";
+            $msg = "User deleted permanently";
+            $log_desc = "Deleted user: $target_unique_id";
         }
 
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bind_param('i', $target_id);
+        if (!empty($sql)) {
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bind_param('i', $target_id);
 
-        if ($stmt->execute()) {
-            header ("Location: ../pages/staff/user-management.php?success=$msg");
-        } else {
-            header ("Location: ../pages/staff/user-management.php?error=Database error");
+            if ($stmt->execute()) {
+                $this->log_activity($current_user_id, "User Management", $log_desc);
+                header("Location: ../pages/staff/user-management.php?success=$msg");
+            } else {
+                header("Location: ../pages/staff/user-management.php?error=Database error");
+            }
         }
 
         exit();
     }
-    
-    public function update_subject() {
-        if (!isset($_POST['subject_id'])) {
-            header("Location: ../pages/staff/subject-management.php?error=Invalid subject data");
-            exit();
+
+    public function create_user() {
+        $role = $_POST['role'];
+        $first_name = $_POST['first_name'];
+        $last_name = $_POST['last_name'];
+        $middle_name = $_POST['middle_name'] ?? '';
+        $email = $_POST['email'];
+        $password = $_POST['password']; 
+        $course = $_POST['course'] ?? "N/A";
+        $year_level = $_POST['year_level'] ?? "N/A";
+        $department = $_POST['department'] ?? "N/A";
+        $academic_rank = $_POST['academic_rank'] ?? "N/A";
+
+        $prefix = ($role === 'student') ? "STU" : (($role === 'teacher') ? "TCH" : "ADM");
+        $year = date("Y");
+
+        $sql_id = "SELECT unique_id FROM users WHERE unique_id LIKE ? ORDER BY user_id DESC LIMIT 1";
+        $stmt_id = $this->connection->prepare($sql_id);
+        $pattern = $prefix . $year . "%";
+        $stmt_id->bind_param("s", $pattern);
+        $stmt_id->execute();
+        $result_id = $stmt_id->get_result();
+
+        if ($last_user = $result_id->fetch_assoc()) {
+            $last_number = intval(substr($last_user['unique_id'], -4));
+            $new_number = $last_number + 1;
+        } else {
+            $new_number = 1;
+        }
+        $unique_id = $prefix . $year . sprintf("%04d", $new_number);
+
+        $hashed_pass = password_hash($password, PASSWORD_DEFAULT);
+        $status = 'active';
+
+        $sql_user = "INSERT INTO users (unique_id, email, password, role, status) VALUES (?, ?, ?, ?, ?)";
+        $stmt_user = $this->connection->prepare($sql_user);
+        $stmt_user->bind_param("sssss", $unique_id, $email, $hashed_pass, $role, $status);
+
+        if ($stmt_user->execute()) {
+            $user_id = $this->connection->insert_id;
+            $default_pic = ($role === 'student') ? '../../assets/img/profile-pictures/profile.svg' : '../../assets/img/profile-pictures/profile-staff.svg';
+            
+            if ($role === 'student') {
+                $sql_prof = "INSERT INTO student_profiles (user_id, first_name, middle_name, last_name, course, year_level, section, profile_picture) VALUES (?, ?, ?, ?, ?, ?, 'N/A', ?)";
+                $stmt_prof = $this->connection->prepare($sql_prof);
+                $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $course, $year_level, $default_pic);
+            } else {
+                $sql_prof = "INSERT INTO staff_profiles (user_id, first_name, middle_name, last_name, department, academic_rank, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $stmt_prof = $this->connection->prepare($sql_prof);
+                $stmt_prof->bind_param("issssss", $user_id, $first_name, $middle_name, $last_name, $department, $academic_rank, $default_pic);
+            }
+
+            if ($stmt_prof->execute()) {
+                $this->log_activity($_SESSION['user_id'], "User Management", "Created new user: $unique_id");
+                header("Location: ../pages/staff/user-management.php?success=New $role added successfully (ID: $unique_id)");
+                exit();
+            }
+        } 
+        
+        header("Location: ../pages/staff/user-management.php?error=Failed to create user");
+        exit();
+    }
+
+    public function add_subject() {
+        $code = $_POST['subject_code'];
+        $desc = $_POST['subject_description'];
+        $units = $_POST['units'];
+        $instructor = $_POST['instructor_id'];
+        $section = $_POST['section_assigned'];
+        $time = $_POST['schedule_time'];
+        $day = $_POST['schedule_day'];
+        $room = $_POST['room'];
+
+        $sql = "INSERT INTO subjects (subject_code, subject_description, units, instructor_id, section_assigned, schedule_time, schedule_day, room)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("ssisssss", $code, $desc, $units, $instructor, $section, $time, $day, $room);
+
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Subject Management", "Added subject: $code");
+            header("Location: ../pages/staff/subject-management.php?success=Subject added successfully");
+        } else {
+            header("Location: ../pages/staff/subject-management.php?error=Failed to add subject");
         }
 
-        $subject_id = $_POST['subject_id'];
-        $subject_code = $_POST['subject_code'];
-        $subject_name = $_POST['subject_name'];
-        $department = $_POST['department'];
-        $instructor = $_POST['instructor_id']; 
-        $status = $_POST['status']; 
+        exit();
+    }
 
-        $sql_sub = "UPDATE subjects 
-                    SET subject_code = ?, subject_name = ?, department = ?, status = ?
-                    WHERE subject_id = ?";
+    public function update_subject() {
+        $id = $_POST['subject_id'];
+        $code = $_POST['subject_code'];
+        $desc = $_POST['subject_description'];
+        $units = $_POST['units'];
+        $instructor = $_POST['instructor_id'];
+        $section = $_POST['section_assigned'];
+        $time = $_POST['schedule_time'];
+        $day = $_POST['schedule_day'];
+        $room = $_POST['room'];
+
+        $sql = "UPDATE subjects SET subject_code = ?, subject_description = ?, units = ?, instructor_id = ?, section_assigned = ?, schedule_time = ?, schedule_day = ?, room = ?
+                WHERE subject_id = ?";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("ssisssssi", $code, $desc, $units, $instructor, $section, $time, $day, $room, $id);
+
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Subject Management", "Updated subject details: $code");
+            header("Location: ../pages/staff/subject-management.php?success=Subject updated successfully");
+        } else {
+            header("Location: ../pages/staff/subject-management.php?error=Failed to update subject");
+        }
+
+        exit();
+    }
+
+    public function delete_subject() {
+        $id = $_POST['subject_id'];
+        $code = $_POST['subject_code'];
+
+        $sql = "DELETE FROM subjects WHERE subject_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $id);
+
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Subject Management", "Deleted subject: $code");
+            header("Location: ../pages/staff/subject-management.php?success=Subject deleted successfully");
+        } else {
+            header("Location: ../pages/staff/subject-management.php?error=Failed to delete subject");
+        }
+
+        exit();
+    }
+
+    public function get_all_subjects() {
+        $sql = "SELECT s.*, p.first_name, p.last_name, p.profile_picture, p.academic_rank
+                FROM subjects s
+                LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
+                ORDER BY s.created_at DESC";
+
+        $result = $this->connection->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function get_student_subjects($user_id) {
+        $sql = "SELECT section FROM student_profiles WHERE user_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $student = $stmt->get_result()->fetch_assoc();
+
+        $section = $student['section'] ?? 'N/A';
+
+        $sql = "SELECT s.*, p.first_name, p.last_name, p.profile_picture
+                FROM subjects s
+                LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
+                WHERE s.section_assigned = ? AND s.status = 'Active'
+                
+                UNION
+                
+                SELECT s.*, p.first_name, p.last_name, p.profile_picture
+                FROM subjects s
+                LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
+                INNER JOIN student_grades sg ON s.subject_id = sg.subject_id
+                WHERE sg.student_id = ? AND s.status = 'Active'";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("si", $section, $user_id);
         
-        $stmt_sub = $this->connection->prepare($sql_sub);
-        $stmt_sub->bind_param("ssssi", $subject_code, $subject_name, $department, $status, $subject_id);
+        if (!$stmt->execute()) {
+            return $this->get_subjects_by_section_only($section);
+        }
 
-        if ($stmt_sub->execute()) {
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    private function get_subjects_by_section_only($section) {
+        $sql = "SELECT s.*, p.first_name, p.last_name, p.profile_picture
+                FROM subjects s
+                LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
+                WHERE s.section_assigned = ? AND s.status = 'Active'";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("s", $section);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc(MYSQLI_ASSOC);
+    }
+
+    public function upload_resource() {
+        if (isset($_FILES['resource_file']) && $_FILES['resource_file']['error'] === 0) {
+            $title = $_POST['title'];
+            $subject = $_POST['subject_code'];
+            $category = $_POST['category'];
+            $status = $_POST['status'];
+            $uploader = $_SESSION['user_id'];
+
+            $fileTmpPath = $_FILES['resource_file']['tmp_name'];
+            $fileName = $_FILES['resource_file']['name'];
+            $fileSize = $_FILES['resource_file']['size'];
+            $fileType = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            $allowedExtensions = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'jpg', 'png', 'mp4'];
+            if (!in_array($fileType, $allowedExtensions)) {
+                header("Location: ../pages/staff/content-library.php?error=Invalid file type. Allowed: PDF, Docs, Images, MP4");
+                exit();
+            }
+
+            $newFileName = time() . '_' . $fileName;
+            $uploadFileDir = '../assets/uploads/';
+            $dest_path = $uploadFileDir . $newFileName;
+
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                $sql = "INSERT INTO resources (title, subject_code, category, file_name, file_path, file_type, uploaded_by, status) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $stmt = $this->connection->prepare($sql);
+                $db_path = '../../assets/uploads/' . $newFileName;
+                $stmt->bind_param("ssssssis", $title, $subject, $category, $fileName, $db_path, $fileType, $uploader, $status);
+
+                if ($stmt->execute()) {
+                    $this->log_activity($_SESSION['user_id'], "Content Library", "Uploaded file: $fileName");
+                    header("Location: ../pages/staff/content-library.php?success=Resource uploaded successfully");
+                } else {
+                    header("Location: ../pages/staff/content-library.php?error=Database error");
+                }
+            } else {
+                header("Location: ../pages/staff/content-library.php?error=No file uploaded or file too large");
+            }
             
-            // Placeholder: Update instructor association here if necessary
-            // For now, we only update the main subject details.
-            
-            header("Location: ../pages/staff/subject-management.php?success=Subject '$subject_name' updated successfully!");
             exit();
         } else {
-            header("Location: ../pages/staff/subject-management.php?error=Failed to update subject: " . $this->connection->error);
+            $error_code = $_FILES['resource_file']['error'] ?? 'No file';
+            header("Location: ../pages/staff/content-library.php?error=Upload Failed. Error Code: " . $error_code);
             exit();
         }
+    }
+
+    public function get_all_resources() {
+        $sql = "SELECT * FROM resources ORDER BY created_at DESC";
+        $result = $this->connection->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function toggle_resource_status() {
+        $id = $_POST['resource_id'];
+        $current_status = $_POST['current_status'];
+        
+        $sql_info = "SELECT title FROM resources WHERE resource_id = ?";
+        $stmt_info = $this->connection->prepare($sql_info);
+        $stmt_info->bind_param('i', $id);
+        $stmt_info->execute();
+        $res_info = $stmt_info->get_result()->fetch_assoc();
+        $title = $res_info['title'] ?? 'Unknown Resource';
+        
+        $new_status = ($current_status === 'Published') ? 'Draft' : 'Published';
+
+        $sql = "UPDATE resources SET status = ? WHERE resource_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("si", $new_status, $id);
+
+        if ($stmt->execute()) {
+            $action_verb = ($new_status === 'Published') ? "Published" : "Unpublished";
+            $this->log_activity($_SESSION['user_id'], "Content Library", "$action_verb resource: $title");
+            header("Location: ../pages/staff/content-library.php?success=Status updated to $new_status");
+        } else {
+            header("Location: ../pages/staff/content-library.php?error=Failed to update status");
+        }
+
+        exit();
+    }
+
+    public function delete_resource() {
+        $id = $_POST['resource_id'];
+
+        $sql_get = "SELECT file_path FROM resources WHERE resource_id = ?";
+        $stmt_get = $this->connection->prepare($sql_get);
+        $stmt_get->bind_param("i", $id);
+        $stmt_get->execute();  
+        $result = $stmt_get->get_result()->fetch_assoc();
+
+        $file_name_log = $result['file_name'] ?? 'Unknown File';
+
+        if ($result) {
+            $file_to_delete = __DIR__ . '/../' . str_replace('../../', '', $result['file_path']);
+
+            if (file_exists($file_to_delete)) {
+                unlink($file_to_delete);
+            }
+
+            $sql = "DELETE FROM resources WHERE resource_id = ?";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            
+            $this->log_activity($_SESSION['user_id'], "Content Library", "Deleted file: $file_name_log");
+            header("Location: ../pages/staff/content-library.php?success=Resource deleted");
+        } else {
+            header("Location: ../pages/staff/content-library.php?error=Resource not found");
+        }
+
+        exit();
+    }
+
+    public function check_or_404($data) {
+        if (empty($data)) {
+            http_response_code(404);
+            include (__DIR__ . '/../404.php');
+            exit();
+        }
+    }
+
+    public function log_activity($user_id, $action_type, $description) {
+        $sql = "INSERT INTO activity_logs (user_id, action_type, description) VALUES (?, ?, ?)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("iss", $user_id, $action_type, $description);
+        $stmt->execute();
+    }
+
+    public function create_announcement() {
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $user_id = $_SESSION['user_id'];
+        
+        $sql = "INSERT INTO announcements (title, content, created_by) VALUES (?, ?, ?)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("ssi", $title, $content, $user_id);
+        
+        if ($stmt->execute()) {
+            $this->log_activity($user_id, "Announcement", "Published announcement: $title");
+            header("Location: ../pages/staff/staff-dashboard.php?success=Announcement posted");
+        } else {
+            header("Location: ../pages/staff/staff-dashboard.php?error=Failed to post");
+        }
+        exit();
+    }
+
+    public function get_announcements() {
+        $sql = "SELECT * FROM announcements WHERE status = 'Active' ORDER BY created_at DESC LIMIT 5";
+        $result = $this->connection->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function update_announcement() {
+        $id = $_POST['announcement_id'];
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $status = $_POST['status'];
+
+        $sql = "UPDATE announcements SET title = ?, content = ?, status = ? WHERE announcement_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("sssi", $title, $content, $status, $id);
+        
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Announcement", "Updated announcement: $title");
+            header("Location: ../pages/staff/staff-dashboard.php?success=Announcement updated");
+        } else {
+            header("Location: ../pages/staff/staff-dashboard.php?error=Update failed");
+        }
+        exit();
+    }
+
+    public function delete_announcement() {
+        $id = $_POST['announcement_id'];
+        
+        $sql_get = "SELECT title FROM announcements WHERE announcement_id = ?";
+        $stmt_get = $this->connection->prepare($sql_get);
+        $stmt_get->bind_param("i", $id);
+        $stmt_get->execute();
+        $res = $stmt_get->get_result()->fetch_assoc();
+        $title = $res['title'] ?? 'Unknown';
+
+        $sql = "DELETE FROM announcements WHERE announcement_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $id);
+
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Announcement", "Deleted announcement: $title");
+            header("Location: ../pages/staff/staff-dashboard.php?success=Announcement deleted");
+        } else {
+            header("Location: ../pages/staff/staff-dashboard.php?error=Delete failed");
+        }
+        exit();
+    }
+
+    public function get_recent_logs() {
+        $sql = "SELECT l.*, s.first_name, s.last_name, s.profile_picture, s.academic_rank
+                FROM activity_logs l 
+                LEFT JOIN staff_profiles s ON l.user_id = s.user_id 
+                ORDER BY l.created_at DESC LIMIT 10";
+        $result = $this->connection->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function get_more_logs() {
+        $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+        $limit = 10;
+
+        $sql = "SELECT l.*, 
+                       COALESCE(s.first_name, st.first_name) as first_name, 
+                       COALESCE(s.last_name, st.last_name) as last_name, 
+                       COALESCE(s.profile_picture, st.profile_picture) as profile_picture
+                FROM activity_logs l 
+                LEFT JOIN staff_profiles s ON l.user_id = s.user_id 
+                LEFT JOIN student_profiles st ON l.user_id = st.user_id
+                ORDER BY l.created_at DESC LIMIT ? OFFSET ?";
+        
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+
+        echo json_encode($result);
+        exit();
+    }
+
+    public function export_logs() {
+        $filename = "activity_logs_" . date('Y-m-d') . ".csv";
+        
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        
+        $output = fopen('php://output', 'w');
+        
+        fputcsv($output, ['Log ID', 'Action Type', 'User', 'Description', 'Date & Time']);
+        
+        $sql = "SELECT l.log_id, l.action_type, 
+                       CONCAT(COALESCE(s.first_name, st.first_name), ' ', COALESCE(s.last_name, st.last_name)) as user_name,
+                       l.description, l.created_at
+                FROM activity_logs l 
+                LEFT JOIN staff_profiles s ON l.user_id = s.user_id 
+                LEFT JOIN student_profiles st ON l.user_id = st.user_id
+                ORDER BY l.created_at DESC";
+                
+        $result = $this->connection->query($sql);
+        
+        while ($row = $result->fetch_assoc()) {
+            fputcsv($output, $row);
+        }
+        
+        fclose($output);
+        exit();
+    }
+
+    public function export_users() {
+        if ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'teacher') {
+            header("Location: ../auth/login.php");
+            exit();
+        }
+
+        $filename = "user_masterlist_" . date('Y-m-d') . ".csv";
+        
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        
+        $output = fopen('php://output', 'w');
+        
+        fputcsv($output, [
+            'User ID', 
+            'Role', 
+            'Last Name', 
+            'First Name', 
+            'Email Address', 
+            'Status', 
+            'Course / Dept',
+            'Year / Rank',
+            'Section',
+            'Date Registered'
+        ]);
+        
+        $sql = "SELECT 
+                    u.unique_id, 
+                    u.role, 
+                    COALESCE(s.last_name, st.last_name) as last_name,
+                    COALESCE(s.first_name, st.first_name) as first_name,
+                    u.email, 
+                    u.status,
+                    COALESCE(st.course, s.department) as info_1,
+                    COALESCE(st.year_level, s.academic_rank) as info_2,
+                    st.section,
+                    u.created_at
+                FROM users u 
+                LEFT JOIN staff_profiles s ON u.user_id = s.user_id 
+                LEFT JOIN student_profiles st ON u.user_id = st.user_id
+                ORDER BY u.role ASC, last_name ASC";
+                
+        $result = $this->connection->query($sql);
+        
+        while ($row = $result->fetch_assoc()) {
+            $section = ($row['role'] === 'student') ? $row['section'] : 'N/A';
+            $date = date("M d, Y", strtotime($row['created_at']));
+            
+            fputcsv($output, [
+                $row['unique_id'],
+                ucfirst($row['role']),
+                $row['last_name'],
+                $row['first_name'],
+                $row['email'],
+                ucfirst($row['status']),
+                $row['info_1'],
+                $row['info_2'],
+                $section,
+                $date
+            ]);
+        }
+        
+        fclose($output);
+        exit();
+    }
+
+    public function get_more_subjects() {
+        $user_id = $_SESSION['user_id'];
+        $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
+        $limit = 3;
+
+        $all_subjects = $this->get_student_subjects($user_id);
+        $total_subjects = count($all_subjects);
+
+        $chunk = array_slice($all_subjects, $offset, $limit);
+
+        $loaded_count = $offset + count($chunk);
+        $remaining = $total_subjects - $loaded_count;
+
+        echo json_encode([
+            'subjects' => $chunk,
+            'remaining' => $remaining
+        ]);
+        exit();
+    }
+
+    public function get_rank_value($role, $rank) {
+        if ($role === 'student') return 0;
+
+        if ($rank === 'Head Administrator') return 100;
+        if ($rank === 'System Admin') return 90;
+        if ($role === 'admin') return 80;
+
+        switch ($rank) {
+            case 'Professor': return 50;
+            case 'Assoc. Prof': return 40;
+            case 'Asst. Prof': return 30;
+            case 'Instructor II': return 20;
+            case 'Instructor I': return 10;
+            default: return 5;
+        }
+    }
+
+    public function add_exam() {
+        $subject_id = $_POST['subject_id'];
+        $date = $_POST['exam_date'];
+        $time = $_POST['start_time'];
+        $room = $_POST['room'];
+        $status = 'Upcoming';
+
+        $sql = "INSERT INTO exams (subject_id, exam_date, start_time, room, status) VALUES (?, ?, ?, ?, ?)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("issss", $subject_id, $date, $time, $room, $status);
+
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Exam Management", "Scheduled exam for Subject ID: $subject_id");
+            header("Location: ../pages/staff/exam-management.php?success=Exam scheduled successfully");
+        } else {
+            header("Location: ../pages/staff/exam-management.php?error=Failed to schedule exam");
+        }
+        exit();
+    }
+
+    public function get_all_exams() {
+        $sql = "SELECT e.*, s.subject_code, s.subject_description, s.section_assigned 
+                FROM exams e 
+                JOIN subjects s ON e.subject_id = s.subject_id 
+                ORDER BY e.exam_date ASC";
+        $result = $this->connection->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function delete_exam() {
+        $id = $_POST['exam_id'];
+        
+        $sql = "DELETE FROM exams WHERE exam_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $id);
+
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Exam Management", "Deleted exam schedule ID: $id");
+            header("Location: ../pages/staff/exam-management.php?success=Exam deleted");
+        } else {
+            header("Location: ../pages/staff/exam-management.php?error=Failed to delete");
+        }
+        exit();
+    }
+
+    public function complete_exam() {
+        $id = $_POST['exam_id'];
+        $sql = "UPDATE exams SET status = 'Completed' WHERE exam_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        $this->log_activity($_SESSION['user_id'], "Exam Management", "Completed exam schedule ID: $id");
+        header("Location: ../pages/staff/exam-management.php?success=Exam marked as completed");
+        exit();
+    }
+
+    public function get_student_exams() {
+        $sql_sec = "SELECT section FROM student_profiles WHERE user_id = ?";
+        $stmt_sec = $this->connection->prepare($sql_sec);
+        $stmt_sec->bind_param("i", $user_id);
+        $stmt_sec->execute();
+        $res_sec = $stmt_sec->get_result()->fetch_assoc();
+
+        if (!$res_sec || empty($res_sec['section'])) {
+            return [];
+        }
+        $section = $res_sec['section'];
+
+        $sql = "SELECT e.*, s.subject_code, s.subject_description 
+                FROM exams e
+                JOIN subjects s ON e.subject_id = s.subject_id
+                WHERE s.section_assigned = ? 
+                AND e.status = 'Upcoming' 
+                ORDER BY e.exam_date ASC";
+                
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("s", $section);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function get_student_assignments($user_id) {
+        $sql_sec = "SELECT section FROM student_profiles WHERE user_id = ?";
+        $stmt_sec = $this->connection->prepare($sql_sec);
+        $stmt_sec->bind_param("i", $user_id);
+        $stmt_sec->execute();
+        $res_sec = $stmt_sec->get_result()->fetch_assoc();
+        $section = $res_sec['section'] ?? '';
+
+        if (!$section) return [];
+
+        $sql = "SELECT r.*, s.subject_description 
+                FROM resources r
+                JOIN subjects s ON r.subject_code = s.subject_code
+                WHERE s.section_assigned = ? 
+                AND r.category = 'Assignment' 
+                AND r.status = 'Published'
+                ORDER BY r.created_at DESC LIMIT 5";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("s", $section);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function get_student_resources($user_id) {
+        $sql_sec = "SELECT section FROM student_profiles WHERE user_id = ?";
+        $stmt_sec = $this->connection->prepare($sql_sec);
+        $stmt_sec->bind_param("i", $user_id);
+        $stmt_sec->execute();
+        $res_sec = $stmt_sec->get_result()->fetch_assoc();
+        $section = $res_sec['section'] ?? '';
+
+        if (!$section) return [];
+
+        $sql = "SELECT r.*, s.subject_description 
+                FROM resources r
+                JOIN subjects s ON r.subject_code = s.subject_code
+                WHERE s.section_assigned = ? 
+                AND r.status = 'Published'
+                ORDER BY r.created_at DESC";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("s", $section);
+        $stmt->execute();
+        
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
 }
 

@@ -2,7 +2,7 @@
 
 /***** GLOBAL LAYOUT *****/
 body {
-    background-color: #f0f2f5;
+    background-color: var(--background-page);
     font-family: 'Poppins', sans-serif;
     min-height: 100vh;
     display: flex;
@@ -21,25 +21,18 @@ body::before {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(148,0,211,0.4) 0%, rgba(79,164,255,0) 50%),
-                radial-gradient(circle, rgba(79,164,255,0.4) 0%, rgba(148,0,211,0) 50%);
+    background: radial-gradient(circle, rgba(148,0,211,0.15) 0%, rgba(79,164,255,0) 50%),
+                radial-gradient(circle, rgba(79,164,255,0.15) 0%, rgba(148,0,211,0) 50%);
     background-size: 100% 100%;
-    background-position: 0% 0%, 100% 100%;
     z-index: -1;
     animation: moveLight 15s ease-in-out infinite alternate;
     pointer-events: none;
 }
 
 @keyframes moveLight {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
-    }
-    50% {
-        transform: translate(-3.125rem, 1.25rem) rotate(5deg);
-    }
-    100% {
-        transform: translate(3.125rem, -1.25rem) rotate(-5deg);
-    }
+    0% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(-3.125rem, 1.25rem) rotate(5deg); }
+    100% { transform: translate(3.125rem, -1.25rem) rotate(-5deg); }
 }
 
 
@@ -53,8 +46,9 @@ body::before {
     max-width: 100%;
     min-height: 37.5rem;
     border-radius: 1.5rem;
-    box-shadow: 0 0.93rem 2.18rem rgba(50, 50, 93, 0.1), 0 0.31rem 0.93rem rgba(0, 0, 0, 0.07);
-    background-color: #ffffff;
+    box-shadow: 0 0.93rem 2.18rem rgba(0, 0, 0, 0.1), 0 0.31rem 0.93rem rgba(0, 0, 0, 0.05);
+    background-color: var(--background-component);
+    border: 1px solid var(--border-color);
 }
 
 
@@ -71,6 +65,7 @@ body::before {
     text-align: center;
     padding: 3rem;
     background: linear-gradient(135deg, var(--primary-color) 0%, #6a1b9a 100%);
+    overflow: hidden;
 
     &::after {
         content: '';
@@ -141,7 +136,7 @@ body::before {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #fff;
+    background-color: var(--background-component);
 }
 
 .form-header {
@@ -156,7 +151,7 @@ body::before {
     }
 
     & p {
-        color: #666;
+        color: var(--color-grey-text);
         font-size: 1rem;
     }
 }
@@ -177,16 +172,16 @@ body::before {
     & select {
         width: 100%;
         padding: 1rem 1rem 1rem 3rem;
-        background-color: #f9fafb;
-        border: 0.125rem solid #EEF2F6;
+        background-color: var(--background-input);
+        border: 0.125rem solid transparent;
         border-radius: 0.8rem;
         font-size: 1rem;
-        color: #333;
+        color: var(--color-dark-text);
         font-family: inherit;
         transition: all 0.2s ease;
 
         &:focus {
-            background-color: #fff;
+            background-color: var(--background-component);
             border-color: var(--primary-color);
             box-shadow: 0 0 0 0.25rem rgba(148, 0, 211, 0.1);
 
@@ -194,6 +189,7 @@ body::before {
                 opacity: 1;
                 filter: none;
                 transform: scale(1.1);
+                color: var(--primary-color);
             }
         }
     }
@@ -213,9 +209,10 @@ body::before {
         left: 1rem;
         width: 1.3rem;
         height: 1.3rem;
-        opacity: 0.4;
+        opacity: 0.5;
         transition: all 0.2s ease;
-        filter: grayscale(100%);
+        color: var(--color-grey-text);
+        pointer-events: none;
     }
 
     & .toggle-password {
@@ -224,7 +221,7 @@ body::before {
         left: auto;
         width: 1.4rem;
         height: 1.4rem;
-        color: #9ca3af;
+        color: var(--color-grey-text);
         cursor: pointer;
         transition: all 0.2s ease;
         z-index: 10;
@@ -265,7 +262,7 @@ body::before {
     margin-top: 1.5rem;
     text-align: center;
     font-size: 0.9rem;
-    color: #888;
+    color: var(--color-grey-text);
 
     & a {
         color: var(--primary-color);
@@ -330,10 +327,11 @@ body::before {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 
     &.open {
-        max-height: 18.75rem;
+        max-height: 25rem;
         opacity: 1;
         transform: translateY(0);
         margin-top: 1rem;
+        overflow: visible;
     }
 }
 
@@ -343,41 +341,157 @@ body::before {
 }
 
 
-/***** RESPONSIVE STYLES *****/
-@media (max-width: 768) {
-    body {
-        padding: 1rem;
+/***** DARK MODE *****/
+[data-theme="dark"] {
+    & .auth-container {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
     }
 
+    & .brand-side {
+        background: linear-gradient(135deg, #4a148c 0%, #311b92 100%);
+    }
+
+    & .form-side {
+        background-color: var(--background-component);
+    }
+
+    & .input-wrapper input,
+    & .input-wrapper select {
+        background-color: var(--background-input);
+        color: var(--color-dark-text);
+        border-color: var(--border-color);
+    }
+
+    & .input-wrapper input:focus,
+    & .input-wrapper select:focus {
+        border-color: var(--primary-color);
+        background-color: var(--background-hover);
+    }
+
+    
+    & .input-wrapper .icon,
+    & .input-wrapper .toggle-password {
+        filter: invert(2);
+        opacity: 0.5;
+        transition: all 0.2s ease;
+    }
+    
+    & .input-wrapper input:focus + .icon,
+    & .input-wrapper input:focus ~ .toggle-password {
+        opacity: 1;
+        filter: brightness(0) saturate(100%) invert(90%) sepia(13%) saturate(7313%) hue-rotate(197deg) brightness(98%) contrast(108%);
+    }
+    
+    & .input-wrapper select:focus + .icon {
+        filter: brightness(0) saturate(100%) invert(90%) sepia(13%) saturate(7313%) hue-rotate(197deg) brightness(98%) contrast(108%);
+    }
+    
+    & .form-header p,
+    & .extra-links {
+        color: var(--color-grey-text);
+    }
+
+    & .btn-submit {
+        background: linear-gradient(to right, #7e22ce, #a855f7);
+        color: white;
+    }
+
+    & .alert-error {
+        background: rgba(127, 29, 29, 0.4);
+        border-color: rgba(220, 38, 38, 0.5);
+        color: #FCA5A5;
+    }
+    
+    & .alert-success {
+        background: rgba(20, 83, 45, 0.4);
+        border-color: rgba(22, 163, 74, 0.5);
+        color: #86EFAC;
+    }
+    
+    & .alert img {
+        filter: invert(1) brightness(2);
+    }
+}
+
+
+/***** RESPONSIVE STYLES *****/
+@media (max-width: 900px) {
     .auth-container {
+        width: 100%;
+        max-width: 500px;
         flex-direction: column;
         height: auto;
     }
 
     .brand-side {
-        padding: 2.5rem 1.5rem;
-        min-height: 13.75rem;
+        padding: 3rem 1.5rem;
+        min-height: 15rem;
+        
+        &::after {
+            width: 12.5rem;
+            height: 12.5rem;
+        }
 
-        & h1 {
-            font-size: 2rem;
+        & h1 { 
+            font-size: 2rem; 
         }
     }
 
-    .switch-btn {
-        display: none;
+    .switch-btn { 
+        display: none; 
     }
 
     .form-side {
-        padding: 2.5rem 1.5rem;
+        padding: 3rem 2rem;
     }
 
-    .mobile-only {
-        display: block;
+    .mobile-only { 
+        display: block; 
     }
 }
 
-@media (min-width: 769px) {
-    .mobile-only {
-        display: none;
+@media (max-width: 480px) {
+    body { padding: 1rem; }
+
+    .brand-side {
+        padding: 2rem 1rem;
+        min-height: 12rem;
+
+        & .logo { 
+            width: 4.5rem; 
+            margin-bottom: 1rem; 
+        }
+
+        & h1 { 
+            font-size: 1.8rem; 
+            margin-bottom: 0.5rem; 
+        }
+
+        & p { 
+            font-size: 0.9rem; 
+            margin-bottom: 0; 
+        }
+    }
+
+    .form-side { 
+        padding: 2rem 1.5rem; 
+    }
+
+    .form-header {
+        margin-bottom: 1.5rem;
+
+        & h2 { 
+            font-size: 1.8rem; 
+        }
+    }
+
+    .input-wrapper input,
+    .input-wrapper select {
+        padding: 0.9rem 1rem 0.9rem 2.8rem;
+        font-size: 0.95rem;
     }
 }
+
+

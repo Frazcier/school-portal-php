@@ -152,6 +152,13 @@
                 </li>
 
                 <li class="nav-item">
+                    <a href="../staff/exam-management.php" class="nav-link">
+                        <div class="icon-box"><img src="../../assets/img/icons/exam-board-icon.svg" alt="Exams"></div>
+                        <span>Exam Management</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
                     <a href="../staff/content-library.php" class="nav-link">
                         <div class="icon-box"><img src="../../assets/img/icons/content-library-icon.svg" alt="Library"></div>
                         <span>Content Library</span>

@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="assets/img/LOGO/logo.ico">
     <link rel="stylesheet" href="assets/css/index.css">
+    <title>Ikinamada</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="assets/js/landing.js" defer></script>
 </head>

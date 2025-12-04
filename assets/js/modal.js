@@ -1,28 +1,10 @@
-function openViewModal() {
-    const modal = document.getElementById('view-modal');
-    const displayImg = document.getElementById('current-avatar-display');
-    const enlargedImg = document.getElementById('enlarged-image');
-    
-    // Check if elements exist before interacting
-    if(modal && displayImg && enlargedImg) {
-        enlargedImg.src = displayImg.src;
-        // Uses new generic helper
-        openModal('view-modal');
-    }
-}
-
-function openSelectorModal() {
-    // Uses new generic helper
-    openModal('selector-modal');
-}
-
-// --- NEW GENERIC MODAL UTILITIES (CRITICAL FOR GRADES/SUBJECTS) ---
-// This function ensures any modal opens correctly and handles the body scroll.
-function openModal(id) {
-    const modal = document.getElementById(id);
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('active');
         document.body.classList.add('no-scroll');
+    } else {
+        console.warn(`Modal with ID '${modalId}' not found.`);
     }
 }
 
@@ -44,38 +26,118 @@ function closeModal(id) {
 function closeAllModals(e) {
     // Check if the click target is the overlay itself or a modal's close button
     if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-btn')) {
-        let activeModals = document.querySelectorAll('.modal-overlay.active');
-        
-        activeModals.forEach(el => {
-            // Check if the clicked target is this modal or inside its close button
-            if (el === e.target || el.contains(e.target)) {
-                el.classList.remove('active');
-            }
-        });
-
-        // Re-check for active modals to manage scroll state
-        if (document.querySelectorAll('.modal-overlay.active').length === 0) {
-            document.body.classList.remove('no-scroll');
-        }
+        document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('active'));
+        document.body.classList.remove('no-scroll');
     }
+}
+
+const openSelectorModal = () => showModal('selector-modal');
+const openImportModal   = () => showModal('import-modal');
+const openSubjectModal  = () => showModal('subject-modal');
+const openAnnouncementModal = () => showModal('announcement-modal');
+const openUserModal     = () => showModal('user-modal');
+
+
+function openViewModal() {
+    const displayImg = document.getElementById('current-avatar-display');
+    const enlargedImg = document.getElementById('enlarged-image');
+    
+    if (displayImg && enlargedImg) {
+        enlargedImg.src = displayImg.src;
+        showModal('view-modal');
+    }
+}
+
+function openSubjectViewModal(data) {
+    const subject = JSON.parse(data);
+    
+    const fields = {
+        'view-code': subject.subject_code,
+        'view-desc': subject.subject_description,
+        'view-units': subject.units + ' Units',
+        'view-section': subject.section_assigned,
+        'view-room': subject.room || 'TBA',
+        'view-day': subject.schedule_day || 'TBA',
+        'view-time': subject.schedule_time || 'TBA'
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    }
+
+    showModal('view-subject-modal');
+}
+
+function openSubjectEditModal(data) {
+    const subject = JSON.parse(data);
+
+    const fields = {
+        'edit-id': subject.subject_id,
+        'edit-code': subject.subject_code,
+        'edit-desc': subject.subject_description,
+        'edit-units': subject.units,
+        'edit-instructor': subject.instructor_id,
+        'edit-time': subject.schedule_time,
+        'edit-section': subject.section_assigned,
+        'edit-day': subject.schedule_day,
+        'edit-room': subject.room
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    }
+
+    showModal('edit-modal');
+}
+
+function openAnnouncementEditModal(data) {
+    const ann = JSON.parse(data);
+
+    const fields = {
+        'edit-ann-id': ann.announcement_id,
+        'edit-ann-title': ann.title,
+        'edit-ann-content': ann.content,
+        'edit-ann-status': ann.status
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    }
+
+    showModal('edit-announcement-modal');
+}
+
+function openEditStudentModal(data) {
+    const student = JSON.parse(data);
+    
+    const fields = {
+        'edit-user-id': student.id,
+        'edit-student-name': student.name,
+        'edit-student-section': student.section || "N/A"
+    };
+
+    for (const [id, value] of Object.entries(fields)) {
+        const el = document.getElementById(id);
+        if (el) el.value = value;
+    }
+
+    showModal('edit-student-modal');
 }
 
 function selectAvatar(path) {
     const hiddenInput = document.getElementById('selected-avatar-input');
     const displayImg = document.getElementById('current-avatar-display');
 
-    if(hiddenInput && displayImg) {
+    if (hiddenInput && displayImg) {
         hiddenInput.value = path;
         displayImg.src = path;
         
         document.querySelectorAll('.avatar-option').forEach(img => {
             img.classList.remove('selected');
-
-            // Logic to handle the complex exclusive admin wrapper click event
-            const parentWrapper = img.closest('.avatar-wrapper.exclusive-admin');
-            const isTarget = parentWrapper ? parentWrapper.contains(event.target) : img === event.target;
-
-            if (img.getAttribute('src') === path && isTarget) {
+            if (img.getAttribute('src') === path) {
                 img.classList.add('selected');
                 if (parentWrapper) parentWrapper.classList.add('selected');
             } else {
@@ -83,35 +145,25 @@ function selectAvatar(path) {
             }
         });
 
-        // Uses new generic helper
-        closeModal('selector-modal');
-        
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.classList.remove('no-scroll');
+        }
     } else {
-        console.error("Error: Could not find input or display image elements.");
+        console.error("Error: Input or Display Image not found.");
     }
 }
 
-function openImportModal() {
-    // Uses new generic helper
-    openModal('import-modal');
-}
+function toggleUserFields() {
+    const roleSelect = document.getElementById('roleSelect');
+    const stuFields = document.getElementById('student-fields');
+    const staffFields = document.getElementById('staff-fields');
 
-// --- NEW FUNCTION: OPENS AND POPULATES GRADE EDIT MODAL ---
-function openEditGradeModal(periodId, studentName, studentId, scoreA1, scoreA2, scoreExam) {
-    // Hidden ID for DB update (period_id is the Primary Key)
-    document.getElementById('edit-period-id').value = periodId;
-
-    // Display fields
-    document.getElementById('student-name-display').textContent = studentName;
-    document.getElementById('student-id-display').textContent = studentId;
-
-    // Input fields for editing
-    document.getElementById('edit-activity-1').value = scoreA1;
-    document.getElementById('edit-activity-2').value = scoreA2;
-    document.getElementById('edit-exam-score').value = scoreExam;
-    
-    // Uses new generic helper
-    openModal('edit-grade-modal');
+    if (roleSelect && stuFields && staffFields) {
+        const isStudent = roleSelect.value === 'student';
+        stuFields.style.display = isStudent ? 'block' : 'none';
+        staffFields.style.display = isStudent ? 'none' : 'block';
+    }
 }
 
 // Global click listener for closing modals when clicking outside

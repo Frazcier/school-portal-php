@@ -1,15 +1,42 @@
 <?php 
     session_start();
 
+    require_once '../../backend/controller.php';
+    require_once '../../backend/algorithms/MergeSort.php';
+
     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
         header("Location: ../auth/login.php");
         exit();
     }
 
-    if (!isset($_SESSION['profile_data'])) {
-        session_destroy();
-        header("Location: ../auth/login.php?error=Session expired. Please login again");
-        exit();
+    $controller = new controller();
+    
+    $raw_resources = $controller->get_student_resources($_SESSION['user_id']);
+    
+    $subjects_list = [];
+    foreach ($raw_resources as $r) {
+        $subjects_list[$r['subject_code']] = $r['subject_code']; 
+    }
+
+    $filtered_resources = [];
+    $filter_sub = $_GET['subject'] ?? '';
+    $filter_cat = $_GET['category'] ?? '';
+    $sort_by = $_GET['sort'] ?? 'date';
+
+    foreach ($raw_resources as $res) {
+        $include = true;
+        if (!empty($filter_sub) && $res['subject_code'] !== $filter_sub) $include = false;
+        if (!empty($filter_cat) && $res['category'] !== $filter_cat) $include = false;
+        
+        if ($include) $filtered_resources[] = $res;
+    }
+
+    $sorter = new MergeSort();
+    if ($sort_by === 'name') {
+        $resources = $sorter->sort($filtered_resources, 'title');
+    } else {
+        $sorted = $sorter->sort($filtered_resources, 'created_at');
+        $resources = array_reverse($sorted);
     }
 ?>
 
@@ -22,13 +49,13 @@
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="../../assets/js/main.js" defer></script>
-    <title>Libraries</title>
+    <title>Content Library</title>
 </head>
 <body>
-    <?php require_once '../../components/header.php';?>
+    <?php require_once '../../components/header.php'?>
 
     <div class="container">
-        <?php require_once '../../components/sidebar.php';?>
+        <?php require_once '../../components/sidebar.php'?>
 
         <div class="content">
             
@@ -47,154 +74,100 @@
             <div class="toolbar">
                 <div class="search-wrapper">
                     <i class="fas fa-search search-icon"></i>
-                    <input type="text" placeholder="Search for title, author, or topic...">
+                    <input type="text" id="realTimeSearch" onkeyup="searchCards()" 
+                           placeholder="Search for title, subject, or topic...">
                 </div>
                 
-                <div class="filter-group">
+                <form method="GET" class="filter-group">
                     <div class="select-wrapper">
-                        <select>
-                            <option selected>All Subjects</option>
-                            <option>IT 114 (Prog 2)</option>
-                            <option>IT 115 (HCI)</option>
-                            <option>IT 116 (Web)</option>
+                        <select name="subject" onchange="this.form.submit()">
+                            <option value="">All Subjects</option>
+                            <?php foreach($subjects_list as $sub_code): ?>
+                                <option value="<?= $sub_code ?>" <?= $filter_sub === $sub_code ? 'selected' : '' ?>>
+                                    <?= $sub_code ?>
+                                </option>
+                            <?php endforeach; ?>
                         </select>
                         <i class="fas fa-chevron-down chevron"></i>
                     </div>
+                    
                     <div class="select-wrapper">
-                        <select>
-                            <option selected>Recent</option>
-                            <option>Oldest</option>
-                            <option>A-Z</option>
+                        <select name="category" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            <option value="Lecture" <?= $filter_cat === 'Lecture' ? 'selected' : '' ?>>Lecture</option>
+                            <option value="Assignment" <?= $filter_cat === 'Assignment' ? 'selected' : '' ?>>Assignment</option>
+                            <option value="Reference" <?= $filter_cat === 'Reference' ? 'selected' : '' ?>>Reference</option>
+                            <option value="Video" <?= $filter_cat === 'Video' ? 'selected' : '' ?>>Video</option>
                         </select>
                         <i class="fas fa-chevron-down chevron"></i>
                     </div>
-                </div>
+                </form>
             </div>
 
             <div class="library-container">
-                <input type="radio" id="tab-materials" name="lib-tabs" checked hidden>
-                <input type="radio" id="tab-ebooks" name="lib-tabs" hidden>
-                <input type="radio" id="tab-research" name="lib-tabs" hidden>
-
-                <div class="tabs-nav">
-                    <label for="tab-materials" class="tab-link">Course Materials</label>
-                    <label for="tab-ebooks" class="tab-link">E-Books</label>
-                    <label for="tab-research" class="tab-link">Research Papers</label>
-                </div>
-
-                <div class="tab-content">
+                <div id="resourceGrid" class="resources-grid fadeIn">
                     
-                    <div id="view-materials" class="resources-grid fadeIn">
-                        
-                        <div class="resource-card">
-                            <div class="card-icon pdf">
-                                <img src="../../assets/img/icons/file-icon.svg" alt="PDF">
-                            </div>
-                            <div class="card-body">
-                                <span class="tag">IT 114</span>
-                                <h4>Advanced OOP Concepts</h4>
-                                <p>Encapsulation, inheritance, polymorphism, and abstraction.</p>
-                            </div>
-                            <div class="card-footer">
-                                <span class="file-info">PDF &bullet; 2.4 MB</span>
-                                <button class="icon-btn"><i class="fas fa-download"></i></button>
-                            </div>
+                    <?php if (empty($resources)): ?>
+                        <div class="empty-state" style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #888;">
+                            <img src="../../assets/img/icons/search-icon.svg" style="width: 50px; opacity: 0.3; margin-bottom: 1rem">
+                            <h3>No resources found.</h3>
                         </div>
+                    <?php else: ?>
+                        <?php foreach ($resources as $res): 
+                            $ext = strtolower($res['file_type']);
+                            $icon = 'file-icon.svg';
+                            $styleClass = 'pdf';
 
+                            if (in_array($ext, ['pdf'])) { 
+                                $styleClass = 'pdf'; 
+                                $icon = 'file-icon.svg';
+                            } elseif (in_array($ext, ['doc', 'docx'])) { 
+                                $styleClass = 'research'; 
+                                $icon = 'research-papers-icon.svg'; 
+                            } elseif (in_array($ext, ['ppt', 'pptx'])) { 
+                                $styleClass = 'slides'; 
+                                $icon = 'course-materials-2-icon.svg';
+                            } elseif (in_array($ext, ['mp4', 'mov'])) { 
+                                $styleClass = 'ebook'; 
+                                $icon = 'e-books-1-icon.svg'; 
+                            } elseif ($ext == 'link') {
+                                $styleClass = 'link';
+                                $icon = 'visit-link-icon.svg';
+                            }
+                            
+                            $fileSize = strtoupper($ext);
+                            $realPath = __DIR__ . "/../../assets/uploads/" . $res['file_name'];
+                            if (file_exists($realPath)) {
+                                $bytes = filesize($realPath);
+                                if ($bytes >= 1048576) $fileSize .= ' • ' . number_format($bytes / 1048576, 1) . ' MB';
+                                elseif ($bytes >= 1024) $fileSize .= ' • ' . number_format($bytes / 1024, 0) . ' KB';
+                            }
+                        ?>
                         <div class="resource-card">
-                            <div class="card-icon slides">
-                                <img src="../../assets/img/icons/course-materials-2-icon.svg" alt="Slides">
+                            <div class="card-icon <?= $styleClass ?>">
+                                <img src="../../assets/img/icons/<?= $icon ?>" alt="Icon">
                             </div>
+                            
                             <div class="card-body">
-                                <span class="tag">IT 115</span>
-                                <h4>HCI Fundamentals</h4>
-                                <p>Usability principles, heuristic evaluation, and cognitive psychology.</p>
+                                <span class="tag"><?= htmlspecialchars($res['subject_code']) ?></span>
+                                <h4><?= htmlspecialchars($res['title']) ?></h4>
+                                <p><?= htmlspecialchars($res['subject_description']) ?></p>
                             </div>
+                            
                             <div class="card-footer">
-                                <span class="file-info">PPTX &bullet; 5.1 MB</span>
-                                <button class="icon-btn"><i class="fas fa-download"></i></button>
+                                <span class="file-info"><?= $fileSize ?></span>
+                                <a href="<?= htmlspecialchars($res['file_path']) ?>" download class="icon-btn">
+                                    <i class="fas fa-download"></i>
+                                </a>
                             </div>
                         </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
 
-                        <div class="resource-card">
-                            <div class="card-icon link">
-                                <img src="../../assets/img/icons/visit-link-icon.svg" alt="Link">
-                            </div>
-                            <div class="card-body">
-                                <span class="tag">IT 116</span>
-                                <h4>Modern Web Apps</h4>
-                                <p>Guide to front-end development with HTML, CSS, and JS.</p>
-                            </div>
-                            <div class="card-footer">
-                                <span class="file-info">External Link</span>
-                                <button class="icon-btn"><i class="fas fa-external-link-alt"></i></button>
-                            </div>
-                        </div>
-
-                        <div class="resource-card">
-                            <div class="card-icon pdf">
-                                <img src="../../assets/img/icons/file-icon.svg" alt="PDF">
-                            </div>
-                            <div class="card-body">
-                                <span class="tag">STATS 22</span>
-                                <h4>Data Analysis w/ Python</h4>
-                                <p>Introduction to statistical computing and data preprocessing.</p>
-                            </div>
-                            <div class="card-footer">
-                                <span class="file-info">PDF &bullet; 1.8 MB</span>
-                                <button class="icon-btn"><i class="fas fa-download"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="view-ebooks" class="resources-grid fadeIn">
-                        <div class="resource-card">
-                            <div class="card-icon ebook">
-                                <img src="../../assets/img/icons/e-books-1-icon.svg" alt="Book">
-                            </div>
-                            <div class="card-body">
-                                <span class="tag">Security</span>
-                                <h4>Cybersecurity Essentials</h4>
-                                <p>Protecting your digital world: Threat detection and encryption.</p>
-                            </div>
-                            <div class="card-footer">
-                                <span class="file-info">EPUB &bullet; 12 MB</span>
-                                <button class="icon-btn"><i class="fas fa-download"></i></button>
-                            </div>
-                        </div>
-                        <div class="resource-card">
-                            <div class="card-icon ebook">
-                                <img src="../../assets/img/icons/e-books-3-icon.svg" alt="Book">
-                            </div>
-                            <div class="card-body">
-                                <span class="tag">Cloud</span>
-                                <h4>Cloud Computing</h4>
-                                <p>A practical approach for businesses and developers.</p>
-                            </div>
-                            <div class="card-footer">
-                                <span class="file-info">PDF &bullet; 8 MB</span>
-                                <button class="icon-btn"><i class="fas fa-download"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="view-research" class="resources-grid fadeIn">
-                        <div class="resource-card">
-                            <div class="card-icon research">
-                                <img src="../../assets/img/icons/research-papers-icon.svg" alt="Paper">
-                            </div>
-                            <div class="card-body">
-                                <span class="tag">AI</span>
-                                <h4>AI in Cybersecurity</h4>
-                                <p>Enhancing threat detection and response using ML algorithms.</p>
-                            </div>
-                            <div class="card-footer">
-                                <span class="file-info">PDF &bullet; 2024</span>
-                                <button class="icon-btn"><i class="fas fa-download"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
+                </div>
+                
+                <div id="noResultsMsg" style="display:none; text-align:center; padding: 2rem; color: #888;">
+                    No resources match your search.
                 </div>
             </div>
 

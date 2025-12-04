@@ -118,8 +118,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const nav = document.querySelector('nav');
 
     if (mobileBtn && nav) {
-        mobileBtn.addEventListener('click', () => {
+        mobileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             nav.classList.toggle('mobile-active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (nav.classList.contains('mobile-active') && !nav.contains(e.target)) {
+                nav.classList.remove('mobile-active');
+            }
+        });
+
+        nav.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('mobile-active');
+            });
         });
     }
 });

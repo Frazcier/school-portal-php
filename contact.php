@@ -9,7 +9,7 @@
     <link rel="icon" type="image/x-icon" href="assets/img/logo/logo.ico">    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="assets/js/landing.js" defer></script>
-    <title>Contact Us | College of Information Sciences</title>
+    <title>Contact Us</title>
 </head>
 <body>
     <div id="backToTop" class="back-to-top">

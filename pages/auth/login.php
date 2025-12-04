@@ -11,7 +11,7 @@ session_start();
     <link rel="icon" type="image/x-icon" href="../../assets/img/logo/logo.ico">
     <script src="../../assets/js/password-toggle.js" defer></script>
     <script src="../../assets/js/main.js" defer></script>
-    <title>Student Login - School Portal</title>
+    <title>Login</title>
 </head>
 <body>
 
@@ -48,6 +48,8 @@ session_start();
             <?php endif; ?>
 
             <form action="../../backend/controller.php?method_finder=login" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token'] ?? ''; ?>">
+
                 <div class="input-group">
                     <div class="input-wrapper">
                         <input type="text" name="identifier" placeholder="Email or School ID" required>

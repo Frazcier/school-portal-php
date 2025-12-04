@@ -397,9 +397,152 @@ td {
 }
 
 
+/***** DARK MODE *****/
+[data-theme="dark"] {
+    & .section-header h1 { color: var(--color-dark-text); }
+    & .section-header h3 { color: var(--color-grey-text); }
+
+    & .btn-secondary {
+        background-color: transparent;
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+        &:hover { background-color: rgba(148,0,211,0.1); }
+    }
+
+    & .summary-card {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: none;
+    }
+
+    & .summary-card .summary-text h2 { color: var(--color-dark-text); }
+
+    & .summary-card.balance .icon-wrapper { background: rgba(239, 68, 68, 0.15); }
+    & .summary-card.paid .icon-wrapper { background: rgba(22, 101, 52, 0.15); }
+    & .summary-card.pending .icon-wrapper { background: rgba(249, 115, 22, 0.15); }
+
+    & .main-column .data-card {
+        background-color: var(--background-component);
+        box-shadow: none;
+    }
+
+    & .card-header {
+        border-bottom-color: var(--border-color);
+    }
+
+    & .card-header h3 { color: var(--color-dark-text); }
+
+    & .filter-toggle select {
+        background-color: var(--background-input);
+        border-color: var(--border-color);
+        color: var(--color-dark-text);
+    }
+
+    & thead tr { background-color: var(--background-input) !important; }
+    & th { color: var(--color-grey-text); }
+    & td { color: var(--color-dark-text); border-bottom-color: var(--border-color); }
+    & tbody tr:hover { background-color: var(--background-hover) !important; }
+
+    & .amount, & .fee-info .title { color: var(--color-dark-text); }
+
+    & .widget-card {
+        background-color: var(--background-component);
+        border-color: var(--border-color);
+        box-shadow: none;
+    }
+
+    & .widget-card h3 { color: var(--color-dark-text); }
+
+    & .method-item {
+        border-color: var(--border-color);
+        &:hover { background-color: var(--background-hover); border-color: var(--primary-color); }
+    }
+
+    & .method-item span { color: var(--color-dark-text); }
+    & .method-item .method-icon {
+        background-color: var(--background-input);
+        color: var(--color-grey-text);
+    }
+
+    & .receipt-item { border-bottom-color: var(--border-color); }
+    & .btn-sm.outline {
+        background-color: transparent;
+        border-color: var(--primary-color);
+    }
+    
+    & .icon-btn {
+        border-color: var(--border-color);
+        color: var(--color-grey-text);
+        &:hover { color: var(--primary-color); border-color: var(--primary-color); }
+    }
+}
+
+
 /***** RESPONSIVE STYLES *****/
-@media (max-width: 1024) {
+@media (max-width: 1024px) {
     .payments-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .summary-row {
+        grid-template-columns: 1fr;
+    }
+
+    .summary-card {
+        padding: 1.2rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .filter-toggle {
+        width: 100%;
+        
+        & select {
+            width: 100%;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: 1rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+
+        & .header-actions {
+            flex-direction: column;
+            width: 100%;
+
+            & button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    }
+
+    .main-column,
+    .side-column {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .table-responsive {
+        border: 1px solid #f0f0f0;
+        border-radius: 0.5rem;
+    }
+
+    th, td {
+        padding: 0.8rem;
+        font-size: 0.8rem;
     }
 }
