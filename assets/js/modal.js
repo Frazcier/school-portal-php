@@ -8,7 +8,23 @@ function showModal(modalId) {
     }
 }
 
-function closeModals(e) {
+// This function ensures any modal closes correctly and handles the body scroll.
+function closeModal(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('active');
+        // Only remove no-scroll if no other modals are active
+        if (document.querySelectorAll('.modal-overlay.active').length === 0) {
+            document.body.classList.remove('no-scroll');
+        }
+    }
+}
+// --- END NEW GENERIC MODAL UTILITIES ---
+
+
+// Function to close all modals (handles clicking outside or clicking the close button)
+function closeAllModals(e) {
+    // Check if the click target is the overlay itself or a modal's close button
     if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('close-btn')) {
         document.querySelectorAll('.modal-overlay').forEach(el => el.classList.remove('active'));
         document.body.classList.remove('no-scroll');
@@ -114,7 +130,6 @@ function openEditStudentModal(data) {
 function selectAvatar(path) {
     const hiddenInput = document.getElementById('selected-avatar-input');
     const displayImg = document.getElementById('current-avatar-display');
-    const modal = document.getElementById('selector-modal');
 
     if (hiddenInput && displayImg) {
         hiddenInput.value = path;
@@ -124,6 +139,9 @@ function selectAvatar(path) {
             img.classList.remove('selected');
             if (img.getAttribute('src') === path) {
                 img.classList.add('selected');
+                if (parentWrapper) parentWrapper.classList.add('selected');
+            } else {
+                if (parentWrapper) parentWrapper.classList.remove('selected');
             }
         });
 

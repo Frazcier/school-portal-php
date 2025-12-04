@@ -79,7 +79,7 @@ class controller {
             }
         }
     }
-
+    
     public function register() {
         $role = $_POST['role'];
         $first_name = $_POST['first_name'];
