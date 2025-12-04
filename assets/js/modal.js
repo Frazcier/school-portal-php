@@ -147,3 +147,41 @@ function toggleUserFields() {
         staffFields.style.display = isStudent ? 'none' : 'block';
     }
 }
+
+function initPayment(method, amount) {
+    const methodSelect = document.getElementById('pay-method');
+    const amountInput = document.getElementById('pay-amount');
+
+    if (methodSelect && amountInput) {
+        methodSelect.value = method ? method : "";
+
+        amountInput.value = amount ? amount : "";
+
+        showModal('payment-modal');
+    } else {
+        console.error("Payment modal inputs not found.");
+    }
+}
+
+function applyFeePreset() {
+    const preset = document.getElementById('fee-preset').value;
+    const titleInput = document.getElementById('fee-title');
+    const amountInput = document.getElementById('fee-amount');
+    const categoryInput = document.getElementById('fee-category');
+
+
+    const fees = {
+        'BYTE': { title: "BYTE Membership Fee", amount: 50.00, cat: "Org Fees" },
+        'SSG': { title: "SSG Membership Fee", amount: 50.00, cat: "Org Fees" },
+        'Uniform_M': { title: "BSU Uniform Set (Upper)", amount: 500.00, cat: "Uniforms" },
+        'Uniform_F': { title: "BSU Uniform Set (Bottom)", amount: 500.00, cat: "Uniforms" },
+        'DeptShirt': { title: "CIS Department Shirt", amount: 350.00, cat: "Uniforms" },
+        'ID_Replace': { title: "ID Replacement Fee", amount: 150.00, cat: "Misc Fees" }
+    };
+
+    if (fees[preset]) {
+        titleInput.value = fees[preset].title;
+        amountInput.value = fees[preset].amount;
+        categoryInput.value = fees[preset].cat;
+    }
+}

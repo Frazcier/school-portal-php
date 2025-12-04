@@ -5,9 +5,9 @@
 
     if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'teacher') {
-            header("Location: staff-dashboard.php");
+            header("Location: staff-dashboard.php?error=You don't have permission to access this page");
         } else {
-            header("Location: ../auth/login.php");
+            header("Location: ../auth/login.php?error=You don't have permission to access this page");
         }
         exit();
     }
@@ -417,6 +417,7 @@
             <div class="modal-header"><h3>Edit Section</h3></div>
             
             <form action="../../backend/controller.php?method_finder=update_student_section" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="user_id" id="edit-user-id">
                 
                 <div class="form-grid single-col">

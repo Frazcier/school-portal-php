@@ -165,6 +165,17 @@
                     </a>
                 </li>
 
+                <?php if ($role === 'admin'): ?>
+                    <li class="nav-item">
+                        <a href="../staff/payment-review.php" class="nav-link">
+                            <div class="icon-box">
+                                <img src="../../assets/img/icons/payments-icon.svg" alt="Payments">
+                            </div>
+                            <span>Payment Review</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
+
                 <div class="sidebar-spacer"></div>
 
                 <li class="nav-item">

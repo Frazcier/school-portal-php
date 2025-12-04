@@ -47,8 +47,10 @@ class controller {
                 case 'login': $this->login(); break;
                 case 'logout': $this->logout(); break;
                 case 'update_profile': $this->update_profile(); break;
+
                 case 'manage_users': $this->manage_users(); break;
                 case 'create_user': $this->create_user(); break;
+                case 'update_student_section': $this->update_student_section(); break;
                 
                 case 'add_subject': $this->add_subject(); break;
                 case 'update_subject': $this->update_subject(); break;
@@ -65,6 +67,10 @@ class controller {
                 case 'add_exam': $this->add_exam(); break;
                 case 'delete_exam': $this->delete_exam(); break;
                 case 'complete_exam': $this->complete_exam(); break;
+
+                case 'submit_payment': $this->submit_payment(); break;
+                case 'process_payment': $this->process_payment(); break;
+                case 'assign_fee': $this->assign_fee(); break;
 
                 case 'get_more_logs': $this->get_more_logs(); break;
                 case 'export_logs': $this->export_logs(); break;
@@ -491,6 +497,28 @@ class controller {
         exit();
     }
 
+    public function update_student_section() {
+        $user_id = $_POST['user_id'];
+        $section = $_POST['section'];
+
+        $sql = "UPDATE student_profiles SET section = ? WHERE user_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("si", $section, $user_id);
+
+        if ($stmt->execute()) {
+            $name_query = $this->connection->query("SELECT first_name, last_name, unique_id FROM student_profiles JOIN users ON student_profiles.user_id = users.user_id WHERE users.user_id = $user_id");
+            $student = $name_query->fetch_assoc();
+            $student_label = $student ? $student['unique_id'] : "ID $user_id";
+
+            $this->log_activity($_SESSION['user_id'], "User Management", "Updated section for $student_label to $section");
+
+            header("Location: ../pages/staff/user-management.php?success=Student section updated successfully");
+        } else {
+            header("Location: ../pages/staff/user-management.php?error=Failed to update section");
+        }
+        exit();
+    }
+
     public function add_subject() {
         $code = $_POST['subject_code'];
         $desc = $_POST['subject_description'];
@@ -577,30 +605,33 @@ class controller {
         $stmt = $this->connection->prepare($sql);
         $stmt->bind_param("i", $user_id);
         $stmt->execute();
-        $student = $stmt->get_result()->fetch_assoc();
-
-        $section = $student['section'] ?? 'N/A';
-
-        $sql = "SELECT s.*, p.first_name, p.last_name, p.profile_picture
-                FROM subjects s
-                LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
-                WHERE s.section_assigned = ? AND s.status = 'Active'
-                
-                UNION
-                
-                SELECT s.*, p.first_name, p.last_name, p.profile_picture
-                FROM subjects s
-                LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
-                INNER JOIN student_grades sg ON s.subject_id = sg.subject_id
-                WHERE sg.student_id = ? AND s.status = 'Active'";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bind_param("si", $section, $user_id);
+        $result = $stmt->get_result();
+        $student = $result->fetch_assoc();
         
-        if (!$stmt->execute()) {
-            return $this->get_subjects_by_section_only($section);
-        }
+        $section = $student['section'] ?? 'N/A';
+        
+        $sql2 = "SELECT s.*, p.first_name, p.last_name, p.profile_picture
+                 FROM subjects s
+                 LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
+                 WHERE s.section_assigned = ? AND s.status = 'Active'
+            
+                 UNION
+            
+                 SELECT s.*, p.first_name, p.last_name, p.profile_picture
+                 FROM subjects s
+                 LEFT JOIN staff_profiles p ON s.instructor_id = p.user_id
+                 INNER JOIN grading_periods gp ON s.subject_id = gp.subject_id 
+                 WHERE gp.student_id = ? AND s.status = 'Active'";
 
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt2 = $this->connection->prepare($sql2);
+        
+        $stmt2->bind_param("si", $section, $user_id); 
+        
+        if ($stmt2->execute()) {
+            return $stmt2->get_result()->fetch_all(MYSQLI_ASSOC);
+        } else {
+            return [];
+        }
     }
 
     private function get_subjects_by_section_only($section) {
@@ -1099,6 +1130,151 @@ class controller {
         $stmt->execute();
         
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function get_student_fees($user_id) {
+        $sql = "SELECT * FROM student_fees WHERE student_id = ? ORDER BY due_date ASC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function get_transaction_history($user_id) {
+        $sql = "SELECT * FROM student_payments WHERE student_id = ? ORDER BY payment_date DESC";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function get_payment_summary($user_id) {
+        $sql = "SELECT SUM(amount) as balance FROM student_fees WHERE student_id = ? AND status != 'Paid'";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $user_id);
+        $stmt->execute();
+        $res = $stmt->get_result()->fetch_assoc();
+        
+        $sql_paid = "SELECT SUM(amount) as total_paid FROM student_payments WHERE student_id = ? AND status = 'Verified'";
+        $stmt_p = $this->connection->prepare($sql_paid);
+        $stmt_p->bind_param("i", $user_id);
+        $stmt_p->execute();
+        $paid = $stmt_p->get_result()->fetch_assoc();
+
+        $sql_pending = "SELECT SUM(amount) as pending FROM student_payments WHERE student_id = ? AND status = 'Pending'";
+        $stmt_pen = $this->connection->prepare($sql_pending);
+        $stmt_pen->bind_param("i", $user_id);
+        $stmt_pen->execute();
+        $pending = $stmt_pen->get_result()->fetch_assoc();
+
+        return [
+            'balance' => $res['balance'] ?? 0,
+            'total_paid' => $paid['total_paid'] ?? 0,
+            'pending' => $pending['pending'] ?? 0
+        ];
+    }
+
+    public function submit_payment() {
+        $user_id = $_SESSION['user_id'];
+        $amount = $_POST['amount'];
+        $method = $_POST['method'];
+        $ref_no = $_POST['reference_no'];
+        $date = date('Y-m-d');
+        $status = 'Pending';
+
+        $sql = "INSERT INTO student_payments (student_id, reference_no, amount, method, payment_date, status) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("isdsss", $user_id, $ref_no, $amount, $method, $date, $status);
+
+        if ($stmt->execute()) {
+            $this->log_activity($user_id, "Payment", "Submitted payment of $amount via $method Ref: $ref_no");
+            header("Location: ../pages/student/payments.php?success=Payment submitted for verification");
+        } else {
+            header("Location: ../pages/student/payments.php?error=Transaction failed");
+        }
+        exit();
+    }
+
+    public function get_all_payments() {
+        $sql = "SELECT p.*, s.first_name, s.last_name, s.course, s.year_level 
+                FROM student_payments p
+                JOIN student_profiles s ON p.student_id = s.user_id 
+                ORDER BY 
+                CASE WHEN p.status = 'Pending' THEN 1 ELSE 2 END, 
+                p.payment_date DESC";
+        $result = $this->connection->query($sql);
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function process_payment() {
+        $payment_id = $_POST['payment_id'];
+        $action = $_POST['action'];
+        $new_status = ($action === 'verify') ? 'Verified' : 'Rejected';
+
+        $sql = "UPDATE student_payments SET status = ? WHERE payment_id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("si", $new_status, $payment_id);
+        
+        if ($stmt->execute() && $new_status === 'Verified') {
+            $q_pay = $this->connection->prepare("SELECT student_id, amount FROM student_payments WHERE payment_id = ?");
+            $q_pay->bind_param("i", $payment_id);
+            $q_pay->execute();
+            $payment_data = $q_pay->get_result()->fetch_assoc();
+            
+            $student_id = $payment_data['student_id'];
+            $money_on_hand = $payment_data['amount'];
+
+            $q_fees = $this->connection->prepare("SELECT fee_id, amount FROM student_fees WHERE student_id = ? AND status != 'Paid' ORDER BY due_date ASC");
+            $q_fees->bind_param("i", $student_id);
+            $q_fees->execute();
+            $fees = $q_fees->get_result()->fetch_all(MYSQLI_ASSOC);
+
+            foreach ($fees as $fee) {
+                if ($money_on_hand <= 0) break;
+
+                $fee_id = $fee['fee_id'];
+                $fee_amount = $fee['amount'];
+
+                if ($money_on_hand >= $fee_amount) {
+                    $this->connection->query("UPDATE student_fees SET status = 'Paid', amount = 0 WHERE fee_id = $fee_id");
+                    $money_on_hand -= $fee_amount;
+                } else {
+                    $new_amount = $fee_amount - $money_on_hand;
+                    $this->connection->query("UPDATE student_fees SET amount = $new_amount, status = 'Unpaid' WHERE fee_id = $fee_id");
+                    $money_on_hand = 0;
+                }
+            }
+
+            $this->log_activity($_SESSION['user_id'], "Payment Review", "Verified payment & updated fees for ID: $student_id");
+            header("Location: ../pages/staff/payment-review.php?success=Payment verified and fees updated.");
+        } else {
+            header("Location: ../pages/staff/payment-review.php?error=Payment rejected.");
+        }
+        exit();
+    }
+
+    public function assign_fee() {
+        $student_id = $_POST['student_id'];
+        $title = $_POST['title'];
+        $category = $_POST['category'];
+        $amount = $_POST['amount'];
+        $due_date = $_POST['due_date'];
+        $status = 'Unpaid';
+
+        $sql = "INSERT INTO student_fees (student_id, title, category, amount, due_date, status) 
+                VALUES (?, ?, ?, ?, ?, ?)";
+        
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("issdss", $student_id, $title, $category, $amount, $due_date, $status);
+
+        if ($stmt->execute()) {
+            $this->log_activity($_SESSION['user_id'], "Billing", "Assigned fee '$title' (₱$amount) to Student ID: $student_id");
+            header("Location: ../pages/staff/payment-review.php?success=Fee assigned successfully.");
+        } else {
+            header("Location: ../pages/staff/payment-review.php?error=Failed to assign fee.");
+        }
+        exit();
     }
 }
 
