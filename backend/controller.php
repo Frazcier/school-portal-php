@@ -49,10 +49,84 @@ class controller {
                 $this->update_profile();
             } else if ($action === 'manage_users') {
                 $this->manage_users();
+            } else if ($action === 'update_subject') { 
+                $this->update_subject();
+            } else if ($action === 'update_grade_record') {
+                $this->update_grade_record();
             }
         }
     }
+    
+    // --- FIXED METHOD: FETCH GRADES (Now includes u.unique_id from users table) ---
+    public function get_grades_for_subject($subject_id) {
+        $sql = "SELECT 
+                    gp.*, 
+                    u.unique_id,                     /* <-- FIXED: FETCHING UNIQUE_ID */
+                    sp.first_name, 
+                    sp.last_name,
+                    sp.course,
+                    sp.year_level 
+                FROM grading_periods gp
+                JOIN users u ON gp.student_id = u.user_id
+                JOIN student_profiles sp ON u.user_id = sp.user_id
+                WHERE gp.subject_id = ?
+                ORDER BY sp.last_name ASC";
+        
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("i", $subject_id);
+        $stmt->execute();
+        
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+    
+    public function update_grade_record() {
+        if (!isset($_POST['period_id'])) {
+            header("Location: ../pages/staff/grading.php?error=Invalid record ID");
+            exit();
+        }
+        
+        $period_id = $_POST['period_id'];
+        $activity_1 = $_POST['activity_1'];
+        $activity_2 = $_POST['activity_2'];
+        $exam_score = $_POST['exam_score'];
 
+        $max_class_score = 100;
+        $max_exam_score = 50;
+        $class_standing_ratio = 0.60;
+        $exam_standing_ratio = 0.40;
+
+        $total_score = $activity_1 + $activity_2;
+        
+        $raw_class_standing = ($total_score / $max_class_score) * 4.0;
+        $raw_exam_standing = ($exam_score / $max_exam_score) * 4.0;
+        
+        $final_grade = ($raw_class_standing * $class_standing_ratio) + ($raw_exam_standing * $exam_standing_ratio);
+        
+        $rounded_grade = round($final_grade * 4) / 4; 
+        
+        $sql = "UPDATE grading_periods 
+                SET activity_1 = ?, activity_2 = ?, exam_score = ?, final_grade = ?, rounded_grade = ?
+                WHERE period_id = ?";
+        
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bind_param("iiiddi", 
+            $activity_1, 
+            $activity_2, 
+            $exam_score, 
+            $final_grade, 
+            $rounded_grade, 
+            $period_id
+        );
+
+        if ($stmt->execute()) {
+            header("Location: ../pages/staff/grading.php?success=Grade updated successfully for period ID: $period_id");
+            exit();
+        } else {
+            header("Location: ../pages/staff/grading.php?error=Failed to update grade: " . $this->connection->error);
+            exit();
+        }
+    }
+    
     public function register() {
         $role = $_POST['role'];
         $first_name = $_POST['first_name'];
@@ -343,6 +417,39 @@ class controller {
         }
 
         exit();
+    }
+    
+    public function update_subject() {
+        if (!isset($_POST['subject_id'])) {
+            header("Location: ../pages/staff/subject-management.php?error=Invalid subject data");
+            exit();
+        }
+
+        $subject_id = $_POST['subject_id'];
+        $subject_code = $_POST['subject_code'];
+        $subject_name = $_POST['subject_name'];
+        $department = $_POST['department'];
+        $instructor = $_POST['instructor_id']; 
+        $status = $_POST['status']; 
+
+        $sql_sub = "UPDATE subjects 
+                    SET subject_code = ?, subject_name = ?, department = ?, status = ?
+                    WHERE subject_id = ?";
+        
+        $stmt_sub = $this->connection->prepare($sql_sub);
+        $stmt_sub->bind_param("ssssi", $subject_code, $subject_name, $department, $status, $subject_id);
+
+        if ($stmt_sub->execute()) {
+            
+            // Placeholder: Update instructor association here if necessary
+            // For now, we only update the main subject details.
+            
+            header("Location: ../pages/staff/subject-management.php?success=Subject '$subject_name' updated successfully!");
+            exit();
+        } else {
+            header("Location: ../pages/staff/subject-management.php?error=Failed to update subject: " . $this->connection->error);
+            exit();
+        }
     }
 }
 
